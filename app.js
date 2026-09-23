@@ -2,6 +2,8 @@ const S=window.PORTFOLIO_SEED;
 const KEY="portfolio_os_v2";
 let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(S);
 let current="home";
+let universe=[];
+fetch("universe.json").then(r=>r.json()).then(d=>{universe=d.stocks||[]; if(current==="universe")render();}).catch(()=>{});
 const $=s=>document.querySelector(s);
 const money=x=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(x||0);
 const pct=x=>(x>=0?"+":"")+Number(x||0).toFixed(2)+"%";
@@ -46,10 +48,10 @@ function render(){
  document.body.innerHTML=`<div class="app">
   <header class="top"><div><div class="brand">Portfolio OS</div><div class="sub">Personal high-growth portfolio tracker</div></div>
   <div class="top-actions"><button class="btn primary" onclick="openTx()">＋ Transaction</button><button class="btn" onclick="importBroker()">Import</button></div></header>
-  <nav class="nav">${["home","holdings","watchlist","allocate"].map((x,i)=>`<button class="${current===x?"active":""}" onclick="nav('${x}')">${["Dashboard","Holdings","Watchlist","Allocation"][i]}</button>`).join("")}</nav>
-  <main>${current==="home"?home():current==="holdings"?holdings():current==="watchlist"?watchlist():allocation()}</main>
+  <nav class="nav">${["home","holdings","watchlist","allocate","universe"].map((x,i)=>`<button class="${current===x?"active":""}" onclick="nav('${x}')">${["Dashboard","Holdings","Watchlist","Allocation","Universe"][i]}</button>`).join("")}</nav>
+  <main>${current==="home"?home():current==="holdings"?holdings():current==="watchlist"?watchlist():current==="allocate"?allocation():universePage()}</main>
  </div>
- <nav class="bottom">${[["home","⌂","Home"],["holdings","▤","Holdings"],["watchlist","☆","Watch"],["allocate","◎","Allocate"],["more","☷","More"]].map(x=>`<button class="${current===x[0]?"active":""}" onclick="${x[0]==="more"?"showMore()":`nav('${x[0]}')`}"><b>${x[1]}</b>${x[2]}</button>`).join("")}</nav>
+ <nav class="bottom">${[["home","⌂","Home"],["holdings","▤","Holdings"],["watchlist","☆","Watch"],["allocate","◎","Allocate"],["universe","◉","Universe"]].map(x=>`<button class="${current===x[0]?"active":""}" onclick="${x[0]==="more"?"showMore()":`nav('${x[0]}')`}"><b>${x[1]}</b>${x[2]}</button>`).join("")}</nav>
  <div id="modal"></div><div id="toast" class="toast"></div>`;
 }
 function home(){
@@ -73,6 +75,13 @@ function watchlist(){
  return `<div class="section-head"><div><span class="section-title">Watchlist</span><div class="muted small">Research candidates</div></div></div>
  <div class="watch-grid">${state.watchlist.map(x=>`<div class="card" onclick="stock('${x.ticker}')"><div class="section-head"><b>${x.ticker}</b><span class="pill">WATCH</span></div><div>${x.name}</div><div class="muted small" style="margin-top:8px">Open company research →</div></div>`).join("")}</div>`;
 }
+function universePage(){
+ const q=(window.universeQuery||"").toLowerCase();
+ const rows=universe.filter(x=>!q||x.ticker.toLowerCase().includes(q)||x.name.toLowerCase().includes(q)||x.sector.toLowerCase().includes(q));
+ return `<div class="section-head"><div><span class="section-title">Stock Universe</span><div class="muted small">${universe.length} stocks • S&P 500 + Nasdaq-100</div></div><input class="search" placeholder="Search ticker or company" value="${window.universeQuery||""}" oninput="filterUniverse(this.value)"></div>
+ <div class="table-wrap"><table class="table" id="ut"><thead><tr><th>Ticker</th><th>Company</th><th>Sector</th><th>Index</th></tr></thead><tbody>${rows.map(x=>`<tr onclick="stock('${x.ticker}')"><td class="ticker">${x.ticker}</td><td>${x.name}</td><td>${x.sector||"—"}</td><td><span class="pill">${x.index.replace("S&P 500 + ","S&P + ")}</span></td></tr>`).join("")}</tbody></table></div>`;
+}
+function filterUniverse(q){window.universeQuery=q; render();}
 function allocation(){
  return `<div class="card"><div class="section-head"><div><span class="section-title">Concentrated new-capital plan</span><div class="muted small">High-growth / high-risk framework</div></div><span class="pill">100%</span></div>
  ${state.allocation.map(x=>`<div class="alloc-row"><b>${x.ticker}</b><div class="bar"><i style="width:${x.pct*3.2}%"></i></div><span>${x.pct}%</span></div>`).join("")}
@@ -118,6 +127,6 @@ function importBroker(){
  }catch(e){toast("Could not read that CSV.")}}; r.readAsText(f)}; input.click();
 }
 function parseCSV(text){const lines=text.split(/\r?\n/).filter(Boolean); if(!lines.length)return[]; const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}; const h=parseLine(lines[0]); return lines.slice(1).map(l=>{const v=parseLine(l); return Object.fromEntries(h.map((k,i)=>[k,v[i]??""]))})}
-window.stock=stock;window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;
+window.stock=stock;window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;
 save();render();
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
