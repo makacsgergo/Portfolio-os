@@ -92,7 +92,8 @@ def build_company(ticker, cik):
     yearly = {m: select_yearly(rows) for m, rows in metrics.items()}
     years = sorted(set().union(*[set(v.keys()) for v in yearly.values()]), key=int)
     years = years[-10:]
-    price, currency, exchange = get_price(ticker)\n    result = {"source": "SEC XBRL companyfacts", "cik": cik, "price": price, "price_currency": currency or "USD", "exchange": exchange, "price_source": "Yahoo Finance chart endpoint", "price_updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "years": ["FY" + y for y in years], "currency": "USD", "metrics": []}
+    price, currency, exchange = get_price(ticker)
+    result = {"source": "SEC XBRL companyfacts", "cik": cik, "price": price, "price_currency": currency or "USD", "exchange": exchange, "price_source": "Yahoo Finance chart endpoint", "price_updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "years": ["FY" + y for y in years], "currency": "USD", "metrics": []}
 
     specs = [
         ("Revenue", "revenue", "B"),
