@@ -187,16 +187,12 @@ function msftResearch(){
   financials:[
    ["FY2026 revenue","$331.8B","+18% YoY"],
    ["FY2026 operating income","$155.2B","+21% YoY"],
-   ["FY2026 net income","$133.7B","+31% YoY"],
+   ["FY2026 net income","$133.7B","+31% YoY GAAP"],
    ["FY2026 diluted EPS","$17.95","+32% YoY"],
    ["Microsoft Cloud revenue","$214.4B","+27% YoY"],
-   ["Commercial RPO","$678B","+84% YoY"]
-  ],
-  history:[
-   {year:"2023",revenue:211.915,operating:88.523,net:72.361,eps:9.68},
-   {year:"2024",revenue:245.122,operating:109.433,net:88.136,eps:11.80},
-   {year:"2025",revenue:281.724,operating:128.528,net:101.832,eps:13.64},
-   {year:"2026",revenue:331.839,operating:155.157,net:133.680,eps:17.95}
+   ["Azure & other cloud","—","+41% FY2026"],
+   ["Commercial RPO","$678B","+84% YoY"],
+   ["FY2026 cash returned","$43B+","dividends + buybacks"]
   ],
   segments:[
    ["Productivity & Business Processes","Microsoft 365, LinkedIn, Dynamics and related services"],
@@ -206,8 +202,8 @@ function msftResearch(){
   thesis:[
    "Azure is the central growth engine: FY2026 Azure and other cloud services revenue grew 41%, while Q4 Azure growth was 43%.",
    "Microsoft has multiple ways to monetize AI through Azure, Microsoft 365 Copilot, GitHub Copilot and other first-party applications.",
-   "Commercial remaining performance obligations reached $678B at FY2026 year-end.",
-   "The key debate is how quickly AI infrastructure spending converts into durable revenue and cash-flow returns."
+   "The commercial backlog is substantial: remaining performance obligations reached $678B at FY2026 year-end.",
+   "The main debate is not whether demand exists, but how quickly AI infrastructure spending converts into durable revenue and cash-flow returns."
   ],
   risks:[
    "AI infrastructure requires very large ongoing capital investment and has pressured cloud gross margins.",
@@ -218,41 +214,54 @@ function msftResearch(){
  };
 }
 function msftFinancialsHtml(){
- const r=msftResearch();
- const max=Math.max(...r.history.map(x=>x.revenue));
- const bars=r.history.map(x=>`<div style="display:grid;grid-template-columns:42px 1fr;gap:7px;align-items:center;margin:8px 0"><b>${x.year}</b><div style="position:relative;height:28px;background:#0c121a;border-radius:7px;overflow:hidden"><i style="display:block;height:100%;width:${x.revenue/max*100}%;background:var(--blue);opacity:.8"></i><span style="position:absolute;left:8px;top:5px;font-size:12px;font-weight:750">${x.revenue.toFixed(1)}B</span></div></div>`).join("");
- const maxY=Math.ceil(Math.max(...r.history.map(x=>Math.max(x.revenue,x.operating,x.net)))/50)*50;
- const pts=k=>r.history.map((x,i)=>`${30+i*95},${185-(x[k]/maxY)*145}`).join(" ");
- const chart=`<div class="card" style="margin-top:9px"><div class="label">Four-year financial trend</div><svg viewBox="0 0 330 215" width="100%" height="215" role="img" aria-label="Microsoft revenue, operating income and net income trend"><line x1="30" y1="185" x2="315" y2="185" stroke="#273343"/><polyline fill="none" stroke="#7dd3fc" stroke-width="3" points="${pts("revenue")}"/><polyline fill="none" stroke="#5ee09a" stroke-width="3" points="${pts("operating")}"/><polyline fill="none" stroke="#f6c76b" stroke-width="3" points="${pts("net")}"/>${r.history.map((x,i)=>`<text x="${30+i*95}" y="205" text-anchor="middle" fill="#91a0b2" font-size="10">${x.year}</text>`).join("")}</svg><div class="small muted">Revenue · Operating income · Net income ($B)</div></div>`;
- return `<div class="section"><div class="section-head"><div><span class="section-title">Financials</span><div class="muted small">FY2023–FY2026 • USD billions unless noted</div></div></div>
- <div class="cards">
-  <div class="card"><div class="label">Revenue</div><div class="big">$${r.history.at(-1).revenue.toFixed(1)}B</div></div>
-  <div class="card"><div class="label">Operating income</div><div class="big">$${r.history.at(-1).operating.toFixed(1)}B</div></div>
-  <div class="card"><div class="label">Net income</div><div class="big">$${r.history.at(-1).net.toFixed(1)}B</div></div>
-  <div class="card"><div class="label">Diluted EPS</div><div class="big">$${r.history.at(-1).eps.toFixed(2)}</div></div>
- </div>
- ${chart}<div class="card" style="margin-top:9px"><div class="label">Revenue by year</div>${bars}</div>
- <div class="table-wrap" style="margin-top:9px"><table class="table"><thead><tr><th>FY</th><th>Revenue</th><th>Operating income</th><th>Net income</th><th>EPS</th></tr></thead><tbody>${r.history.map(x=>`<tr><td>${x.year}</td><td>$${x.revenue.toFixed(1)}B</td><td>$${x.operating.toFixed(1)}B</td><td>$${x.net.toFixed(1)}B</td><td>$${x.eps.toFixed(2)}</td></tr>`).join("")}</tbody></table></div></div>`;
+ const r=msftResearch(), max=Math.max(...r.history.map(x=>x.revenue));
+ const bars=r.history.map(x=>`<div style="display:grid;grid-template-columns:42px 1fr;gap:7px;align-items:center;margin:8px 0"><b>${x.year}</b><div style="position:relative;height:28px;background:#0c121a;border-radius:7px;overflow:hidden"><i style="display:block;height:100%;width:${x.revenue/max*100}%;background:var(--blue)"></i><span style="position:absolute;left:8px;top:5px;font-size:12px;font-weight:750">$${x.revenue.toFixed(1)}B</span></div></div>`).join("");
+ return `<div class="section"><div class="cards"><div class="card"><div class="label">Revenue</div><div class="big">$${r.history[3].revenue.toFixed(1)}B</div></div><div class="card"><div class="label">Operating income</div><div class="big">$${r.history[3].operating.toFixed(1)}B</div></div><div class="card"><div class="label">Net income</div><div class="big">$${r.history[3].net.toFixed(1)}B</div></div><div class="card"><div class="label">Diluted EPS</div><div class="big">$${r.history[3].eps.toFixed(2)}</div></div></div><div class="card" style="margin-top:9px"><div class="label">Revenue trend</div>${bars}</div><div class="table-wrap" style="margin-top:9px"><table class="table"><thead><tr><th>FY</th><th>Revenue</th><th>Operating income</th><th>Net income</th><th>EPS</th></tr></thead><tbody>${r.history.map(x=>`<tr><td>${x.year}</td><td>$${x.revenue.toFixed(1)}B</td><td>$${x.operating.toFixed(1)}B</td><td>$${x.net.toFixed(1)}B</td><td>$${x.eps.toFixed(2)}</td></tr>`).join("")}</tbody></table></div></div>`;
 }
 function stock(t){
- const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t), u=universe.find(p=>p.ticker===t), watched=isWatched(t);
- const desc=businessDescription(t,u);
- const ms=t==="MSFT"?msftResearch():null;
+ const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t), u=universe.find(p=>p.ticker===t), watched=isWatched(t), ms=t==="MSFT"?msftResearch():null;
  $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><div><div class="section-title">${t}</div><div class="muted">${u?.name||x?.ticker||w?.name||"Company"}</div></div><div><button class="btn" onclick="toggleWatch(&quot;${t}&quot;)">${watched?"★":"☆"} ${watched?"Watchlisted":"Add to watchlist"}</button> <button class="btn" onclick="closeModal()">×</button></div></div>
- <div class="section"><div class="card"><div class="label">What they do</div><div style="margin-top:6px;line-height:1.5">${desc}</div></div></div>
+ <div class="section"><div class="card"><div class="label">What they do</div><div style="margin-top:6px;line-height:1.5">${businessDescription(t,u)}</div></div></div>
  ${x?`<div class="cards"><div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Price</div><div class="big">${money(x.price)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div><div class="card"><div class="label">Return</div><div class="big ${x.ret>=0?"green":"red"}">${pct(x.ret)}</div></div></div>`:""}
- ${ms?`<div class="section list">
- <button class="btn" type="button" onclick="toggleCompanySection('msft-financials')">Financials <span class="muted">▾</span></button>
- <div id="msft-financials" style="display:none">${msftFinancialsHtml()}</div>
- <button class="btn" type="button" onclick="toggleCompanySection('msft-segments')">Business segments <span class="muted">▾</span></button>
- <div id="msft-segments" style="display:none" class="section card">${ms.segments.map(a=>`<div class="list-item"><b>${a[0]}</b><span class="muted">${a[1]}</span></div>`).join("")}</div>
- <button class="btn" type="button" onclick="toggleCompanySection('msft-thesis')">Investment thesis <span class="muted">▾</span></button>
- <div id="msft-thesis" style="display:none" class="section card">${ms.thesis.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")}</div>
- <button class="btn" type="button" onclick="toggleCompanySection('msft-risks')">Key risks <span class="muted">▾</span></button>
- <div id="msft-risks" style="display:none" class="section card">${ms.risks.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")}</div>
- </div>`:`<div class="section list"><div class="list-item"><b>Valuation</b><span class="muted">Research layer</span></div><div class="list-item"><b>Thesis</b><span class="muted">Research layer</span></div><div class="list-item"><b>Catalysts & risks</b><span class="muted">Research layer</span></div></div>`}
+ ${ms?`<div class="section list"><button class="btn" type="button" onclick="toggleCompanySection('msft-financials')">Financials <span class="muted">▾</span></button><div id="msft-financials" style="display:none">${msftFinancialsHtml()}</div><button class="btn" type="button" onclick="toggleCompanySection('msft-segments')">Business segments <span class="muted">▾</span></button><div id="msft-segments" style="display:none" class="section card">${ms.segments.map(a=>`<div class="list-item"><b>${a[0]}</b><span class="muted">${a[1]}</span></div>`).join("")}</div><button class="btn" type="button" onclick="toggleCompanySection('msft-thesis')">Investment thesis <span class="muted">▾</span></button><div id="msft-thesis" style="display:none" class="section card">${ms.thesis.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")}</div><button class="btn" type="button" onclick="toggleCompanySection('msft-risks')">Key risks <span class="muted">▾</span></button><div id="msft-risks" style="display:none" class="section card">${ms.risks.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")}</div></div>`:""}
  </div>`;
  $("#modal").classList.add("open");
 }
 function toggleCompanySection(id){const e=document.getElementById(id);if(e)e.style.display=e.style.display==="none"?"block":"none"}
+
+function openTx(){
+ $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><b>Add transaction</b><button class="btn" onclick="closeModal()">×</button></div>
+ <div class="form"><label>Ticker<input id="tt" placeholder="AVGO"></label><label>Type<select id="typ"><option>BUY</option><option>SELL</option><option>DIVIDEND</option><option>DEPOSIT</option><option>WITHDRAWAL</option></select></label><label>Quantity<input id="qq" type="number" step="0.000001"></label><label>Price<input id="pp" type="number" step="0.01"></label><label class="span2">Date<input id="dd" type="date" value="${new Date().toISOString().slice(0,10)}"></label></div>
+ <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:15px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveTx()">Save transaction</button></div></div>`;
+ $("#modal").classList.add("open");
 }
+function saveTx(){
+ let x={ticker:$("#tt").value.trim().toUpperCase(),type:$("#typ").value,qty:+$("#qq").value||0,price:+$("#pp").value||0,date:$("#dd").value};
+ if(!x.ticker||!x.date)return toast("Ticker and date required");
+ if(["BUY","SELL"].includes(x.type)&&(!x.qty||x.qty<=0))return toast("Enter a quantity greater than 0");
+ if(["BUY","SELL"].includes(x.type)&&(!x.price||x.price<=0))return toast("Enter a price greater than 0");
+ state.transactions.push(x);
+ applyTransaction(x);
+ x.applied=true;
+ save();
+ closeModal();
+ render();
+ toast(x.type==="BUY"?x.ticker+" added to portfolio":x.type==="SELL"?x.ticker+" position updated":"Transaction saved");
+}
+function closeModal(){$("#modal").classList.remove("open")}
+function toast(s){let x=$("#toast");x.textContent=s;x.style.display="block";setTimeout(()=>x.style.display="none",1800)}
+function allocationAmount(){let s=prompt("How much new capital (USD)?");let n=Number(s);if(!n||n<=0)return;alert(state.allocation.map(x=>`${x.ticker}: ${money(n*x.pct/100)}`).join("\n"))}
+function showMore(){alert("More features coming: live quotes, broker sync, performance history, valuation models and AI research.")}
+function importBroker(){
+ const input=document.createElement("input"); input.type="file"; input.accept=".csv,text/csv";
+ input.onchange=()=>{const f=input.files?.[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{try{
+  const rows=parseCSV(String(r.result||"")); const by={};
+  for(const row of rows){const ticker=(row.Symbol||row.symbol||"").trim(); const type=(row["Transaction Type"]||row.transaction_type||"").trim().toUpperCase(); const qty=Number(row.Quantity||row.quantity||0); const px=Number(row["Purchase Price"]||row.purchase_price||0); const cur=Number(row["Current Price"]||row.current_price||0); if(!ticker||ticker==="$$CASH_TX"||type!=="BUY"||!qty)continue; if(!by[ticker])by[ticker]={ticker,shares:0,cost:0,price:cur||px}; by[ticker].shares+=qty; by[ticker].cost+=qty*px; if(cur)by[ticker].price=cur;}
+  const positions=Object.values(by).map(x=>{const value=x.shares*x.price; const pl=value-x.cost; return {...x,value,pl,ret:x.cost?pl/x.cost*100:0}});
+  state.positions=positions; save(); render(); toast(`Imported ${positions.length} positions locally.`);
+ }catch(e){toast("Could not read that CSV.")}}; r.readAsText(f)}; input.click();
+}
+function parseCSV(text){const lines=text.split(/\r?\n/).filter(Boolean); if(!lines.length)return[]; const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}; const h=parseLine(lines[0]); return lines.slice(1).map(l=>{const v=parseLine(l); return Object.fromEntries(h.map((k,i)=>[k,v[i]??""]))})}
+window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;
+save();render();
+if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}
