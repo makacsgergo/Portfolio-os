@@ -33,29 +33,30 @@ def annual_facts(companyfacts):
     facts = companyfacts.get("facts", {}).get("us-gaap", {})
     by_metric = {}
     for metric, candidates in TAGS.items():
+        rows = []
         for tag in candidates:
             if tag not in facts:
                 continue
             units = facts[tag].get("units", {})
-            unit = "USD" if "USD" in units else ("USD/shares" if "USD/shares" in units else None)
+            unit = "USD/shares" if "USD/shares" in units else ("USD" if "USD" in units else None)
             if not unit:
                 continue
-            rows = []
             for x in units[unit]:
-                form = x.get("form", "")
-                fp = x.get("fp", "")
-                start, end = x.get("start"), x.get("end")
-                if form not in ("10-K", "10-K/A") or fp != "FY" or not start or not end:
+                if x.get("form", "") not in ("10-K", "10-K/A") or not x.get("start") or not x.get("end"):
                     continue
+                # Require a genuine annual reporting period. This prevents
+                # six-month/YTD facts carrying an FY label from being treated
+                # as the full-year result.
                 try:
-                    days = (time.strptime(end, "%Y-%m-%d").tm_yday - time.strptime(start, "%Y-%m-%d").tm_yday)
+                    days = (date.fromisoformat(x["end"]) - date.fromisoformat(x["start"])).days
                 except Exception:
-                    days = 365
-                # Keep annual-like durations; fiscal years can cross calendar years.
-                rows.append(x)
-            if rows:
-                by_metric[metric] = rows
-                break
+                    continue
+                if 300 <= days <= 400:
+                    row = dict(x)
+                    row["_tag"] = tag
+                    rows.append(row)
+        if rows:
+            by_metric[metric] = rows
     return by_metric
 
 def select_yearly(rows):
@@ -65,9 +66,10 @@ def select_yearly(rows):
         end = x.get("end")
         if not fy or not end:
             continue
-        # Prefer the latest filing for each fiscal year.
         key = str(fy)
         prev = out.get(key)
+        # Prefer the latest filed annual fact. If multiple tags exist for the
+        # same fiscal year, the latest filed value wins as well.
         if prev is None or x.get("filed", "") > prev.get("filed", ""):
             out[key] = x
     return out
