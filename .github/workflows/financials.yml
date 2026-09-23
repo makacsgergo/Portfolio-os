@@ -12,6 +12,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: financial-data-update
+  cancel-in-progress: false
+
 jobs:
   update-financials:
     runs-on: ubuntu-latest
@@ -41,5 +45,7 @@ jobs:
             echo "No financial data changes."
           else
             git commit -m "Update SEC financial data"
+            # Rebase generated data onto any newer main commit before pushing.
+            git pull --rebase origin main
             git push
           fi
