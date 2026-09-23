@@ -141,10 +141,51 @@ function allocation(){
  ${state.allocation.map(x=>`<div class="alloc-row"><b>${x.ticker}</b><div class="bar"><i style="width:${x.pct*3.2}%"></i></div><span>${x.pct}%</span></div>`).join("")}
  <div class="section"><button class="btn primary" onclick="allocationAmount()">Calculate an investment amount</button></div></div>`;
 }
+function businessDescription(t,u){
+ const d={
+  AAPL:"Designs and sells consumer electronics, software and digital services, including the iPhone, Mac, iPad and a large services ecosystem.",
+  MSFT:"Develops software, cloud infrastructure and productivity products, including Azure, Microsoft 365, Windows, Dynamics and AI products.",
+  META:"Operates social and messaging platforms including Facebook, Instagram, WhatsApp and Messenger, and develops advertising, AI and virtual/augmented reality products.",
+  NVDA:"Designs GPUs, networking products and software used for accelerated computing, artificial intelligence, gaming and data centers.",
+  AMZN:"Operates e-commerce marketplaces, logistics and cloud infrastructure through Amazon Web Services, alongside advertising and other consumer businesses.",
+  GOOGL:"Operates internet services including Google Search, YouTube and Android, while generating substantial revenue from digital advertising and cloud services.",
+  AVGO:"Designs semiconductors and infrastructure software used across networking, connectivity, storage and enterprise IT environments.",
+  NOW:"Provides cloud-based enterprise workflow software that helps organizations automate IT, employee and customer processes.",
+  UBER:"Operates a global technology platform connecting consumers with drivers, couriers and merchants across mobility, delivery and related services.",
+  MELI:"Operates a Latin American commerce and financial-services ecosystem spanning e-commerce, payments, logistics, advertising and credit.",
+  NU:"Provides digital banking and financial services to consumers and businesses across Latin America.",
+  CRWV:"Provides cloud infrastructure optimized for artificial intelligence and accelerated computing, including access to large-scale GPU capacity.",
+  NBIS:"Builds AI-focused cloud infrastructure and provides compute, storage and related services for artificial-intelligence workloads.",
+  OUST:"Develops lidar sensors and perception software used for robotics, industrial automation, automotive and other physical-world applications.",
+  APP:"Provides mobile advertising and software-based monetization technology connecting app developers, advertisers and consumers.",
+  CRDO:"Develops high-speed connectivity products and semiconductors that move data between processors, networking equipment and data-center infrastructure.",
+  RKLB:"Provides space launch services and develops spacecraft, satellite systems and other space infrastructure.",
+  GRAB:"Operates a Southeast Asian super-app spanning mobility, food and grocery delivery, digital payments and financial services.",
+  BN:"Owns and operates an alternative-asset management and investment platform spanning infrastructure, real estate, renewable power, private equity and credit.",
+  BSX:"Develops and manufactures medical devices, particularly products used in cardiovascular and other minimally invasive procedures."
+ };
+ if(d[t])return d[t];
+ const s=(u?.sector||"").toLowerCase();
+ const templates={
+  "information technology":`${u?.name||t} develops technology products and services used by businesses or consumers, with its activities focused on the information-technology sector.`,
+  "health care":`${u?.name||t} develops, provides or distributes healthcare products and services, serving patients, providers or other healthcare organizations.`,
+  "financials":`${u?.name||t} provides financial products or services such as banking, payments, insurance, lending, investment or financial infrastructure.`,
+  "consumer discretionary":`${u?.name||t} sells consumer products or services, with its business focused primarily on discretionary spending and consumer demand.`,
+  "consumer staples":`${u?.name||t} provides everyday consumer products or services, including goods that tend to be purchased relatively consistently across economic cycles.`,
+  "communication services":`${u?.name||t} operates in communications, media, entertainment or internet-related services, connecting users, advertisers or content providers.`,
+  "industrials":`${u?.name||t} provides industrial products, equipment, infrastructure or specialized services to businesses and other organizations.`,
+  "energy":`${u?.name||t} operates in the energy industry, developing, producing, transporting, supplying or servicing energy and related infrastructure.`,
+  "materials":`${u?.name||t} produces or supplies raw materials, chemicals, metals or other inputs used across industrial and consumer supply chains.`,
+  "real estate":`${u?.name||t} owns, develops, manages or finances real-estate assets and related property businesses.`,
+  "utilities":`${u?.name||t} provides essential utility services or develops and operates infrastructure for electricity, gas, water or related services.`
+ };
+ return templates[s]||`${u?.name||t} is a publicly traded company operating in the ${u?.sector||"business"} sector.`;
+}
 function stock(t){
  const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t), u=universe.find(p=>p.ticker===t), watched=isWatched(t);
  $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><div><div class="section-title">${t}</div><div class="muted">${u?.name||x?.ticker||w?.name||"Company"}</div></div><div><button class="btn" onclick="toggleWatch(&quot;${t}&quot;)">${watched?"★":"☆"} ${watched?"Watchlisted":"Add to watchlist"}</button> <button class="btn" onclick="closeModal()">×</button></div></div>
  ${x?`<div class="cards"><div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Price</div><div class="big">${money(x.price)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div><div class="card"><div class="label">Return</div><div class="big ${x.ret>=0?"green":"red"}">${pct(x.ret)}</div></div></div>`:""}
+ <div class="section"><div class="card"><div class="label">What they do</div><div style="margin-top:6px;line-height:1.5">${businessDescription(t,u)}</div></div></div>
  <div class="section list"><div class="list-item"><b>Valuation</b><span class="muted">V3 live model</span></div><div class="list-item"><b>Thesis</b><span class="muted">V3 AI research layer</span></div><div class="list-item"><b>Catalysts & risks</b><span class="muted">V3 research layer</span></div></div></div>`;
  $("#modal").classList.add("open");
 }
