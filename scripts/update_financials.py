@@ -61,18 +61,47 @@ def annual_facts(companyfacts):
     return by_metric
 
 def select_yearly(rows):
-    out = {}
+    # SEC companyfacts includes comparative annual facts inside later 10-Ks.
+    # Those comparative facts can carry the later filing's FY label, which
+    # causes fiscal years to shift backward if we key only on x["fy"].
+    # Instead, identify each annual period by its END date and prefer the
+    # original 10-K filed closest after that period end.
+    by_end = {}
     for x in rows:
-        fy = x.get("fy")
         end = x.get("end")
-        if not fy or not end:
+        filed = x.get("filed")
+        if not end or not filed:
             continue
-        key = str(fy)
-        prev = out.get(key)
-        # Prefer the latest filed annual fact. If multiple tags exist for the
-        # same fiscal year, the latest filed value wins as well.
-        if prev is None or x.get("filed", "") > prev.get("filed", ""):
-            out[key] = x
+        try:
+            end_date = date.fromisoformat(end)
+            filed_date = date.fromisoformat(filed)
+            lag = (filed_date - end_date).days
+        except Exception:
+            continue
+        if lag < 0:
+            continue
+
+        form_rank = 0 if x.get("form") == "10-K" else 1
+        candidate = (form_rank, lag, filed)
+        prev = by_end.get(end)
+        if prev is None or candidate < prev["_rank"]:
+            row = dict(x)
+            row["_rank"] = candidate
+            by_end[end] = row
+
+    # Return keyed by the fiscal year label from the filing that originally
+    # reported that period. This keeps FY2024/FY2025/FY2026 aligned even when
+    # a newer 10-K contains comparative figures.
+    out = {}
+    for end, x in by_end.items():
+        fy = x.get("fy")
+        if not fy:
+            # Fallback: derive a calendar-year label only when SEC did not
+            # provide a fiscal-year focus.
+            fy = date.fromisoformat(end).year
+        row = dict(x)
+        row.pop("_rank", None)
+        out[str(fy)] = row
     return out
 
 def get_price(ticker):
