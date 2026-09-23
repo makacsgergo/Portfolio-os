@@ -221,12 +221,26 @@ function msftResearch(){
 }
 function toggleProfileSection(id){const el=document.getElementById(id);if(el)el.style.display=el.style.display==="none"?"block":"none";}
 function msftHistoryChart(){return financialChart(companyFinancials("MSFT"))}
+function finFmt(v,u){if(v==null)return "—";if(u==="$")return "$"+Number(v).toFixed(2);if(u==="B")return Number(v).toFixed(2)+"B";if(u==="M")return Number(v).toFixed(1)+"M";if(u==="%")return (Number(v)*100).toFixed(1)+"%";if(u==="x")return Number(v).toFixed(2)+"x";return Number(v).toFixed(2)}
+function financialSections(fd){
+ const groups=[
+  ["Income statement","income_statement"],
+  ["Balance sheet","balance_sheet"],
+  ["Cash flow","cash_flow"],
+  ["Ratios & growth","ratios"]
+ ];
+ return groups.map(([title,cat])=>{
+  const ms=(fd.metrics||[]).filter(m=>(m.category||"income_statement")===cat);
+  if(!ms.length)return "";
+  return '<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">'+title+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th>'+fd.years.map(y=>'<th>'+y+'</th>').join("")+'</tr></thead><tbody>'+ms.map(m=>'<tr><td><b>'+m.name+'</b></td>'+fd.years.map((_,i)=>'<td>'+finFmt(m.values?.[i],m.unit)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div></div>'
+ }).join("");
+}
 function stock(t){
  const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t), u=universe.find(p=>p.ticker===t), watched=isWatched(t);
  const r=t==="MSFT"?msftResearch():null, fd=companyFinancials(t);
  const finId="fin-"+t, segId="seg-"+t, thesisId="thesis-"+t, riskId="risk-"+t;
  const years=fd?.years||[], metrics=fd?.metrics||[], latestPrice=fd?.price;
- const historical=fd?'<div class="table-wrap"><table class="table"><thead><tr><th>Metric</th>'+years.map(y=>'<th>'+y+'</th>').join("")+'</tr></thead><tbody>'+metrics.map(m=>'<tr><td>'+m.name+'</td>'+years.map((_,i)=>{const v=m.values?.[i];return '<td>'+(v==null?"—":(m.unit==="$"?"$":"")+Number(v).toFixed(m.unit==="$"?2:1)+(m.unit==="B"?"B":""))+'</td>'}).join("")+'</tr>').join("")+'</tbody></table></div>':'<div class="muted small">Financial history not available yet.</div>';
+ const historical=fd?financialSections(fd):'<div class="muted small">Financial history not available yet.</div>';
  $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><div><div class="section-title">${t}</div><div class="muted">${u?.name||x?.ticker||w?.name||"Company"}</div></div><div><button class="btn" onclick="toggleWatch(&quot;${t}&quot;)">${watched?"★":"☆"} ${watched?"Watchlisted":"Add to watchlist"}</button> <button class="btn" onclick="closeModal()">×</button></div></div>
  ${latestPrice!=null?`<div class="cards"><div class="card"><div class="label">Market price</div><div class="big">${money(latestPrice)}</div><div class="muted small">Updated ${fd.price_updated_utc?new Date(fd.price_updated_utc).toLocaleString():"recently"}</div></div>${x?`<div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Position value</div><div class="big">${money(x.shares*latestPrice)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div>`:""}</div>`:x?`<div class="cards"><div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Price</div><div class="big">${money(x.price)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div></div>`:""}
  <div class="section"><div class="card"><div class="label">What they do</div><div style="margin-top:6px;line-height:1.5">${businessDescription(t,u)}</div></div></div>
