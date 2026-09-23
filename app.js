@@ -220,7 +220,10 @@ function msftResearch(){
 function msftFinancialsHtml(){
  const r=msftResearch();
  const max=Math.max(...r.history.map(x=>x.revenue));
- const bars=r.history.map(x=>`<div style="display:grid;grid-template-columns:42px 1fr;gap:7px;align-items:center;margin:8px 0"><b>${x.year}</b><div style="position:relative;height:28px;background:#0c121a;border-radius:7px;overflow:hidden"><i style="display:block;height:100%;width:${x.revenue/max*100}%;background:var(--blue);opacity:.8"></i><span style="position:absolute;left:8px;top:5px;font-size:12px;font-weight:750">$${x.revenue.toFixed(1)}B</span></div></div>`).join("");
+ const bars=r.history.map(x=>`<div style="display:grid;grid-template-columns:42px 1fr;gap:7px;align-items:center;margin:8px 0"><b>${x.year}</b><div style="position:relative;height:28px;background:#0c121a;border-radius:7px;overflow:hidden"><i style="display:block;height:100%;width:${x.revenue/max*100}%;background:var(--blue);opacity:.8"></i><span style="position:absolute;left:8px;top:5px;font-size:12px;font-weight:750">${x.revenue.toFixed(1)}B</span></div></div>`).join("");
+ const maxY=Math.ceil(Math.max(...r.history.map(x=>Math.max(x.revenue,x.operating,x.net)))/50)*50;
+ const pts=k=>r.history.map((x,i)=>`${30+i*95},${185-(x[k]/maxY)*145}`).join(" ");
+ const chart=`<div class="card" style="margin-top:9px"><div class="label">Four-year financial trend</div><svg viewBox="0 0 330 215" width="100%" height="215" role="img" aria-label="Microsoft revenue, operating income and net income trend"><line x1="30" y1="185" x2="315" y2="185" stroke="#273343"/><polyline fill="none" stroke="#7dd3fc" stroke-width="3" points="${pts("revenue")}"/><polyline fill="none" stroke="#5ee09a" stroke-width="3" points="${pts("operating")}"/><polyline fill="none" stroke="#f6c76b" stroke-width="3" points="${pts("net")}"/>${r.history.map((x,i)=>`<text x="${30+i*95}" y="205" text-anchor="middle" fill="#91a0b2" font-size="10">${x.year}</text>`).join("")}</svg><div class="small muted">Revenue · Operating income · Net income ($B)</div></div>`;
  return `<div class="section"><div class="section-head"><div><span class="section-title">Financials</span><div class="muted small">FY2023–FY2026 • USD billions unless noted</div></div></div>
  <div class="cards">
   <div class="card"><div class="label">Revenue</div><div class="big">$${r.history.at(-1).revenue.toFixed(1)}B</div></div>
@@ -228,7 +231,7 @@ function msftFinancialsHtml(){
   <div class="card"><div class="label">Net income</div><div class="big">$${r.history.at(-1).net.toFixed(1)}B</div></div>
   <div class="card"><div class="label">Diluted EPS</div><div class="big">$${r.history.at(-1).eps.toFixed(2)}</div></div>
  </div>
- <div class="card" style="margin-top:9px"><div class="label">Revenue growth</div>${bars}</div>
+ ${chart}<div class="card" style="margin-top:9px"><div class="label">Revenue by year</div>${bars}</div>
  <div class="table-wrap" style="margin-top:9px"><table class="table"><thead><tr><th>FY</th><th>Revenue</th><th>Operating income</th><th>Net income</th><th>EPS</th></tr></thead><tbody>${r.history.map(x=>`<tr><td>${x.year}</td><td>$${x.revenue.toFixed(1)}B</td><td>$${x.operating.toFixed(1)}B</td><td>$${x.net.toFixed(1)}B</td><td>$${x.eps.toFixed(2)}</td></tr>`).join("")}</tbody></table></div></div>`;
 }
 function stock(t){
