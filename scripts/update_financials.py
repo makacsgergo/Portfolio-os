@@ -232,6 +232,7 @@ def build_company(ticker, cik):
         ("Total assets", "assets", "B"),
         ("Total equity", "equity", "B"),
         ("Shares outstanding", "shares_outstanding", "M"),
+        ("Share repurchases", "buybacks", "B"),
     ]
     for label, key, unit in specs:
         vals = []
@@ -246,7 +247,7 @@ def build_company(ticker, cik):
             else:
                 vals.append(None)
         if any(v is not None for v in vals):
-            result["metrics"].append({"name": label, "unit": unit, "values": vals})
+            result["metrics"].append({"name": label, "unit": unit, "category": ("income_statement" if label in ["Revenue","Gross profit","Operating income","Net income","Diluted EPS","R&D","D&A"] else "balance_sheet" if label in ["Cash","Current debt","Long-term debt","Total assets","Total equity","Shares outstanding"] else "cash_flow"), "values": vals})
 
     cfo = yearly.get("cfo", {})
     capex = yearly.get("capex", {})
@@ -270,9 +271,9 @@ def build_company(ticker, cik):
     cash, debtc, debtl, assets, equity = arr("Cash"), arr("Current debt"), arr("Long-term debt"), arr("Total assets"), arr("Total equity")
     fcfv, rnd, shares = arr("Free cash flow"), arr("R&D"), arr("Shares outstanding")
 
-    def derived(name, values, unit="ratio"):
+    def derived(name, values, unit="%", category="ratios"):
         if any(v is not None for v in values):
-            result["metrics"].append({"name": name, "unit": unit, "values": [None if v is None else round(v, 6) for v in values]})
+            result["metrics"].append({"name": name, "unit": unit, "category": category, "values": [None if v is None else round(v, 6) for v in values]})
 
     # Derived operating and capital-efficiency metrics.
     ebitda = [None if op[i] is None or da[i] is None else op[i] + da[i] for i in range(len(years))]
@@ -306,9 +307,9 @@ def build_company(ticker, cik):
             tax_rates.append(None); nopat.append(None)
     roic=[None if avg_invested[i] in (None,0) or nopat[i] is None else nopat[i]/avg_invested[i] for i in range(len(years))]
 
-    derived("EBITDA", ebitda, "B")
-    derived("EBIT", op, "B")
-    derived("Net debt", netdebt, "B")
+    derived("EBITDA", ebitda, "B", "income_statement")
+    derived("EBIT", op, "B", "income_statement")
+    derived("Net debt", netdebt, "B", "balance_sheet")
     derived("Gross margin", grossmargin)
     derived("Operating margin", opmargin)
     derived("FCF margin", fcfmargin)
@@ -318,8 +319,8 @@ def build_company(ticker, cik):
     derived("FCF conversion", fcfconv)
     derived("ROE", roe)
     derived("ROIC", roic)
-    derived("Debt / equity", debt_equity)
-    derived("Net debt / EBITDA", netdebt_ebitda)
+    derived("Debt / equity", debt_equity, "x")
+    derived("Net debt / EBITDA", netdebt_ebitda, "x")
     return result
 
 def main():
