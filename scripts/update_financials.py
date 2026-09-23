@@ -258,13 +258,38 @@ def build_company(ticker, cik):
         if latest:
             latest_quarter[metric] = latest
 
+    # Use one common period across point-in-time metrics so the UI never
+    # combines balance-sheet facts from different filings/periods.
+    period_counts = {}
+    for row in latest_quarter.values():
+        period = row.get("_period_end")
+        if period:
+            period_counts[period] = period_counts.get(period, 0) + 1
+    common_period = max(period_counts, key=lambda p: (period_counts[p], p)) if period_counts else None
+    if common_period:
+        common_latest = {}
+        for metric, rows in instant_by_metric.items():
+            row = rows.get(common_period)
+            if row:
+                common_latest[metric] = dict(row)
+                common_latest[metric]["_period_end"] = common_period
+        latest_quarter = common_latest
+
     price, currency, exchange = get_market_data(ticker)
     splits = get_splits(ticker)
-    latest_period_end = max((row.get("_period_end") for row in latest_quarter.values() if row.get("_period_end")), default=None)
+    latest_period_end = common_period
     latest_form = None
+    latest_filed = None
     if latest_period_end:
-        forms = {row.get("form") for row in latest_quarter.values() if row.get("_period_end") == latest_period_end}
-        latest_form = "10-Q" if "10-Q" in forms else ("10-Q/A" if "10-Q/A" in forms else "10-K")
+        latest_rows = list(latest_quarter.values())
+        forms = {row.get("form") for row in latest_rows}
+        filed_dates = [row.get("filed") for row in latest_rows if row.get("filed")]
+        latest_filed = min(filed_dates) if filed_dates else None
+        latest_form = ("10-Q" if "10-Q" in forms else
+                       "10-Q/A" if "10-Q/A" in forms else
+                       "10-K" if "10-K" in forms else
+                       "10-K/A" if "10-K/A" in forms else
+                       None)
     result = {
         "source": "SEC XBRL companyfacts",
         "cik": cik,
@@ -275,7 +300,16 @@ def build_company(ticker, cik):
         "price_updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "years": ["FY" + y for y in years],
         "currency": "USD",
-        "latest_reported": {"period_end": latest_period_end, "form": latest_form, "metrics": {}},
+        "latest_reported": {
+            "period_end": latest_period_end,
+            "form": latest_form,
+            "filed": latest_filed,
+            "is_quarterly": latest_form in ("10-Q", "10-Q/A") if latest_form else False,
+            "label": ("Latest quarter" if latest_form in ("10-Q", "10-Q/A") else
+                      "Latest annual report" if latest_form in ("10-K", "10-K/A") else
+                      "Latest reported"),
+            "metrics": {}
+        },
         "metrics": []
     }
     for metric, row in latest_quarter.items():
