@@ -107,6 +107,8 @@ function fmtCap(x){
  if(x>=1e6)return "$"+(x/1e6).toFixed(0)+"M";
  return "$"+x.toLocaleString();
 }
+function isWatched(t){return state.watchlist.some(x=>x.ticker===t)}
+function toggleWatch(t){const u=universe.find(x=>x.ticker===t);if(!u)return;if(isWatched(t))state.watchlist=state.watchlist.filter(x=>x.ticker!==t);else state.watchlist.push({ticker:t,name:u.name});save();render();toast(isWatched(t)?t+' added to watchlist':t+' removed from watchlist')}
 function universePage(){
  const q=(window.universeQuery||"").toLowerCase();
  const sector=window.universeSector||"ALL";
@@ -140,8 +142,8 @@ function allocation(){
  <div class="section"><button class="btn primary" onclick="allocationAmount()">Calculate an investment amount</button></div></div>`;
 }
 function stock(t){
- const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t);
- $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><div><div class="section-title">${t}</div><div class="muted">${x?money(x.value)+" position":w?.name||"Watchlist"}</div></div><button class="btn" onclick="closeModal()">×</button></div>
+ const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t), u=universe.find(p=>p.ticker===t), watched=isWatched(t);
+ $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><div><div class="section-title">${t}</div><div class="muted">${u?.name||x?.ticker||w?.name||"Company"}</div></div><div><button class="btn" onclick="toggleWatch(&quot;${t}&quot;)">${watched?"★":"☆"} ${watched?"Watchlisted":"Add to watchlist"}</button> <button class="btn" onclick="closeModal()">×</button></div></div>
  ${x?`<div class="cards"><div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Price</div><div class="big">${money(x.price)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div><div class="card"><div class="label">Return</div><div class="big ${x.ret>=0?"green":"red"}">${pct(x.ret)}</div></div></div>`:""}
  <div class="section list"><div class="list-item"><b>Valuation</b><span class="muted">V3 live model</span></div><div class="list-item"><b>Thesis</b><span class="muted">V3 AI research layer</span></div><div class="list-item"><b>Catalysts & risks</b><span class="muted">V3 research layer</span></div></div></div>`;
  $("#modal").classList.add("open");
@@ -179,6 +181,6 @@ function importBroker(){
  }catch(e){toast("Could not read that CSV.")}}; r.readAsText(f)}; input.click();
 }
 function parseCSV(text){const lines=text.split(/\r?\n/).filter(Boolean); if(!lines.length)return[]; const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}; const h=parseLine(lines[0]); return lines.slice(1).map(l=>{const v=parseLine(l); return Object.fromEntries(h.map((k,i)=>[k,v[i]??""]))})}
-window.stock=stock;window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;
+window.stock=stock;window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;
 save();render();
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
