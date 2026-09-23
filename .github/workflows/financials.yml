@@ -1,6 +1,10 @@
 name: Update financial data
 
 on:
+  push:
+    paths:
+      - "scripts/update_financials.py"
+      - ".github/workflows/financials.yml"
   workflow_dispatch:
   schedule:
     - cron: "30 7 * * *"
