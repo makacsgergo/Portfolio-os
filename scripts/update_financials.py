@@ -235,7 +235,6 @@ def build_company(ticker, cik):
         ("Total equity", "equity", "B"),
         ("Shares outstanding", "shares_outstanding", "M"),
         ("Share repurchases", "buybacks", "B"),
-        ("Share repurchases", "buybacks", "B"),
     ]
     for label, key, unit in specs:
         vals = []
