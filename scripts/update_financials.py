@@ -8,6 +8,8 @@ OUTPUT = ROOT / "financials.json"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
+PRICE_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{}?range=5d&interval=1d"
+
 TAGS = {
     "revenue": ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet"],
     "operating_income": ["OperatingIncomeLoss"],
@@ -70,13 +72,27 @@ def select_yearly(rows):
             out[key] = x
     return out
 
+def get_price(ticker):
+    try:
+        data = get_json(PRICE_URL.format(ticker))
+        result = data["chart"]["result"][0]
+        meta = result.get("meta", {})
+        price = meta.get("regularMarketPrice")
+        if price is None:
+            closes = [x for x in (result.get("indicators", {}).get("quote", [{}])[0].get("close", []) or []) if x is not None]
+            price = closes[-1] if closes else None
+        return price, meta.get("currency", "USD"), meta.get("exchangeName")
+    except Exception as e:
+        print(ticker, "PRICE ERROR", repr(e))
+        return None, None, None
+
 def build_company(ticker, cik):
     facts = get_json(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")
     metrics = annual_facts(facts)
     yearly = {m: select_yearly(rows) for m, rows in metrics.items()}
     years = sorted(set().union(*[set(v.keys()) for v in yearly.values()]), key=int)
     years = years[-10:]
-    result = {"source": "SEC XBRL companyfacts", "cik": cik, "years": ["FY" + y for y in years], "currency": "USD", "metrics": []}
+    price, currency, exchange = get_price(ticker)\n    result = {"source": "SEC XBRL companyfacts", "cik": cik, "price": price, "price_currency": currency or "USD", "exchange": exchange, "price_source": "Yahoo Finance chart endpoint", "price_updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "years": ["FY" + y for y in years], "currency": "USD", "metrics": []}
 
     specs = [
         ("Revenue", "revenue", "B"),
