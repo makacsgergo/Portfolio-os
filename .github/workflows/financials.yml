@@ -1,4 +1,4 @@
-name: Update financial data
+name: Update financial data # v2 categorized metrics
 
 on:
   push:
