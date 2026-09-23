@@ -6,6 +6,39 @@ const $=s=>document.querySelector(s);
 const money=x=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(x||0);
 const pct=x=>(x>=0?"+":"")+Number(x||0).toFixed(2)+"%";
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function applyTransaction(x){
+  if(!x||!["BUY","SELL"].includes(x.type)||!x.ticker||!x.qty||x.qty<=0)return;
+  let p=state.positions.find(v=>v.ticker===x.ticker);
+  if(x.type==="BUY"){
+    if(!p)p={ticker:x.ticker,shares:0,cost:0,price:x.price||0,value:0,pl:0,ret:0};
+    const oldShares=p.shares||0, oldCost=p.cost||0;
+    p.shares=oldShares+x.qty;
+    p.cost=oldCost+x.qty*x.price;
+    p.price=x.price||p.price||0;
+    p.value=p.shares*p.price;
+    p.pl=p.value-p.cost;
+    p.ret=p.cost?p.pl/p.cost*100:0;
+    if(!state.positions.includes(p))state.positions.push(p);
+  }else if(p){
+    const sold=Math.min(x.qty,p.shares||0);
+    const avgCost=(p.shares||0)>0?(p.cost||0)/(p.shares||1):0;
+    p.shares-=sold;
+    p.cost=Math.max(0,(p.cost||0)-sold*avgCost);
+    p.price=x.price||p.price||0;
+    p.value=p.shares*p.price;
+    p.pl=p.value-p.cost;
+    p.ret=p.cost?p.pl/p.cost*100:0;
+    if(p.shares<=0)state.positions=state.positions.filter(v=>v!==p);
+  }
+}
+function migrateUnappliedTransactions(){
+  let changed=false;
+  for(const x of state.transactions||[]){
+    if(!x.applied&&["BUY","SELL"].includes(x.type)){applyTransaction(x);x.applied=true;changed=true}
+  }
+  if(changed)save();
+}
+migrateUnappliedTransactions()
 function total(){return state.positions.reduce((a,x)=>a+x.value,0)}
 function totalPL(){return state.positions.reduce((a,x)=>a+x.pl,0)}
 function nav(tab){current=tab; render()}
@@ -58,7 +91,19 @@ function openTx(){
  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:15px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveTx()">Save transaction</button></div></div>`;
  $("#modal").classList.add("open");
 }
-function saveTx(){let x={ticker:$("#tt").value.trim().toUpperCase(),type:$("#typ").value,qty:+$("#qq").value||0,price:+$("#pp").value||0,date:$("#dd").value};if(!x.ticker||!x.date)return toast("Ticker and date required");state.transactions.push(x);save();closeModal();toast("Transaction saved");}
+function saveTx(){
+ let x={ticker:$("#tt").value.trim().toUpperCase(),type:$("#typ").value,qty:+$("#qq").value||0,price:+$("#pp").value||0,date:$("#dd").value};
+ if(!x.ticker||!x.date)return toast("Ticker and date required");
+ if(["BUY","SELL"].includes(x.type)&&(!x.qty||x.qty<=0))return toast("Enter a quantity greater than 0");
+ if(["BUY","SELL"].includes(x.type)&&(!x.price||x.price<=0))return toast("Enter a price greater than 0");
+ state.transactions.push(x);
+ applyTransaction(x);
+ x.applied=true;
+ save();
+ closeModal();
+ render();
+ toast(x.type==="BUY"?x.ticker+" added to portfolio":x.type==="SELL"?x.ticker+" position updated":"Transaction saved");
+}
 function closeModal(){$("#modal").classList.remove("open")}
 function toast(s){let x=$("#toast");x.textContent=s;x.style.display="block";setTimeout(()=>x.style.display="none",1800)}
 function allocationAmount(){let s=prompt("How much new capital (USD)?");let n=Number(s);if(!n||n<=0)return;alert(state.allocation.map(x=>`${x.ticker}: ${money(n*x.pct/100)}`).join("\n"))}
