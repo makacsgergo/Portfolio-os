@@ -236,7 +236,7 @@ function financialSections(fd){
  const latest=fd.latest_reported?.metrics||{};
  const labels={cash:"Cash",debt_current:"Current debt",debt_noncurrent:"Long-term debt",assets:"Total assets",equity:"Total equity",shares_outstanding:"Shares outstanding"};
  const latestRows=Object.entries(labels).filter(([k])=>latest[k]).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(latest[k].value,latest[k].unit)+'</td></tr>').join("");
- const latestBlock=latestRows?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">Balance sheet · latest reported</div><div class="muted small" style="margin-bottom:8px">Point-in-time data · period end: '+(fd.latest_reported.period_end||"—")+' · '+(fd.latest_reported.form||"SEC filing")+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRows+'</tbody></table></div></div>':"";
+ const latestBlock=latestRows?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">Balance sheet · '+(fd.latest_reported.label||"Latest reported")+'</div><div class="muted small" style="margin-bottom:8px">Point-in-time data · period end: '+(fd.latest_reported.period_end||"—")+' · filed: '+(fd.latest_reported.filed||"—")+' · '+(fd.latest_reported.form||"SEC filing")+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRows+'</tbody></table></div></div>':"";
  return annual+latestBlock;
 }
 function stock(t){
