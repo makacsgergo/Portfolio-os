@@ -46,6 +46,8 @@ def annual_facts(companyfacts):
     facts = companyfacts.get("facts", {}).get("us-gaap", {})
     by_metric = {}
     for metric, candidates in TAGS.items():
+        if metric in {"cash","assets","equity","debt_current","debt_noncurrent","shares_outstanding"}:
+            continue
         rows = []
         for tag in candidates:
             if tag not in facts:
@@ -233,6 +235,7 @@ def build_company(ticker, cik):
         ("Total equity", "equity", "B"),
         ("Shares outstanding", "shares_outstanding", "M"),
         ("Share repurchases", "buybacks", "B"),
+        ("Share repurchases", "buybacks", "B"),
     ]
     for label, key, unit in specs:
         vals = []
@@ -249,6 +252,7 @@ def build_company(ticker, cik):
         if any(v is not None for v in vals):
             result["metrics"].append({"name": label, "unit": unit, "category": ("income_statement" if label in ["Revenue","Gross profit","Operating income","Net income","Diluted EPS","R&D","D&A"] else "balance_sheet" if label in ["Cash","Current debt","Long-term debt","Total assets","Total equity","Shares outstanding"] else "cash_flow"), "values": vals})
 
+    buybacks = yearly.get("buybacks", {})
     cfo = yearly.get("cfo", {})
     capex = yearly.get("capex", {})
     fcf = []
@@ -259,7 +263,7 @@ def build_company(ticker, cik):
         else:
             fcf.append(None)
     if any(v is not None for v in fcf):
-        result["metrics"].append({"name": "Free cash flow", "unit": "B", "values": fcf})
+        result["metrics"].append({"name": "Free cash flow", "unit": "B", "category": "cash_flow", "values": fcf})
 
     def arr(name):
         for m in result["metrics"]:
