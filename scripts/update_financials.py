@@ -424,6 +424,35 @@ def build_company(ticker, cik):
     derived("ROIC", roic)
     derived("Debt / equity", debt_equity, "x")
     derived("Net debt / EBITDA", netdebt_ebitda, "x")
+
+    # Latest point-in-time ratios use the latest reported balance sheet rather
+    # than the last annual balance-sheet snapshot. Flow denominators remain
+    # annual here; they are explicitly labeled as such until TTM data is added.
+    latest_metrics = result["latest_reported"]["metrics"]
+    latest_cash = latest_metrics.get("cash", {}).get("value")
+    latest_debtc = latest_metrics.get("debt_current", {}).get("value")
+    latest_debtl = latest_metrics.get("debt_noncurrent", {}).get("value")
+    latest_equity = latest_metrics.get("equity", {}).get("value")
+    latest_debt = None if latest_debtc is None and latest_debtl is None else (latest_debtc or 0) + (latest_debtl or 0)
+    latest_net_debt = None if latest_debt is None or latest_cash is None else latest_debt - latest_cash
+    latest_annual_idx = len(years) - 1 if years else None
+    latest_ebitda = ebitda[latest_annual_idx] if latest_annual_idx is not None else None
+    latest_nopat = nopat[latest_annual_idx] if latest_annual_idx is not None else None
+    latest_invested = None if latest_equity is None or latest_debt is None or latest_cash is None else latest_equity + latest_debt - latest_cash
+    latest_ni = ni[latest_annual_idx] if latest_annual_idx is not None else None
+
+    latest_ratios = {}
+    if latest_debt is not None:
+        latest_ratios["net_debt"] = {"value": round(latest_net_debt, 6) if latest_net_debt is not None else None, "unit": "B", "method": "Latest reported debt less latest reported cash"}
+    if latest_equity not in (None, 0) and latest_debt is not None:
+        latest_ratios["debt_equity"] = {"value": round(latest_debt / latest_equity, 6), "unit": "x", "method": "Latest reported total debt / latest reported equity"}
+    if latest_net_debt is not None and latest_ebitda not in (None, 0):
+        latest_ratios["net_debt_ebitda"] = {"value": round(latest_net_debt / latest_ebitda, 6), "unit": "x", "method": "Latest reported net debt / latest fiscal-year EBITDA"}
+    if latest_invested not in (None, 0) and latest_nopat is not None:
+        latest_ratios["roic"] = {"value": round(latest_nopat / latest_invested, 6), "unit": "%", "method": "Latest fiscal-year NOPAT / latest reported invested capital"}
+    if latest_equity not in (None, 0) and latest_ni is not None:
+        latest_ratios["roe"] = {"value": round(latest_ni / latest_equity, 6), "unit": "%", "method": "Latest fiscal-year net income / latest reported equity"}
+    result["latest_reported"]["ratios"] = latest_ratios
     return result
 
 def main():
