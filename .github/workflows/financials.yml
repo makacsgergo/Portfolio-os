@@ -1,0 +1,41 @@
+name: Update financial data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 7 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-financials:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Pull SEC financial data
+        env:
+          SEC_USER_AGENT: "Portfolio OS research app contact@example.com"
+        run: python scripts/update_financials.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "portfolio-os-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add financials.json
+          if git diff --cached --quiet; then
+            echo "No financial data changes."
+          else
+            git commit -m "Update SEC financial data"
+            git push
+          fi
