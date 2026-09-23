@@ -4,15 +4,31 @@ let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(S);
 let current="home";
 let universe=[];
 let universeMarketCaps={};
-fetch("universe.json").then(r=>r.json()).then(d=>{
- universe=d.stocks||[];
- return fetch("https://top-us-stock-tickers.zyhe.me/api/v2/tickers?limit=10000&sort=market_cap&order=desc")
-   .then(r=>r.ok?r.json():null).catch(()=>null);
-}).then(d=>{
- if(d?.items) d.items.forEach(x=>{universeMarketCaps[x.symbol]=Number(x.market_cap||x.marketCap||0)});
- universe.sort((a,b)=>(universeMarketCaps[b.ticker]||0)-(universeMarketCaps[a.ticker]||0));
- if(current==="universe")render();
-}).catch(()=>{universe.sort((a,b)=>a.ticker.localeCompare(b.ticker));if(current==="universe")render();});
+async function loadUniverse(){
+ try{
+  const d=await fetch("universe.json").then(r=>r.json());
+  universe=d.stocks||[];
+  const wanted=new Set(universe.map(x=>x.ticker));
+  let offset=0, pages=0;
+  while(pages<15 && wanted.size){
+   const r=await fetch("https://top-us-stock-tickers.zyhe.me/api/v2/tickers?limit=100&offset="+offset+"&sort=market_cap&order=desc");
+   if(!r.ok)break;
+   const page=await r.json();
+   for(const x of (page.items||[])){
+    if(wanted.has(x.symbol)) universeMarketCaps[x.symbol]=Number(x.market_cap||x.marketCap||0);
+   }
+   const next=page.next_offset;
+   if(next==null || !(page.items||[]).length)break;
+   offset=next; pages++;
+   if(Object.keys(universeMarketCaps).length>=universe.length)break;
+  }
+  universe.sort((a,b)=>(universeMarketCaps[b.ticker]||0)-(universeMarketCaps[a.ticker]||0));
+  if(current==="universe")render();
+ }catch(e){
+  console.error("Universe load failed",e);
+ }
+}
+loadUniverse();
 const $=s=>document.querySelector(s);
 const money=x=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(x||0);
 const pct=x=>(x>=0?"+":"")+Number(x||0).toFixed(2)+"%";
