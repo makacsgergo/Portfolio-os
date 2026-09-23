@@ -131,7 +131,7 @@ function universePage(){
      <option value="Nasdaq-100" ${idx==="Nasdaq-100"?"selected":""}>Nasdaq-100</option>
    </select>
  </div>
- <div class="table-wrap"><table class="table" id="ut"><thead><tr><th>#</th><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Sector</th><th>Index</th><th></th></tr></thead><tbody>${rows.map((x,i)=>`<tr data-universe-ticker="${x.ticker}" style="cursor:pointer"><td>${i+1}</td><td class="ticker">${x.ticker}</td><td>${x.name}</td><td>${fmtCap(universeMarketCaps[x.ticker])}</td><td>${x.sector||"—"}</td><td><span class="pill">${x.index.replace("S&P 500 + ","S&P + ")}</span></td><td><button class="btn" type="button" onclick="openStockFromButton(event,'${x.ticker}')">Open</button></td></tr>`).join("")}</tbody></table></div>`;
+ <div class="table-wrap"><table class="table" id="ut"><thead><tr><th>#</th><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Sector</th><th>Index</th><th></th></tr></thead><tbody>${rows.map((x,i)=>`<tr data-universe-ticker="${x.ticker}" style="cursor:pointer"><td>${i+1}</td><td class="ticker"><button class="btn" type="button" onclick="openStockFromButton(event,'${x.ticker}')">${x.ticker}</button></td><td><button class="btn" type="button" onclick="openStockFromButton(event,'${x.ticker}')">${x.name}</button></td><td>${fmtCap(universeMarketCaps[x.ticker])}</td><td>${x.sector||"—"}</td><td><span class="pill">${x.index.replace("S&P 500 + ","S&P + ")}</span></td><td><button class="btn" type="button" onclick="openStockFromButton(event,'${x.ticker}')">Open</button></td></tr>`).join("")}</tbody></table></div>`;
 }
 function filterUniverse(q){window.universeQuery=q; render();}
 function filterUniverseSector(v){window.universeSector=v; render();}
