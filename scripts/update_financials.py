@@ -352,7 +352,7 @@ def main():
         except Exception as e:
             failed.append(ticker)
             print(ticker, "ERROR", repr(e))
-    OUTPUT.write_text(json.dumps(existing, indent=2) + "\n")
+    OUTPUT.write_text(json.dumps(existing, indent=2) + "\n")\n    print("Financial schema: categorized income statement, balance sheet, cash flow and ratios")
 
 if __name__ == "__main__":
     main()
