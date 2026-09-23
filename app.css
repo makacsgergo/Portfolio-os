@@ -15,3 +15,14 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
 @media(max-width:700px){.app{padding:12px 12px 20px}.top{display:block}.top-actions{margin-top:10px}.top-actions .btn{flex:1}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.watch-grid{grid-template-columns:1fr 1fr}.search{width:145px}.table{min-width:680px}}
 @media(max-width:430px){.brand{font-size:21px}.big{font-size:19px}.watch-grid{grid-template-columns:1fr}.card{padding:12px}.nav button{padding:8px 10px}}
 #modal{display:none;position:fixed;z-index:100;inset:0;background:#000b;align-items:flex-end;justify-content:center;pointer-events:none}#modal.open{display:flex;pointer-events:auto}#modal .sheet{pointer-events:auto}
+
+.profile-section{border:1px solid #263141;border-radius:12px;margin:8px 0;overflow:hidden;background:#111823}
+.profile-toggle{width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;color:inherit;border:0;padding:15px;text-align:left;font-size:15px;cursor:pointer}
+.profile-content{padding:0 12px 12px}.profile-content.hidden{display:none}
+.metric-chart{margin-top:14px}.chart-label{display:flex;justify-content:space-between;margin-bottom:6px}.chart-label span{font-size:11px;opacity:.6}
+.chart-bars{height:150px;display:flex;align-items:flex-end;gap:10px;padding:8px 4px 0;border-bottom:1px solid #303947}
+.chart-col{height:100%;flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:45px}
+.chart-value{font-size:10px;opacity:.75;margin-bottom:4px;white-space:nowrap}
+.chart-bar{height:100px;width:70%;display:flex;align-items:flex-end;justify-content:center}
+.chart-bar i{display:block;width:100%;min-height:8px;border-radius:5px 5px 0 0;background:#6ea8fe}
+.chart-year{font-size:10px;opacity:.55;margin-top:5px}
