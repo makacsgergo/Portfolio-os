@@ -225,15 +225,21 @@ function finFmt(v,u){if(v==null)return "—";if(u==="$")return "$"+Number(v).toF
 function financialSections(fd){
  const groups=[
   ["Income statement","income_statement"],
-  ["Balance sheet","balance_sheet"],
   ["Cash flow","cash_flow"],
   ["Ratios & growth","ratios"]
  ];
- return groups.map(([title,cat])=>{
+ const annual=groups.map(([title,cat])=>{
   const ms=(fd.metrics||[]).filter(m=>(m.category||"income_statement")===cat);
   if(!ms.length)return "";
   return '<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">'+title+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th>'+fd.years.map(y=>'<th>'+y+'</th>').join("")+'</tr></thead><tbody>'+ms.map(m=>'<tr><td><b>'+m.name+'</b></td>'+fd.years.map((_,i)=>'<td>'+finFmt(m.values?.[i],m.unit)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div></div>'
  }).join("");
+ const bs=(fd.metrics||[]).filter(m=>(m.category||"income_statement")==="balance_sheet");
+ const latest=fd.latest_reported?.metrics||{};
+ const labels={cash:"Cash",debt_current:"Current debt",debt_noncurrent:"Long-term debt",assets:"Total assets",equity:"Total equity",shares_outstanding:"Shares outstanding"};
+ const latestRows=Object.entries(labels).filter(([k])=>latest[k]).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(latest[k].value,latest[k].unit)+'</td></tr>').join("");
+ const latestBlock=latestRows?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">Balance sheet · latest reported</div><div class="muted small" style="margin-bottom:8px">Period end: '+(fd.latest_reported.period_end||"—")+' · '+(fd.latest_reported.form||"SEC filing")+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRows+'</tbody></table></div></div>':"";
+ const historicalBs=bs.length?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">Balance sheet · annual history</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th>'+fd.years.map(y=>'<th>'+y+'</th>').join("")+'</tr></thead><tbody>'+bs.map(m=>'<tr><td><b>'+m.name+'</b></td>'+fd.years.map((_,i)=>'<td>'+finFmt(m.values?.[i],m.unit)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div></div>':"";
+ return annual+latestBlock+historicalBs;
 }
 function stock(t){
  const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t), u=universe.find(p=>p.ticker===t), watched=isWatched(t);
