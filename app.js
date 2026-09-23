@@ -3,7 +3,16 @@ const KEY="portfolio_os_v2";
 let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(S);
 let current="home";
 let universe=[];
-fetch("universe.json").then(r=>r.json()).then(d=>{universe=d.stocks||[]; if(current==="universe")render();}).catch(()=>{});
+let universeMarketCaps={};
+fetch("universe.json").then(r=>r.json()).then(d=>{
+ universe=d.stocks||[];
+ return fetch("https://top-us-stock-tickers.zyhe.me/api/v2/tickers?limit=10000&sort=market_cap&order=desc")
+   .then(r=>r.ok?r.json():null).catch(()=>null);
+}).then(d=>{
+ if(d?.items) d.items.forEach(x=>{universeMarketCaps[x.symbol]=Number(x.market_cap||x.marketCap||0)});
+ universe.sort((a,b)=>(universeMarketCaps[b.ticker]||0)-(universeMarketCaps[a.ticker]||0));
+ if(current==="universe")render();
+}).catch(()=>{universe.sort((a,b)=>a.ticker.localeCompare(b.ticker));if(current==="universe")render();});
 const $=s=>document.querySelector(s);
 const money=x=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(x||0);
 const pct=x=>(x>=0?"+":"")+Number(x||0).toFixed(2)+"%";
@@ -75,13 +84,40 @@ function watchlist(){
  return `<div class="section-head"><div><span class="section-title">Watchlist</span><div class="muted small">Research candidates</div></div></div>
  <div class="watch-grid">${state.watchlist.map(x=>`<div class="card" onclick="stock('${x.ticker}')"><div class="section-head"><b>${x.ticker}</b><span class="pill">WATCH</span></div><div>${x.name}</div><div class="muted small" style="margin-top:8px">Open company research →</div></div>`).join("")}</div>`;
 }
+function fmtCap(x){
+ if(!x)return "—";
+ if(x>=1e12)return "$"+(x/1e12).toFixed(2)+"T";
+ if(x>=1e9)return "$"+(x/1e9).toFixed(1)+"B";
+ if(x>=1e6)return "$"+(x/1e6).toFixed(0)+"M";
+ return "$"+x.toLocaleString();
+}
 function universePage(){
  const q=(window.universeQuery||"").toLowerCase();
- const rows=universe.filter(x=>!q||x.ticker.toLowerCase().includes(q)||x.name.toLowerCase().includes(q)||x.sector.toLowerCase().includes(q));
- return `<div class="section-head"><div><span class="section-title">Stock Universe</span><div class="muted small">${universe.length} stocks • S&P 500 + Nasdaq-100</div></div><input class="search" placeholder="Search ticker or company" value="${window.universeQuery||""}" oninput="filterUniverse(this.value)"></div>
- <div class="table-wrap"><table class="table" id="ut"><thead><tr><th>Ticker</th><th>Company</th><th>Sector</th><th>Index</th></tr></thead><tbody>${rows.map(x=>`<tr onclick="stock('${x.ticker}')"><td class="ticker">${x.ticker}</td><td>${x.name}</td><td>${x.sector||"—"}</td><td><span class="pill">${x.index.replace("S&P 500 + ","S&P + ")}</span></td></tr>`).join("")}</tbody></table></div>`;
+ const sector=window.universeSector||"ALL";
+ const idx=window.universeIndex||"ALL";
+ const sectors=[...new Set(universe.map(x=>x.sector).filter(Boolean))].sort();
+ let rows=universe.filter(x=>{
+   const matchesQ=!q||x.ticker.toLowerCase().includes(q)||x.name.toLowerCase().includes(q)||x.sector.toLowerCase().includes(q);
+   const matchesSector=sector==="ALL"||x.sector===sector;
+   const matchesIndex=idx==="ALL"||x.index.includes(idx);
+   return matchesQ&&matchesSector&&matchesIndex;
+ });
+ rows.sort((a,b)=>(universeMarketCaps[b.ticker]||0)-(universeMarketCaps[a.ticker]||0));
+ return `<div class="section-head"><div><span class="section-title">Stock Universe</span><div class="muted small">${rows.length} of ${universe.length} stocks • ranked by market cap</div></div>
+ <input class="search" placeholder="Search ticker or company" value="${window.universeQuery||""}" oninput="filterUniverse(this.value)"></div>
+ <div class="filters" style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0">
+   <select class="search" onchange="filterUniverseSector(this.value)"><option value="ALL">All sectors</option>${sectors.map(s=>`<option value="${s}" ${sector===s?"selected":""}>${s}</option>`).join("")}</select>
+   <select class="search" onchange="filterUniverseIndex(this.value)">
+     <option value="ALL" ${idx==="ALL"?"selected":""}>All indices</option>
+     <option value="S&P 500" ${idx==="S&P 500"?"selected":""}>S&P 500</option>
+     <option value="Nasdaq-100" ${idx==="Nasdaq-100"?"selected":""}>Nasdaq-100</option>
+   </select>
+ </div>
+ <div class="table-wrap"><table class="table" id="ut"><thead><tr><th>#</th><th>Ticker</th><th>Company</th><th>Market Cap</th><th>Sector</th><th>Index</th></tr></thead><tbody>${rows.map((x,i)=>`<tr onclick="stock('${x.ticker}')"><td>${i+1}</td><td class="ticker">${x.ticker}</td><td>${x.name}</td><td>${fmtCap(universeMarketCaps[x.ticker])}</td><td>${x.sector||"—"}</td><td><span class="pill">${x.index.replace("S&P 500 + ","S&P + ")}</span></td></tr>`).join("")}</tbody></table></div>`;
 }
 function filterUniverse(q){window.universeQuery=q; render();}
+function filterUniverseSector(v){window.universeSector=v; render();}
+function filterUniverseIndex(v){window.universeIndex=v; render();}
 function allocation(){
  return `<div class="card"><div class="section-head"><div><span class="section-title">Concentrated new-capital plan</span><div class="muted small">High-growth / high-risk framework</div></div><span class="pill">100%</span></div>
  ${state.allocation.map(x=>`<div class="alloc-row"><b>${x.ticker}</b><div class="bar"><i style="width:${x.pct*3.2}%"></i></div><span>${x.pct}%</span></div>`).join("")}
@@ -127,6 +163,6 @@ function importBroker(){
  }catch(e){toast("Could not read that CSV.")}}; r.readAsText(f)}; input.click();
 }
 function parseCSV(text){const lines=text.split(/\r?\n/).filter(Boolean); if(!lines.length)return[]; const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}; const h=parseLine(lines[0]); return lines.slice(1).map(l=>{const v=parseLine(l); return Object.fromEntries(h.map((k,i)=>[k,v[i]??""]))})}
-window.stock=stock;window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;
+window.stock=stock;window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;
 save();render();
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
