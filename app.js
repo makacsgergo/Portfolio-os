@@ -181,11 +181,44 @@ function businessDescription(t,u){
  };
  return templates[s]||`${u?.name||t} is a publicly traded company operating in the ${u?.sector||"business"} sector.`;
 }
+function msftResearch(){
+ return {
+  business:"Microsoft develops software, cloud infrastructure, AI products and digital services for consumers and enterprises. Its major businesses span Microsoft 365, Azure, Dynamics, LinkedIn, Windows, gaming, search and AI offerings.",
+  financials:[
+   ["FY2026 revenue","$331.8B","+18% YoY"],
+   ["FY2026 operating income","$155.2B","+21% YoY"],
+   ["FY2026 net income","$133.7B","+31% YoY GAAP"],
+   ["FY2026 diluted EPS","$17.95","+32% YoY"],
+   ["Microsoft Cloud revenue","$214.4B","+27% YoY"],
+   ["Azure & other cloud","—","+41% FY2026"],
+   ["Commercial RPO","$678B","+84% YoY"],
+   ["FY2026 cash returned","$43B+","dividends + buybacks"]
+  ],
+  segments:[
+   ["Productivity & Business Processes","Microsoft 365, LinkedIn, Dynamics and related services"],
+   ["Intelligent Cloud","Azure, server products and enterprise cloud services"],
+   ["More Personal Computing","Windows, gaming, search and devices"]
+  ],
+  thesis:[
+   "Azure is the central growth engine: FY2026 Azure and other cloud services revenue grew 41%, while Q4 Azure growth was 43%.",
+   "Microsoft has multiple ways to monetize AI through Azure, Microsoft 365 Copilot, GitHub Copilot and other first-party applications.",
+   "The commercial backlog is substantial: remaining performance obligations reached $678B at FY2026 year-end.",
+   "The main debate is not whether demand exists, but how quickly AI infrastructure spending converts into durable revenue and cash-flow returns."
+  ],
+  risks:[
+   "AI infrastructure requires very large ongoing capital investment and has pressured cloud gross margins.",
+   "Competition remains intense across cloud, AI, productivity software and search.",
+   "AI monetization and infrastructure utilization need to justify the scale of current investment.",
+   "Regulatory, cybersecurity and privacy issues can affect products and operating costs."
+  ]
+ };
+}
 function stock(t){
  const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t), u=universe.find(p=>p.ticker===t), watched=isWatched(t);
  $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><div><div class="section-title">${t}</div><div class="muted">${u?.name||x?.ticker||w?.name||"Company"}</div></div><div><button class="btn" onclick="toggleWatch(&quot;${t}&quot;)">${watched?"★":"☆"} ${watched?"Watchlisted":"Add to watchlist"}</button> <button class="btn" onclick="closeModal()">×</button></div></div>
  ${x?`<div class="cards"><div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Price</div><div class="big">${money(x.price)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div><div class="card"><div class="label">Return</div><div class="big ${x.ret>=0?"green":"red"}">${pct(x.ret)}</div></div></div>`:""}
  <div class="section"><div class="card"><div class="label">What they do</div><div style="margin-top:6px;line-height:1.5">${businessDescription(t,u)}</div></div></div>
+ ${t==="MSFT"?`<div class="section"><div class="section-title">Microsoft research</div><div class="section list" style="margin-top:8px"><div class="card"><div class="label">Financial snapshot</div>${msftResearch().financials.map(a=>`<div class="list-item"><b>${a[0]}</b><span>${a[1]} <span class="muted">${a[2]}</span></span></div>`).join("")}</div><div class="card"><div class="label">Business segments</div>${msftResearch().segments.map(a=>`<div class="list-item"><b>${a[0]}</b><span class="muted">${a[1]}</span></div>`).join("")}</div><div class="card"><div class="label">Investment thesis</div>${msftResearch().thesis.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")}</div><div class="card"><div class="label">Key risks</div>${msftResearch().risks.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")}</div></div></div>`:""}
  <div class="section list"><div class="list-item"><b>Valuation</b><span class="muted">V3 live model</span></div><div class="list-item"><b>Thesis</b><span class="muted">V3 AI research layer</span></div><div class="list-item"><b>Catalysts & risks</b><span class="muted">V3 research layer</span></div></div></div>`;
  $("#modal").classList.add("open");
 }
