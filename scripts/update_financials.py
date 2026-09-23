@@ -22,7 +22,7 @@ TAGS = {
 def get_json(url):
     r = requests.get(url, headers=HEADERS, timeout=30)
     r.raise_for_status()
-    time.sleep(0.12)
+    time.sleep(0.20)
     return r.json()
 
 def sec_ticker_map():
