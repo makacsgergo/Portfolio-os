@@ -196,6 +196,11 @@ def build_company(ticker, cik):
     raw_facts = facts.get("facts", {}).get("us-gaap", {})
     dei_facts = facts.get("facts", {}).get("dei", {})
     yearly = {m: select_yearly(rows) for m, rows in metrics.items()}
+
+    # Instant balance-sheet facts are keyed by period-end dates, while annual
+    # income/cash-flow facts are keyed by SEC fiscal-year labels. Normalize
+    # instant facts onto the same fiscal-year keys before building the output.
+    instant_by_metric = {}
     for metric in ["cash", "assets", "equity", "debt_current", "debt_noncurrent", "shares_outstanding"]:
         rows = []
         for tag in TAGS.get(metric, []):
@@ -213,9 +218,27 @@ def build_company(ticker, cik):
                 row["_tag"] = tag
                 rows.append(row)
         if rows:
-            yearly[metric] = select_instant(rows)
-    years = sorted(set().union(*[set(v.keys()) for v in yearly.values()]), key=int)
-    years = years[-10:]
+            instant_by_metric[metric] = select_instant(rows)
+
+    # The annual facts provide the canonical fiscal-year labels and period
+    # ends. Match each instant fact to the annual fiscal year with the same
+    # period end. This avoids trying to sort ISO dates as integer FY labels.
+    years = set()
+    annual_end_by_year = {}
+    for metric_rows in yearly.values():
+        for fy, row in metric_rows.items():
+            years.add(str(fy))
+            annual_end_by_year.setdefault(str(fy), row.get("end"))
+    years = sorted(years, key=int)[-10:]
+
+    for metric, instant_rows in instant_by_metric.items():
+        normalized = {}
+        for fy in years:
+            end = annual_end_by_year.get(fy)
+            if end and end in instant_rows:
+                normalized[fy] = instant_rows[end]
+        if normalized:
+            yearly[metric] = normalized
     price, currency, exchange = get_market_data(ticker)
     splits = get_splits(ticker)
     result = {"source": "SEC XBRL companyfacts", "cik": cik, "price": price, "price_currency": currency or "USD", "exchange": exchange, "price_source": "Yahoo Finance chart endpoint", "price_updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "years": ["FY" + y for y in years], "currency": "USD", "metrics": []}
