@@ -1,0 +1,1 @@
+Portfolio OS deployment trigger. Portfolio data is kept local to the device and is not stored in this repository.
