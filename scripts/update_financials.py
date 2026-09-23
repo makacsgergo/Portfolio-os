@@ -112,16 +112,28 @@ def main():
     cmap = sec_ticker_map()
     existing = json.loads(OUTPUT.read_text()) if OUTPUT.exists() else {}
     # First automated pass: US-listed SEC filers using US-GAAP facts.
+    processed = 0
+    successful = 0
+    failed = []
+    missing = []
     for ticker in tickers:
+        processed += 1
         cik = cmap.get(ticker)
+        if not cik:
+            missing.append(ticker)
+            continue
         if not cik:
             continue
         try:
             data = build_company(ticker, cik)
             if len(data.get("years", [])) >= 2:
                 existing[ticker] = data
+                successful += 1
                 print(ticker, "OK", len(data["years"]), "years")
+            else:
+                failed.append(ticker)
         except Exception as e:
+            failed.append(ticker)
             print(ticker, "ERROR", repr(e))
     OUTPUT.write_text(json.dumps(existing, indent=2) + "\n")
 
