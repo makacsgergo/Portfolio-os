@@ -1,0 +1,63 @@
+{
+  "MSFT": {
+    "years": [
+      "FY2023",
+      "FY2024",
+      "FY2025",
+      "FY2026"
+    ],
+    "currency": "USD",
+    "metrics": [
+      {
+        "name": "Revenue",
+        "unit": "B",
+        "values": [
+          211.915,
+          245.122,
+          281.724,
+          331.839
+        ]
+      },
+      {
+        "name": "Operating income",
+        "unit": "B",
+        "values": [
+          88.523,
+          109.433,
+          128.528,
+          155.237
+        ]
+      },
+      {
+        "name": "Net income",
+        "unit": "B",
+        "values": [
+          72.361,
+          88.136,
+          101.832,
+          133.749
+        ]
+      },
+      {
+        "name": "Diluted EPS",
+        "unit": "$",
+        "values": [
+          9.68,
+          11.8,
+          13.64,
+          17.95
+        ]
+      },
+      {
+        "name": "Free cash flow",
+        "unit": "B",
+        "values": [
+          59.475,
+          74.071,
+          71.611,
+          67
+        ]
+      }
+    ]
+  }
+}
