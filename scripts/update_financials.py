@@ -180,13 +180,15 @@ def build_company(ticker, cik):
     facts = get_json(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")
     metrics = annual_facts(facts)
     raw_facts = facts.get("facts", {}).get("us-gaap", {})
+    dei_facts = facts.get("facts", {}).get("dei", {})
     yearly = {m: select_yearly(rows) for m, rows in metrics.items()}
     for metric in ["cash", "assets", "equity", "debt_current", "debt_noncurrent", "shares_outstanding"]:
         rows = []
         for tag in TAGS.get(metric, []):
-            if tag not in raw_facts:
+            source_facts = dei_facts if tag == "EntityCommonStockSharesOutstanding" else raw_facts
+            if tag not in source_facts:
                 continue
-            units = raw_facts[tag].get("units", {})
+            units = source_facts[tag].get("units", {})
             unit = "shares" if "shares" in units else ("USD" if "USD" in units else None)
             if not unit:
                 continue
