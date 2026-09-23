@@ -74,11 +74,12 @@ def annual_facts(companyfacts):
             by_metric[metric] = rows
     return by_metric
 
-def select_instant(rows):
+def select_instant(rows, allowed_forms=("10-K", "10-K/A", "10-Q", "10-Q/A")):
+    """Select the earliest filed occurrence for each balance-sheet period end."""
     by_end = {}
     for x in rows:
         end, filed = x.get("end"), x.get("filed")
-        if not end or not filed:
+        if x.get("form", "") not in allowed_forms or not end or not filed:
             continue
         try:
             end_date = date.fromisoformat(end)
@@ -95,6 +96,17 @@ def select_instant(rows):
             row["_rank"] = candidate
             by_end[end] = row
     return by_end
+
+def select_latest_period(rows):
+    """Return the latest reported balance-sheet fact by period end."""
+    selected = select_instant(rows)
+    if not selected:
+        return None
+    end = max(selected)
+    row = dict(selected[end])
+    row.pop("_rank", None)
+    row["_period_end"] = end
+    return row
 
 def select_yearly(rows):
     # SEC companyfacts includes comparative annual facts inside later 10-Ks.
@@ -212,7 +224,7 @@ def build_company(ticker, cik):
             if not unit:
                 continue
             for x in units[unit]:
-                if x.get("form", "") not in ("10-K", "10-K/A") or not x.get("end") or x.get("start"):
+                if x.get("form", "") not in ("10-K", "10-K/A", "10-Q", "10-Q/A") or not x.get("end") or x.get("start"):
                     continue
                 row = dict(x)
                 row["_tag"] = tag
@@ -239,9 +251,40 @@ def build_company(ticker, cik):
                 normalized[fy] = instant_rows[end]
         if normalized:
             yearly[metric] = normalized
+
+    latest_quarter = {}
+    for metric, rows in instant_by_metric.items():
+        latest = select_latest_period(rows.values())
+        if latest:
+            latest_quarter[metric] = latest
+
     price, currency, exchange = get_market_data(ticker)
     splits = get_splits(ticker)
-    result = {"source": "SEC XBRL companyfacts", "cik": cik, "price": price, "price_currency": currency or "USD", "exchange": exchange, "price_source": "Yahoo Finance chart endpoint", "price_updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "years": ["FY" + y for y in years], "currency": "USD", "metrics": []}
+    latest_period_end = max((row.get("_period_end") for row in latest_quarter.values() if row.get("_period_end")), default=None)
+    latest_form = None
+    if latest_period_end:
+        forms = {row.get("form") for row in latest_quarter.values() if row.get("_period_end") == latest_period_end}
+        latest_form = "10-Q" if "10-Q" in forms else ("10-Q/A" if "10-Q/A" in forms else "10-K")
+    result = {
+        "source": "SEC XBRL companyfacts",
+        "cik": cik,
+        "price": price,
+        "price_currency": currency or "USD",
+        "exchange": exchange,
+        "price_source": "Yahoo Finance chart endpoint",
+        "price_updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "years": ["FY" + y for y in years],
+        "currency": "USD",
+        "latest_reported": {"period_end": latest_period_end, "form": latest_form, "metrics": {}},
+        "metrics": []
+    }
+    for metric, row in latest_quarter.items():
+        result["latest_reported"]["metrics"][metric] = {
+            "value": round(float(row["val"]) / (1e6 if metric == "shares_outstanding" else 1e9), 6),
+            "unit": "M" if metric == "shares_outstanding" else "B",
+            "period_end": row.get("_period_end"),
+            "form": row.get("form")
+        }
 
     specs = [
         ("Revenue", "revenue", "B"),
