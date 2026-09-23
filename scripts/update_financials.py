@@ -13,11 +13,23 @@ PRICE_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{}?range=5d&inter
 
 TAGS = {
     "revenue": ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet"],
+    "gross_profit": ["GrossProfit"],
     "operating_income": ["OperatingIncomeLoss"],
     "net_income": ["NetIncomeLoss", "ProfitLoss"],
     "eps": ["EarningsPerShareDiluted"],
     "cfo": ["NetCashProvidedByUsedInOperatingActivities"],
     "capex": ["PaymentsToAcquirePropertyPlantAndEquipment"],
+    "rnd": ["ResearchAndDevelopmentExpense", "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost"],
+    "da": ["DepreciationDepletionAndAmortization", "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment", "DepreciationDepletionAndAmortizationAndAccretion"],
+    "tax_expense": ["IncomeTaxExpenseBenefit"],
+    "pretax_income": ["IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest", "IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments"],
+    "buybacks": ["PaymentsForRepurchaseOfCommonStock", "PaymentsForRepurchaseOfCommonStockIncludingExcessTaxBenefit"],
+    "cash": ["CashAndCashEquivalentsAtCarryingValue"],
+    "assets": ["Assets"],
+    "equity": ["StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"],
+    "debt_current": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebt"],
+    "debt_noncurrent": ["LongTermDebtNoncurrent", "LongTermDebt"],
+    "shares_outstanding": ["EntityCommonStockSharesOutstanding", "CommonStockSharesOutstanding"],
 }
 
 def get_json(url):
@@ -242,12 +254,72 @@ def build_company(ticker, cik):
     for y in years:
         a, b = cfo.get(y), capex.get(y)
         if a and b:
-            # SEC reports capex as a positive cash outflow in this tag; FCF = CFO - capex.
             fcf.append(round((float(a["val"]) - abs(float(b["val"]))) / 1e9, 6))
         else:
             fcf.append(None)
     if any(v is not None for v in fcf):
         result["metrics"].append({"name": "Free cash flow", "unit": "B", "values": fcf})
+
+    def arr(name):
+        for m in result["metrics"]:
+            if m["name"] == name:
+                return m["values"]
+        return [None] * len(years)
+
+    rev, op, ni, eps, gp, da = arr("Revenue"), arr("Operating income"), arr("Net income"), arr("Diluted EPS"), arr("Gross profit"), arr("D&A")
+    cash, debtc, debtl, assets, equity = arr("Cash"), arr("Current debt"), arr("Long-term debt"), arr("Total assets"), arr("Total equity")
+    fcfv, rnd, shares = arr("Free cash flow"), arr("R&D"), arr("Shares outstanding")
+
+    def derived(name, values, unit="ratio"):
+        if any(v is not None for v in values):
+            result["metrics"].append({"name": name, "unit": unit, "values": [None if v is None else round(v, 6) for v in values]})
+
+    # Derived operating and capital-efficiency metrics.
+    ebitda = [None if op[i] is None or da[i] is None else op[i] + da[i] for i in range(len(years))]
+    netdebt = [None if cash[i] is None or debtc[i] is None or debtl[i] is None else debtc[i] + debtl[i] - cash[i] for i in range(len(years))]
+    opmargin = [None if rev[i] in (None,0) or op[i] is None else op[i]/rev[i] for i in range(len(years))]
+    grossmargin = [None if rev[i] in (None,0) or gp[i] is None else gp[i]/rev[i] for i in range(len(years))]
+    fcfmargin = [None if rev[i] in (None,0) or fcfv[i] is None else fcfv[i]/rev[i] for i in range(len(years))]
+    fcfconv = [None if ni[i] in (None,0) or fcfv[i] is None else fcfv[i]/ni[i] for i in range(len(years))]
+    debt_equity = [None if equity[i] in (None,0) or debtc[i] is None or debtl[i] is None else (debtc[i]+debtl[i])/equity[i] for i in range(len(years))]
+    netdebt_ebitda = [None if ebitda[i] in (None,0) or netdebt[i] is None else netdebt[i]/ebitda[i] for i in range(len(years))]
+
+    revenue_growth = [None] + [None if rev[i] is None or rev[i-1] in (None,0) else rev[i]/rev[i-1]-1 for i in range(1,len(years))]
+    eps_growth = [None] + [None if eps[i] is None or eps[i-1] in (None,0) else eps[i]/eps[i-1]-1 for i in range(1,len(years))]
+    fcf_growth = [None] + [None if fcfv[i] is None or fcfv[i-1] in (None,0) else fcfv[i]/fcfv[i-1]-1 for i in range(1,len(years))]
+
+    avg_equity = [None] + [None if equity[i] is None or equity[i-1] is None else (equity[i]+equity[i-1])/2 for i in range(1,len(years))]
+    roe = [None if avg_equity[i] in (None,0) or ni[i] is None else ni[i]/avg_equity[i] for i in range(len(years))]
+    avg_invested = [None] + [None if netdebt[i] is None or equity[i] is None or netdebt[i-1] is None or equity[i-1] is None else ((netdebt[i]+equity[i])+(netdebt[i-1]+equity[i-1]))/2 for i in range(1,len(years))]
+    tax = yearly.get("tax_expense", {})
+    pretax = yearly.get("pretax_income", {})
+    tax_rates=[]
+    nopat=[]
+    for y in years:
+        t,p=tax.get(y),pretax.get(y)
+        if t and p and float(p["val"]) != 0:
+            rate=max(0,min(1,float(t["val"])/float(p["val"])))
+            tax_rates.append(rate)
+            idx=years.index(y)
+            nopat.append(None if op[idx] is None else op[idx]*(1-rate))
+        else:
+            tax_rates.append(None); nopat.append(None)
+    roic=[None if avg_invested[i] in (None,0) or nopat[i] is None else nopat[i]/avg_invested[i] for i in range(len(years))]
+
+    derived("EBITDA", ebitda, "B")
+    derived("EBIT", op, "B")
+    derived("Net debt", netdebt, "B")
+    derived("Gross margin", grossmargin)
+    derived("Operating margin", opmargin)
+    derived("FCF margin", fcfmargin)
+    derived("Revenue growth", revenue_growth)
+    derived("EPS growth", eps_growth)
+    derived("FCF growth", fcf_growth)
+    derived("FCF conversion", fcfconv)
+    derived("ROE", roe)
+    derived("ROIC", roic)
+    derived("Debt / equity", debt_equity)
+    derived("Net debt / EBITDA", netdebt_ebitda)
     return result
 
 def main():
