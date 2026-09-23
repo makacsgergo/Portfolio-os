@@ -104,7 +104,7 @@ def select_yearly(rows):
         out[str(fy)] = row
     return out
 
-def get_price(ticker):
+def get_market_data(ticker):
     try:
         data = get_json(PRICE_URL.format(ticker))
         result = data["chart"]["result"][0]
@@ -118,13 +118,50 @@ def get_price(ticker):
         print(ticker, "PRICE ERROR", repr(e))
         return None, None, None
 
+def get_splits(ticker):
+    # Yahoo's chart endpoint exposes historical forward and reverse stock splits.
+    # Each event has a ratio such as 10:1 (forward) or 1:10 (reverse).
+    try:
+        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?period1=0&period2={int(time.time())}&interval=1d&events=split"
+        data = get_json(url)
+        result = data["chart"]["result"][0]
+        events = result.get("events", {}).get("splits", {})
+        out = []
+        for ts, event in events.items():
+            ratio = str(event.get("splitRatio", ""))
+            if ":" not in ratio:
+                continue
+            a, b = ratio.split(":", 1)
+            try:
+                factor = float(a) / float(b)
+                split_date = date.fromtimestamp(int(ts)).isoformat()
+            except Exception:
+                continue
+            if factor > 0 and factor != 1:
+                out.append((split_date, factor, ratio))
+        return sorted(out)
+    except Exception as e:
+        print(ticker, "SPLIT ERROR", repr(e))
+        return []
+
+def eps_split_adjustment(period_end, splits):
+    # EPS moves inversely to the number of shares after a split.
+    # A 10:1 forward split therefore divides historical EPS by 10;
+    # a 1:10 reverse split multiplies it by 10.
+    factor = 1.0
+    for split_date, share_factor, _ratio in splits:
+        if split_date > period_end:
+            factor /= share_factor
+    return factor
+
 def build_company(ticker, cik):
     facts = get_json(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")
     metrics = annual_facts(facts)
     yearly = {m: select_yearly(rows) for m, rows in metrics.items()}
     years = sorted(set().union(*[set(v.keys()) for v in yearly.values()]), key=int)
     years = years[-10:]
-    price, currency, exchange = get_price(ticker)
+    price, currency, exchange = get_market_data(ticker)
+    splits = get_splits(ticker)
     result = {"source": "SEC XBRL companyfacts", "cik": cik, "price": price, "price_currency": currency or "USD", "exchange": exchange, "price_source": "Yahoo Finance chart endpoint", "price_updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "years": ["FY" + y for y in years], "currency": "USD", "metrics": []}
 
     specs = [
@@ -137,7 +174,13 @@ def build_company(ticker, cik):
         vals = []
         for y in years:
             v = yearly.get(key, {}).get(y)
-            vals.append(round(float(v["val"]) / (1e9 if unit == "B" else 1), 6) if v else None)
+            if v:
+                value = float(v["val"])
+                if key == "eps":
+                    value *= eps_split_adjustment(v["end"], splits)
+                vals.append(round(value / (1e9 if unit == "B" else 1), 6))
+            else:
+                vals.append(None)
         if any(v is not None for v in vals):
             result["metrics"].append({"name": label, "unit": unit, "values": vals})
 
