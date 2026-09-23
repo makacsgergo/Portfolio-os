@@ -60,6 +60,28 @@ def annual_facts(companyfacts):
             by_metric[metric] = rows
     return by_metric
 
+def select_instant(rows):
+    by_end = {}
+    for x in rows:
+        end, filed = x.get("end"), x.get("filed")
+        if not end or not filed:
+            continue
+        try:
+            end_date = date.fromisoformat(end)
+            filed_date = date.fromisoformat(filed)
+            lag = (filed_date - end_date).days
+        except Exception:
+            continue
+        if lag < 0:
+            continue
+        candidate = (lag, filed)
+        prev = by_end.get(end)
+        if prev is None or candidate < prev["_rank"]:
+            row = dict(x)
+            row["_rank"] = candidate
+            by_end[end] = row
+    return by_end
+
 def select_yearly(rows):
     # SEC companyfacts includes comparative annual facts inside later 10-Ks.
     # Those comparative facts can carry the later filing's FY label, which
@@ -157,7 +179,25 @@ def eps_split_adjustment(period_end, splits):
 def build_company(ticker, cik):
     facts = get_json(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")
     metrics = annual_facts(facts)
+    raw_facts = facts.get("facts", {}).get("us-gaap", {})
     yearly = {m: select_yearly(rows) for m, rows in metrics.items()}
+    for metric in ["cash", "assets", "equity", "debt_current", "debt_noncurrent", "shares_outstanding"]:
+        rows = []
+        for tag in TAGS.get(metric, []):
+            if tag not in raw_facts:
+                continue
+            units = raw_facts[tag].get("units", {})
+            unit = "shares" if "shares" in units else ("USD" if "USD" in units else None)
+            if not unit:
+                continue
+            for x in units[unit]:
+                if x.get("form", "") not in ("10-K", "10-K/A") or not x.get("end") or x.get("start"):
+                    continue
+                row = dict(x)
+                row["_tag"] = tag
+                rows.append(row)
+        if rows:
+            yearly[metric] = select_instant(rows)
     years = sorted(set().union(*[set(v.keys()) for v in yearly.values()]), key=int)
     years = years[-10:]
     price, currency, exchange = get_market_data(ticker)
@@ -166,9 +206,18 @@ def build_company(ticker, cik):
 
     specs = [
         ("Revenue", "revenue", "B"),
+        ("Gross profit", "gross_profit", "B"),
         ("Operating income", "operating_income", "B"),
         ("Net income", "net_income", "B"),
         ("Diluted EPS", "eps", "$"),
+        ("R&D", "rnd", "B"),
+        ("D&A", "da", "B"),
+        ("Cash", "cash", "B"),
+        ("Current debt", "debt_current", "B"),
+        ("Long-term debt", "debt_noncurrent", "B"),
+        ("Total assets", "assets", "B"),
+        ("Total equity", "equity", "B"),
+        ("Shares outstanding", "shares_outstanding", "M"),
     ]
     for label, key, unit in specs:
         vals = []
@@ -178,7 +227,8 @@ def build_company(ticker, cik):
                 value = float(v["val"])
                 if key == "eps":
                     value *= eps_split_adjustment(v["end"], splits)
-                vals.append(round(value / (1e9 if unit == "B" else 1), 6))
+                divisor = 1e9 if unit == "B" else (1e6 if unit == "M" else 1)
+                vals.append(round(value / divisor, 6))
             else:
                 vals.append(None)
         if any(v is not None for v in vals):
