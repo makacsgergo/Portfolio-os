@@ -1,0 +1,36 @@
+name: Audit financial data
+
+on:
+  push:
+    paths:
+      - "financials.json"
+      - "scripts/financial_qa.py"
+      - ".github/workflows/financial-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: financial-qa
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Run SEC cross-check
+        env:
+          SEC_USER_AGENT: "Portfolio OS research app contact@example.com"
+        run: python scripts/financial_qa.py
+      - name: Publish audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: financial-qa-report
+          path: financial_qa.json
