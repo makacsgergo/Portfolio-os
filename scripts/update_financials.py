@@ -390,7 +390,12 @@ def build_company(ticker, cik):
         },
         "metrics": []
     }
-    # Apply documented issuer-reported revenue corrections after SEC fact selection.\n    for fy, value in SEC_REVENUE_REPORTED_OVERRIDES.get(ticker, {}).items():\n        if fy in yearly.get("revenue", {}):\n            yearly["revenue"][fy]["val"] = float(value) * 1e9\n    for metric, row in latest_quarter.items():\n        result["latest_reported"]["metrics"][metric] = {
+    # Apply documented issuer-reported revenue corrections after SEC fact selection.
+    for fy, value in SEC_REVENUE_REPORTED_OVERRIDES.get(ticker, {}).items():
+        if fy in yearly.get("revenue", {}):
+            yearly["revenue"][fy]["val"] = float(value) * 1e9
+    for metric, row in latest_quarter.items():
+        result["latest_reported"]["metrics"][metric] = {
             "value": round(float(row["val"]) / (1e6 if metric == "shares_outstanding" else 1e9), 6),
             "unit": "M" if metric == "shares_outstanding" else "B",
             "period_end": row.get("_period_end"),
