@@ -11,8 +11,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: financial-data-update
@@ -57,17 +55,3 @@ jobs:
             git push
           fi
 
-      # GITHUB_TOKEN pushes do not trigger a second workflow run. Deploy the
-      # freshly generated working tree directly so financial updates reach
-      # GitHub Pages in the same run.
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-      - name: Deploy GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
