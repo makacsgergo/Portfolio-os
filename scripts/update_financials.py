@@ -11,24 +11,27 @@ HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
 PRICE_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{}?range=5d&interval=1d"
 
+ANNUAL_FORMS = ("10-K", "10-K/A", "20-F", "20-F/A", "40-F", "40-F/A")
+INSTANT_FORMS = ("10-K", "10-K/A", "10-Q", "10-Q/A", "20-F", "20-F/A", "40-F", "40-F/A", "6-K", "6-K/A")
+TAXONOMIES = ("us-gaap", "ifrs-full")
 TAGS = {
-    "revenue": ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet"],
+    "revenue": ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet", "Revenue"],
     "gross_profit": ["GrossProfit"],
-    "operating_income": ["OperatingIncomeLoss"],
+    "operating_income": ["OperatingIncomeLoss", "OperatingProfitLoss"],
     "net_income": ["NetIncomeLoss", "ProfitLoss"],
     "eps": ["EarningsPerShareDiluted"],
-    "cfo": ["NetCashProvidedByUsedInOperatingActivities"],
-    "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets", "PaymentsToAcquirePropertyPlantAndEquipmentAndOtherPropertyPlantAndEquipment"],
-    "rnd": ["ResearchAndDevelopmentExpense", "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost"],
-    "da": ["DepreciationDepletionAndAmortization", "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment", "DepreciationDepletionAndAmortizationAndAccretion"],
-    "tax_expense": ["IncomeTaxExpenseBenefit"],
-    "pretax_income": ["IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest", "IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments"],
+    "cfo": ["NetCashProvidedByUsedInOperatingActivities", "NetCashFlowsFromUsedInOperatingActivities"],
+    "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets", "PaymentsToAcquirePropertyPlantAndEquipmentAndOtherPropertyPlantAndEquipment", "PurchaseOfPropertyPlantAndEquipment"],
+    "rnd": ["ResearchAndDevelopmentExpense", "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost", "ResearchAndDevelopmentExpenditure"],
+    "da": ["DepreciationDepletionAndAmortization", "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment", "DepreciationDepletionAndAmortizationAndAccretion", "DepreciationAndAmortisation"],
+    "tax_expense": ["IncomeTaxExpenseBenefit", "IncomeTaxExpenseContinuingOperations"],
+    "pretax_income": ["IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest", "IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments", "ProfitLossBeforeTax"],
     "buybacks": ["PaymentsForRepurchaseOfCommonStock", "PaymentsForRepurchaseOfCommonStockIncludingExcessTaxBenefit"],
-    "cash": ["CashAndCashEquivalentsAtCarryingValue"],
+    "cash": ["CashAndCashEquivalentsAtCarryingValue", "CashAndCashEquivalents"],
     "assets": ["Assets"],
-    "equity": ["StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"],
-    "debt_current": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebt"],
-    "debt_noncurrent": ["LongTermDebtNoncurrent", "LongTermDebt"],
+    "equity": ["StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest", "Equity"],
+    "debt_current": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebt", "BorrowingsCurrent"],
+    "debt_noncurrent": ["LongTermDebtNoncurrent", "LongTermDebt", "BorrowingsNoncurrent"],
     "shares_outstanding": ["EntityCommonStockSharesOutstanding", "CommonStockSharesOutstanding"],
 }
 
@@ -40,61 +43,53 @@ def get_json(url):
 
 def sec_ticker_map():
     data = get_json("https://www.sec.gov/files/company_tickers.json")
-    return {v["ticker"].upper(): str(v["cik_str"]).zfill(10) for v in data.values()}
+    m = {v["ticker"].upper(): str(v["cik_str"]).zfill(10) for v in data.values()}
+    if "BRK-B" in m: m["BRK.B"] = m["BRK-B"]
+    if "BF-B" in m: m["BF.B"] = m["BF-B"]
+    m["XOM"] = "0000034088"
+    return m
+
+def _fact_sources(companyfacts):
+    return [(taxonomy, companyfacts.get("facts", {}).get(taxonomy, {})) for taxonomy in TAXONOMIES]
+
+def _monetary_unit(units):
+    if "USD" in units: return "USD"
+    candidates=[u for u in units if u not in ("USD/shares","shares","pure") and "-per-" not in u]
+    return candidates[0] if candidates else None
 
 def annual_facts(companyfacts):
-    facts = companyfacts.get("facts", {}).get("us-gaap", {})
-    by_metric = {}
-    for metric, candidates in TAGS.items():
-        if metric in {"cash","assets","equity","debt_current","debt_noncurrent","shares_outstanding"}:
-            continue
-        rows = []
-        for tag in candidates:
-            if tag not in facts:
-                continue
-            units = facts[tag].get("units", {})
-            unit = "USD/shares" if "USD/shares" in units else ("USD" if "USD" in units else None)
-            if not unit:
-                continue
-            for x in units[unit]:
-                if x.get("form", "") not in ("10-K", "10-K/A") or not x.get("start") or not x.get("end"):
-                    continue
-                # Require a genuine annual reporting period. This prevents
-                # six-month/YTD facts carrying an FY label from being treated
-                # as the full-year result.
-                try:
-                    days = (date.fromisoformat(x["end"]) - date.fromisoformat(x["start"])).days
-                except Exception:
-                    continue
-                if 300 <= days <= 400:
-                    row = dict(x)
-                    row["_tag"] = tag
-                    rows.append(row)
-        if rows:
-            by_metric[metric] = rows
+    by_metric={}
+    for metric,candidates in TAGS.items():
+        if metric in {"cash","assets","equity","debt_current","debt_noncurrent","shares_outstanding"}: continue
+        rows=[]
+        for taxonomy,facts in _fact_sources(companyfacts):
+            for tag in candidates:
+                obj=facts.get(tag)
+                if not obj: continue
+                units=obj.get("units",{})
+                unit="USD/shares" if "USD/shares" in units else _monetary_unit(units)
+                if not unit: continue
+                for x in units[unit]:
+                    if x.get("form","") not in ANNUAL_FORMS or not x.get("start") or not x.get("end"): continue
+                    try: days=(date.fromisoformat(x["end"])-date.fromisoformat(x["start"])).days
+                    except Exception: continue
+                    if 300<=days<=400:
+                        row=dict(x); row["_tag"]=tag; row["_taxonomy"]=taxonomy; row["_unit"]=unit; rows.append(row)
+        if rows: by_metric[metric]=rows
     return by_metric
 
-def select_instant(rows, allowed_forms=("10-K", "10-K/A", "10-Q", "10-Q/A")):
-    """Select the earliest filed occurrence for each balance-sheet period end."""
-    by_end = {}
+def select_instant(rows, allowed_forms=INSTANT_FORMS):
+    by_end={}
     for x in rows:
-        end, filed = x.get("end"), x.get("filed")
-        if x.get("form", "") not in allowed_forms or not end or not filed:
-            continue
+        end,filed=x.get("end"),x.get("filed")
+        if x.get("form","") not in allowed_forms or not end or not filed: continue
         try:
-            end_date = date.fromisoformat(end)
-            filed_date = date.fromisoformat(filed)
-            lag = (filed_date - end_date).days
-        except Exception:
-            continue
-        if lag < 0:
-            continue
-        candidate = (lag, filed)
-        prev = by_end.get(end)
-        if prev is None or candidate < prev["_rank"]:
-            row = dict(x)
-            row["_rank"] = candidate
-            by_end[end] = row
+            lag=(date.fromisoformat(filed)-date.fromisoformat(end)).days
+        except Exception: continue
+        if lag<0: continue
+        candidate=(lag,filed); prev=by_end.get(end)
+        if prev is None or candidate<prev["_rank"]:
+            row=dict(x); row["_rank"]=candidate; by_end[end]=row
     return by_end
 
 def select_latest_period(rows):
@@ -249,6 +244,18 @@ def build_company(ticker, cik):
     # income/cash-flow facts are keyed by SEC fiscal-year labels. Normalize
     # instant facts onto the same fiscal-year keys before building the output.
     instant_by_metric = {}
+    for metric in ("cash","assets","equity","debt_current","debt_noncurrent","shares_outstanding"):
+        candidates=[]
+        for taxonomy,facts in _fact_sources(companyfacts):
+            for tag in TAGS[metric]:
+                obj=facts.get(tag)
+                if not obj: continue
+                units=obj.get("units",{}); unit="USD" if "USD" in units else _monetary_unit(units)
+                if not unit: continue
+                for x in units[unit]:
+                    if x.get("form","") in INSTANT_FORMS and x.get("end") and not x.get("start"):
+                        row=dict(x); row["_tag"]=tag; row["_taxonomy"]=taxonomy; row["_unit"]=unit; candidates.append(row)
+        if candidates: instant_by_metric[metric]=select_instant(candidates)
     for metric in ["cash", "assets", "equity", "debt_current", "debt_noncurrent", "shares_outstanding"]:
         rows = []
         for tag in TAGS.get(metric, []):
@@ -330,11 +337,7 @@ def build_company(ticker, cik):
         forms = {row.get("form") for row in latest_rows}
         filed_dates = [row.get("filed") for row in latest_rows if row.get("filed")]
         latest_filed = min(filed_dates) if filed_dates else None
-        latest_form = ("10-Q" if "10-Q" in forms else
-                       "10-Q/A" if "10-Q/A" in forms else
-                       "10-K" if "10-K" in forms else
-                       "10-K/A" if "10-K/A" in forms else
-                       None)
+        latest_form = ("10-Q" if "10-Q" in forms else "10-Q/A" if "10-Q/A" in forms else "6-K" if "6-K" in forms else "6-K/A" if "6-K/A" in forms else "10-K" if "10-K" in forms else "10-K/A" if "10-K/A" in forms else "20-F" if "20-F" in forms else "20-F/A" if "20-F/A" in forms else "40-F" if "40-F" in forms else "40-F/A" if "40-F/A" in forms else None)
     result = {
         "source": "SEC XBRL companyfacts",
         "cik": cik,
@@ -344,12 +347,12 @@ def build_company(ticker, cik):
         "price_source": "Yahoo Finance chart endpoint",
         "price_updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "years": ["FY" + y for y in years],
-        "currency": "USD",
+        "currency": next((yearly.get("revenue",{}).get(y,{}).get("_unit") for y in years if yearly.get("revenue",{}).get(y,{}).get("_unit")), "USD"),
         "latest_reported": {
             "period_end": latest_period_end,
             "form": latest_form,
             "filed": latest_filed,
-            "is_quarterly": latest_form in ("10-Q", "10-Q/A") if latest_form else False,
+            "is_quarterly": latest_form in ("10-Q", "10-Q/A", "6-K", "6-K/A") if latest_form else False,
             "label": ("Latest quarter" if latest_form in ("10-Q", "10-Q/A") else
                       "Latest annual report" if latest_form in ("10-K", "10-K/A") else
                       "Latest reported"),
