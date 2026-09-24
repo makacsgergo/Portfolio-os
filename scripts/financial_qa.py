@@ -41,46 +41,41 @@ def get_json(url, headers=SEC_HEADERS):
     r.raise_for_status()
     return r.json()
 
+def _unit(units):
+    if "USD" in units: return "USD"
+    candidates=[u for u in units if u not in ("shares","pure","USD/shares") and "-per-" not in u]
+    return candidates[0] if candidates else None
+
 def annual_rows(facts, metric):
-    us = facts.get("facts", {}).get("us-gaap", {})
-    rows = []
+    rows=[]
     for taxonomy in TAXONOMIES:
         source=facts.get("facts",{}).get(taxonomy,{})
         for tag in TAGS[metric]:
-        obj = us.get(tag)
-        if not obj:
-            continue
-        units = obj.get("units", {})
-        unit = "USD/shares" if "USD/shares" in units else ("USD" if "USD" in units else None)
-        if not unit:
-            continue
-        for x in units[unit]:
-            if x.get("form") not in ANNUAL_FORMS or not x.get("start") or not x.get("end"):
-                continue
-            try:
-                days = (date.fromisoformat(x["end"]) - date.fromisoformat(x["start"])).days
-            except Exception:
-                continue
-            if 300 <= days <= 400:
-                y = dict(x)
-                y["_tag"] = tag
-                rows.append(y)
+            obj=source.get(tag)
+            if not obj: continue
+            units=obj.get("units",{})
+            unit="USD/shares" if "USD/shares" in units else _unit(units)
+            if not unit: continue
+            for x in units[unit]:
+                if x.get("form") not in ANNUAL_FORMS or not x.get("start") or not x.get("end"): continue
+                try: days=(date.fromisoformat(x["end"])-date.fromisoformat(x["start"])).days
+                except Exception: continue
+                if 300<=days<=400:
+                    y=dict(x); y["_tag"]=tag; y["_taxonomy"]=taxonomy; y["_unit"]=unit; rows.append(y)
     return rows
 
 def instant_rows(facts, metric):
-    source = {}\n    for taxonomy in TAXONOMIES:\n        source.update(facts.get("facts", {}).get(taxonomy, {}))
-    rows = []
-    for tag in TAGS[metric]:
-        obj = source.get(tag)
-        if not obj:
-            continue
-        units = obj.get("units", {})
-        unit = "USD" if "USD" in units else None
-        if not unit:
-            continue
-        for x in units[unit]:
-            if x.get("form") in INSTANT_FORMS and x.get("end") and not x.get("start"):
-                y = dict(x); y["_tag"] = tag; rows.append(y)
+    rows=[]
+    for taxonomy in TAXONOMIES:
+        source=facts.get("facts",{}).get(taxonomy,{})
+        for tag in TAGS[metric]:
+            obj=source.get(tag)
+            if not obj: continue
+            units=obj.get("units",{}); unit="USD" if "USD" in units else _unit(units)
+            if not unit: continue
+            for x in units[unit]:
+                if x.get("form") in INSTANT_FORMS and x.get("end") and not x.get("start"):
+                    y=dict(x); y["_tag"]=tag; y["_taxonomy"]=taxonomy; y["_unit"]=unit; rows.append(y)
     return rows
 
 def canonical_annual(rows):
