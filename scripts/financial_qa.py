@@ -24,7 +24,7 @@ TAGS = {
     "gross_profit": ["GrossProfit"],
     "operating_income": ["OperatingIncomeLoss", "OperatingProfitLoss"],
     "net_income": ["NetIncomeLoss", "ProfitLoss"],
-    "eps": ["EarningsPerShareDiluted"],
+    "eps": ["EarningsPerShareDiluted", "DilutedEarningsLossPerShare", "BasicAndDilutedEarningsLossPerShare", "DilutedEarningsPerShare"],
     "rnd": ["ResearchAndDevelopmentExpense", "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost", "ResearchAndDevelopmentExpenditure"],
     "da": ["DepreciationDepletionAndAmortization", "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment", "DepreciationDepletionAndAmortizationAndAccretion", "DepreciationAndAmortisation"],
     "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets", "PaymentsToAcquirePropertyPlantAndEquipmentAndOtherPropertyPlantAndEquipment", "PurchaseOfPropertyPlantAndEquipment"],
@@ -142,7 +142,7 @@ def canonical_annual(rows):
         out[fy] = x
     return out
 
-def latest_annual_eps(rows):
+def latest_annual_by_end(rows):
     by_end = {}
     for x in rows:
         try:
@@ -156,6 +156,8 @@ def latest_annual_eps(rows):
             by_end[x["end"]] = x
     return by_end
 
+def latest_annual_eps(rows):
+    return latest_annual_by_end(rows)
 def get_splits(ticker):
     try:
         d = get_json(YAHOO_URL.format(ticker, int(time.time())), headers={"User-Agent":"Mozilla/5.0"})
@@ -226,14 +228,16 @@ def audit_one(stock, generated, cik_map):
             vals=g.get("years",[])
             year_keys=[v.replace("FY","") for v in vals]
             mismatches=[]
+            latest_by_end = latest_annual_by_end(rows)
+            latest_can = {y: latest_by_end.get(original.get("end"), original) for y, original in can.items()}
             for i,y in enumerate(year_keys):
-                if not gm or i >= len(gm.get("values",[])) or y not in can:
+                if not gm or i >= len(gm.get("values",[])) or y not in latest_can:
                     continue
-                expected=float(can[y]["val"])
+                expected=float(latest_can[y]["val"])
                 if metric=="eps":
                     # Compare the app's value with the latest filed annual EPS
                     # normalized for every split after that filing date.
-                    eps_rows = [x for x in rows if x.get("end") == can[y]["end"]]
+                    eps_rows = [x for x in rows if x.get("end") == latest_can[y]["end"]]
                     if any(x.get("_taxonomy") == "us-gaap" for x in eps_rows):
                         eps_rows = [x for x in eps_rows if x.get("_taxonomy") == "us-gaap"]
                     latest = latest_annual_eps(eps_rows).get(can[y]["end"]) if eps_rows else None
@@ -248,7 +252,7 @@ def audit_one(stock, generated, cik_map):
                     actual=float(gm["values"][i]) * 1e9
                 checked += 1
                 if not close(actual, expected, TOL["eps"] if metric=="eps" else max(1.0,abs(expected))*0.001):
-                    mismatches.append({"fy":y,"actual":actual,"expected":expected,"source_tag":can[y].get("_tag"),"filed":can[y].get("filed")})
+                    mismatches.append({"fy":y,"actual":actual,"expected":expected,"source_tag":latest_can[y].get("_tag"),"filed":latest_can[y].get("filed")})
             metric_checks[metric]={"checked":checked,"mismatches":mismatches}
             if mismatches:
                 issues.append(metric)
@@ -312,7 +316,27 @@ def main():
     for r in results: counts[r["status"]]=counts.get(r["status"],0)+1
     mismatch=[r for r in results if r["status"]=="mismatch"]
     errors=[r for r in results if r["status"]=="error"]
-    report={"generated_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"universe_count":len(stocks),"counts":counts,"mismatch_tickers":[r["ticker"] for r in mismatch],"error_tickers":[r["ticker"] for r in errors],"results":results}
+    quality = {"missing_eps_tickers": [], "year_gaps": [], "revenue_jumps": []}
+    for ticker, g in generated.items():
+        years = g.get("years", [])
+        eps_metric = next((m for m in g.get("metrics", []) if m.get("name") == "Diluted EPS"), None)
+        if not eps_metric or not any(v is not None for v in eps_metric.get("values", [])):
+            quality["missing_eps_tickers"].append(ticker)
+        nums = [int(y.replace("FY","")) for y in years if str(y).startswith("FY") and str(y)[2:].isdigit()]
+        for a,b in zip(nums, nums[1:]):
+            if b-a > 1:
+                quality["year_gaps"].append({"ticker":ticker,"from":f"FY{a}","to":f"FY{b}","gap":b-a})
+        rev = next((m for m in g.get("metrics", []) if m.get("name") == "Revenue"), None)
+        if rev:
+            vals = rev.get("values", [])
+            for i in range(1, min(len(vals), len(years))):
+                a,b=vals[i-1],vals[i]
+                if a is None or b is None or abs(a) < 0.2:
+                    continue
+                ratio=b/a
+                if ratio < 0.30 or ratio > 3.50:
+                    quality["revenue_jumps"].append({"ticker":ticker,"from":years[i-1],"to":years[i],"from_value":a,"to_value":b,"ratio":ratio})
+    report={"generated_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"universe_count":len(stocks),"counts":counts,"mismatch_tickers":[r["ticker"] for r in mismatch],"error_tickers":[r["ticker"] for r in errors],"quality_diagnostics":quality,"results":results}
     output_path = Path(args.output)
     output_path.write_text(json.dumps(report,indent=2))
     missing_generated=[r["ticker"] for r in results if r["status"]=="missing_generated_data"]
