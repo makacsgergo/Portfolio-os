@@ -196,9 +196,12 @@ def audit_one(stock, generated, cik_map):
                 if metric=="eps":
                     # Compare the app's value with the latest filed annual EPS
                     # normalized for every split after that filing date.
-                    latest=latest_annual_eps(rows).get(can[y]["end"])
+                    eps_rows = [x for x in rows if x.get("end") == can[y]["end"]]
+                    if any(x.get("_taxonomy") == "us-gaap" for x in eps_rows):
+                        eps_rows = [x for x in eps_rows if x.get("_taxonomy") == "us-gaap"]
+                    latest = latest_annual_eps(eps_rows).get(can[y]["end"]) if eps_rows else None
                     if latest:
-                        expected=adjust_eps(latest,splits)
+                        expected = adjust_eps(latest,splits) if latest.get("form") in ("10-K","10-K/A") else float(latest["val"])
                     actual=float(gm["values"][i])
                 else:
                     actual=float(gm["values"][i]) * 1e9
