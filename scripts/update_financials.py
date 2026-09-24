@@ -46,6 +46,7 @@ def sec_ticker_map():
     m = {v["ticker"].upper(): str(v["cik_str"]).zfill(10) for v in data.values()}
     if "BRK-B" in m: m["BRK.B"] = m["BRK-B"]
     if "BF-B" in m: m["BF.B"] = m["BF-B"]
+    m["HONA"] = "0002089271"
     m["EA"] = "0000712515"
     m["BF.B"] = "0000014693"
     m["XOM"] = "0000034088"
@@ -159,7 +160,7 @@ def select_latest_annual_eps(rows, canonical_years):
     by_end = {}
     for x in rows:
         end, filed = x.get("end"), x.get("filed")
-        if not end or not filed or x.get("form") not in ("10-K", "10-K/A"):
+        if not end or not filed or x.get("form") not in ANNUAL_FORMS:
             continue
         try:
             days = (date.fromisoformat(end) - date.fromisoformat(x["start"])).days
@@ -315,7 +316,7 @@ def build_company(ticker, cik):
     for fy, row in yearly.get("eps", {}).items():
         basis_date = row.get("filed") or row.get("end")
         if basis_date:
-            row["val"] = float(row["val"]) * eps_split_adjustment(basis_date, splits, allow_external_splits=row.get("form") in ("10-K", "10-K/A"))
+            row["val"] = float(row["val"]) * eps_split_adjustment(basis_date, splits, allow_external_splits=row.get("form") in ANNUAL_FORMS)
     latest_period_end = common_period
     latest_form = None
     latest_filed = None
