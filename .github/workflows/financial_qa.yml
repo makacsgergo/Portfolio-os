@@ -40,7 +40,7 @@ jobs:
           rm -f financial_qa_batch_*.json
           for START in 0 50 100 150 200 250 300 350 400 450 500; do
             echo "=== Auditing batch START=$START COUNT=50 ==="
-            python scripts/financial_qa.py --start "$START" --count 50 --output "financial_qa_batch_${START}.json"
+            python scripts/financial_qa.py --start ${START} --count 50 --output financial_qa_batch_${START}.json
           done
       - name: Combine batch reports
         run: |
