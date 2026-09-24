@@ -15,6 +15,10 @@ YAHOO_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{}?period1=0&peri
 ANNUAL_FORMS=("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
 INSTANT_FORMS=("10-K","10-K/A","10-Q","10-Q/A","20-F","20-F/A","40-F","40-F/A","6-K","6-K/A")
 TAXONOMIES=("us-gaap","ifrs-full")
+ANNUAL_FORMS = ("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
+INSTANT_FORMS = ("10-K","10-K/A","10-Q","10-Q/A","20-F","20-F/A","40-F","40-F/A","6-K","6-K/A")
+TAXONOMIES = ("us-gaap","ifrs-full")
+
 TAGS = {
     "revenue": ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet", "Revenue"],
     "gross_profit": ["GrossProfit"],
@@ -46,36 +50,56 @@ def _unit(units):
     candidates=[u for u in units if u not in ("shares","pure","USD/shares") and "-per-" not in u]
     return candidates[0] if candidates else None
 
+def _unit_for(units, metric):
+    if metric == "eps" and "USD/shares" in units:
+        return "USD/shares"
+    if "USD" in units:
+        return "USD"
+    for u in units:
+        if u not in ("shares","pure") and "-per-" not in u:
+            return u
+    return None
+
 def annual_rows(facts, metric):
-    rows=[]
+    rows = []
     for taxonomy in TAXONOMIES:
-        source=facts.get("facts",{}).get(taxonomy,{})
+        source = facts.get("facts", {}).get(taxonomy, {})
         for tag in TAGS[metric]:
-            obj=source.get(tag)
-            if not obj: continue
-            units=obj.get("units",{})
-            unit="USD/shares" if "USD/shares" in units else _unit(units)
-            if not unit: continue
+            obj = source.get(tag)
+            if not obj:
+                continue
+            units = obj.get("units", {})
+            unit = _unit_for(units, metric)
+            if not unit:
+                continue
             for x in units[unit]:
-                if x.get("form") not in ANNUAL_FORMS or not x.get("start") or not x.get("end"): continue
-                try: days=(date.fromisoformat(x["end"])-date.fromisoformat(x["start"])).days
-                except Exception: continue
-                if 300<=days<=400:
-                    y=dict(x); y["_tag"]=tag; y["_taxonomy"]=taxonomy; y["_unit"]=unit; rows.append(y)
+                if x.get("form") not in ANNUAL_FORMS or not x.get("start") or not x.get("end"):
+                    continue
+                try:
+                    days = (date.fromisoformat(x["end"]) - date.fromisoformat(x["start"])).days
+                except Exception:
+                    continue
+                if 300 <= days <= 400:
+                    y = dict(x); y["_tag"] = tag; y["_taxonomy"] = taxonomy; y["_unit"] = unit
+                    rows.append(y)
     return rows
 
 def instant_rows(facts, metric):
-    rows=[]
+    rows = []
     for taxonomy in TAXONOMIES:
-        source=facts.get("facts",{}).get(taxonomy,{})
-        for tag in TAGS[metric]:
-            obj=source.get(tag)
-            if not obj: continue
-            units=obj.get("units",{}); unit="USD" if "USD" in units else _unit(units)
-            if not unit: continue
+        source = facts.get("facts", {}).get(taxonomy, {})
+        for tag in TAGS.get(metric, []):
+            obj = source.get(tag)
+            if not obj:
+                continue
+            units = obj.get("units", {})
+            unit = _unit_for(units, metric)
+            if not unit:
+                continue
             for x in units[unit]:
                 if x.get("form") in INSTANT_FORMS and x.get("end") and not x.get("start"):
-                    y=dict(x); y["_tag"]=tag; y["_taxonomy"]=taxonomy; y["_unit"]=unit; rows.append(y)
+                    y = dict(x); y["_tag"] = tag; y["_taxonomy"] = taxonomy; y["_unit"] = unit
+                    rows.append(y)
     return rows
 
 def canonical_annual(rows):
