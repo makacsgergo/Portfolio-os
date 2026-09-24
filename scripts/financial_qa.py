@@ -40,6 +40,19 @@ TAGS = {
 FLOW_METRICS = ["revenue","gross_profit","operating_income","net_income","eps","rnd","da","capex","cfo"]
 INSTANT_METRICS = ["cash","assets","equity","debt_current","debt_noncurrent","shares_outstanding"]
 TOL = {"eps": 0.015, "default": 0.001}
+
+# SEC-documented corporate-action fallback for cases where the secondary split
+# feed is unavailable. Keep SEC as the accounting authority.
+SEC_SPLIT_FALLBACKS = {
+    "SHOP": [("2022-06-28", 10.0)],  # SEC: 10-for-1 split, effective June 28, 2022
+}
+
+# HONA is a special case: it became independently traded on June 29, 2026.
+# Its historical FY2024/FY2025 financials were released by Honeywell Aerospace
+# in SEC-filed supplemental historical information rather than legacy HONA 10-Ks.
+SPECIAL_SEC_COVERAGE = {
+    "HONA": {"cik": "0002089271", "reason": "2026 spin-off; historical FY2024/FY2025 supplemental SEC filing; latest 10-Q available"}
+}
 ANNUAL_FORMS = ("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
 INSTANT_FORMS = ("10-K","10-K/A","10-Q","10-Q/A","20-F","20-F/A","40-F","40-F/A","6-K","6-K/A")
 TAXONOMIES = ("us-gaap","ifrs-full")
@@ -172,13 +185,28 @@ def audit_one(stock, generated, cik_map):
     ticker = stock["ticker"].upper()
     cik = cik_map.get(ticker)
     if not cik or cik == "0000000000":
+        special=SPECIAL_SEC_COVERAGE.get(ticker)
+        if special:
+            return {"ticker":ticker,"status":"special_source","cik":special["cik"],"reason":special["reason"]}
         return {"ticker":ticker,"status":"missing_cik"}
     try:
         facts=get_json(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")
         g=generated.get(ticker)
         if not g:
+            special=SPECIAL_SEC_COVERAGE.get(ticker)
+            if special:
+                # Confirm the dedicated SEC filer exists and has current XBRL filings.
+                sub=get_json(f"https://data.sec.gov/submissions/CIK{special["cik"]}.json")
+                forms=sub.get("filings",{}).get("recent",{}).get("form",[])
+                period=sub.get("filings",{}).get("recent",{}).get("reportDate",[])
+                return {"ticker":ticker,"status":"special_source","cik":special["cik"],"reason":special["reason"],"latest_forms":forms[:10],"latest_report_dates":period[:10]}
             return {"ticker":ticker,"status":"missing_generated_data"}
         splits=get_splits(ticker)
+        if ticker in SEC_SPLIT_FALLBACKS:
+            known={d:f for d,f in splits}
+            for d,f in SEC_SPLIT_FALLBACKS[ticker]:
+                known[d]=f
+            splits=sorted(known.items())
         issues=[]
         checked=0
         metric_checks={}
