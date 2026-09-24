@@ -152,6 +152,31 @@ def select_yearly(rows):
         out[str(fy)] = row
     return out
 
+def select_latest_annual_eps(rows, canonical_years):
+    """Use the latest annual filing's EPS for each fiscal period.
+    
+    Subsequent SEC filings normally retrospectively adjust historical
+    per-share amounts for stock splits. Using the latest filing for the same
+    fiscal period therefore keeps EPS on one consistent share basis.
+    """
+    by_end = {}
+    for x in rows:
+        end, filed = x.get("end"), x.get("filed")
+        if not end or not filed or x.get("form") not in ("10-K", "10-K/A"):
+            continue
+        try:
+            days = (date.fromisoformat(end) - date.fromisoformat(x["start"])).days
+        except Exception:
+            continue
+        if 300 <= days <= 400:
+            prev = by_end.get(end)
+            if prev is None or filed > prev.get("filed", ""):
+                by_end[end] = dict(x)
+    return {
+        str(fy): by_end.get(original.get("end"), original)
+        for fy, original in canonical_years.items()
+    }
+
 def get_market_data(ticker):
     try:
         data = get_json(PRICE_URL.format(ticker))
@@ -208,6 +233,13 @@ def build_company(ticker, cik):
     raw_facts = facts.get("facts", {}).get("us-gaap", {})
     dei_facts = facts.get("facts", {}).get("dei", {})
     yearly = {m: select_yearly(rows) for m, rows in metrics.items()}
+
+    # EPS is special: later 10-Ks generally restate historical EPS after
+    # stock splits. Use the latest annual filing for each period so EPS growth
+    # is calculated on a consistent current-share basis. This avoids applying
+    # a market-data split factor to SEC EPS that may already be split-adjusted.
+    if "eps" in metrics:
+        yearly["eps"] = select_latest_annual_eps(metrics["eps"], yearly.get("eps", {}))
 
     # Instant balance-sheet facts are keyed by period-end dates, while annual
     # income/cash-flow facts are keyed by SEC fiscal-year labels. Normalize
@@ -343,8 +375,6 @@ def build_company(ticker, cik):
             v = yearly.get(key, {}).get(y)
             if v:
                 value = float(v["val"])
-                if key == "eps":
-                    value *= eps_split_adjustment(v["end"], splits)
                 divisor = 1e9 if unit == "B" else (1e6 if unit == "M" else 1)
                 vals.append(round(value / divisor, 6))
             else:
