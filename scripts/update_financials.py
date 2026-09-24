@@ -217,16 +217,20 @@ def get_splits(ticker):
         print(ticker, "SPLIT ERROR", repr(e))
         return []
 
-def eps_split_adjustment(period_end, splits):
-    # EPS moves inversely to the number of shares after a split.
-    # A 10:1 forward split therefore divides historical EPS by 10;
-    # a 1:10 reverse split multiplies it by 10.
+def eps_split_adjustment(basis_date, splits):
+    # EPS is reported on the share basis used in the filing. A later stock
+    # split is not necessarily reflected in older filings, so normalize based
+    # on the filing date rather than the fiscal period end.
+    #
+    # Example: NVIDIA FY2022 EPS was reported in a 2022 10-K after the 2021
+    # 4-for-1 split, but before the 2024 10-for-1 split. We therefore divide
+    # that historical EPS by 10, but must not divide by the already-reflected
+    # 4-for-1 split again.
     factor = 1.0
     for split_date, share_factor, _ratio in splits:
-        if split_date > period_end:
+        if split_date > basis_date:
             factor /= share_factor
     return factor
-
 def build_company(ticker, cik):
     facts = get_json(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")
     metrics = annual_facts(facts)
@@ -309,6 +313,15 @@ def build_company(ticker, cik):
 
     price, currency, exchange = get_market_data(ticker)
     splits = get_splits(ticker)
+
+    # Normalize annual SEC EPS to the current share basis. The selected
+    # observation is the latest annual filing containing that fiscal period,
+    # so later splits must be applied based on filing date rather than fiscal
+    # period end. This handles multiple split eras without double adjustment.
+    for fy, row in yearly.get("eps", {}).items():
+        basis_date = row.get("filed") or row.get("end")
+        if basis_date:
+            row["val"] = float(row["val"]) * eps_split_adjustment(basis_date, splits)
     latest_period_end = common_period
     latest_form = None
     latest_filed = None
