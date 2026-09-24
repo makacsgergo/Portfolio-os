@@ -12,21 +12,24 @@ REPORT = ROOT / "financial_qa.json"
 SEC_HEADERS = {"User-Agent": os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com"), "Accept-Encoding": "gzip, deflate"}
 YAHOO_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{}?period1=0&period2={}&interval=1d&events=split"
 
+ANNUAL_FORMS=("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
+INSTANT_FORMS=("10-K","10-K/A","10-Q","10-Q/A","20-F","20-F/A","40-F","40-F/A","6-K","6-K/A")
+TAXONOMIES=("us-gaap","ifrs-full")
 TAGS = {
-    "revenue": ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet"],
+    "revenue": ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet", "Revenue"],
     "gross_profit": ["GrossProfit"],
-    "operating_income": ["OperatingIncomeLoss"],
+    "operating_income": ["OperatingIncomeLoss", "OperatingProfitLoss"],
     "net_income": ["NetIncomeLoss", "ProfitLoss"],
     "eps": ["EarningsPerShareDiluted"],
-    "rnd": ["ResearchAndDevelopmentExpense", "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost"],
-    "da": ["DepreciationDepletionAndAmortization", "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment", "DepreciationDepletionAndAmortizationAndAccretion"],
-    "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets", "PaymentsToAcquirePropertyPlantAndEquipmentAndOtherPropertyPlantAndEquipment"],
-    "cfo": ["NetCashProvidedByUsedInOperatingActivities"],
-    "cash": ["CashAndCashEquivalentsAtCarryingValue"],
+    "rnd": ["ResearchAndDevelopmentExpense", "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost", "ResearchAndDevelopmentExpenditure"],
+    "da": ["DepreciationDepletionAndAmortization", "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment", "DepreciationDepletionAndAmortizationAndAccretion", "DepreciationAndAmortisation"],
+    "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets", "PaymentsToAcquirePropertyPlantAndEquipmentAndOtherPropertyPlantAndEquipment", "PurchaseOfPropertyPlantAndEquipment"],
+    "cfo": ["NetCashProvidedByUsedInOperatingActivities", "NetCashFlowsFromUsedInOperatingActivities"],
+    "cash": ["CashAndCashEquivalentsAtCarryingValue", "CashAndCashEquivalents"],
     "assets": ["Assets"],
-    "equity": ["StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"],
-    "debt_current": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebt"],
-    "debt_noncurrent": ["LongTermDebtNoncurrent", "LongTermDebt"],
+    "equity": ["StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest", "Equity"],
+    "debt_current": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebt", "BorrowingsCurrent"],
+    "debt_noncurrent": ["LongTermDebtNoncurrent", "LongTermDebt", "BorrowingsNoncurrent"],
 }
 
 FLOW_METRICS = ["revenue","gross_profit","operating_income","net_income","eps","rnd","da","capex","cfo"]
@@ -41,7 +44,9 @@ def get_json(url, headers=SEC_HEADERS):
 def annual_rows(facts, metric):
     us = facts.get("facts", {}).get("us-gaap", {})
     rows = []
-    for tag in TAGS[metric]:
+    for taxonomy in TAXONOMIES:
+        source=facts.get("facts",{}).get(taxonomy,{})
+        for tag in TAGS[metric]:
         obj = us.get(tag)
         if not obj:
             continue
@@ -50,7 +55,7 @@ def annual_rows(facts, metric):
         if not unit:
             continue
         for x in units[unit]:
-            if x.get("form") not in ("10-K","10-K/A") or not x.get("start") or not x.get("end"):
+            if x.get("form") not in ANNUAL_FORMS or not x.get("start") or not x.get("end"):
                 continue
             try:
                 days = (date.fromisoformat(x["end"]) - date.fromisoformat(x["start"])).days
@@ -63,7 +68,7 @@ def annual_rows(facts, metric):
     return rows
 
 def instant_rows(facts, metric):
-    source = facts.get("facts", {}).get("us-gaap", {})
+    source = {}\n    for taxonomy in TAXONOMIES:\n        source.update(facts.get("facts", {}).get(taxonomy, {}))
     rows = []
     for tag in TAGS[metric]:
         obj = source.get(tag)
@@ -74,7 +79,7 @@ def instant_rows(facts, metric):
         if not unit:
             continue
         for x in units[unit]:
-            if x.get("form") in ("10-K","10-K/A","10-Q","10-Q/A") and x.get("end") and not x.get("start"):
+            if x.get("form") in INSTANT_FORMS and x.get("end") and not x.get("start"):
                 y = dict(x); y["_tag"] = tag; rows.append(y)
     return rows
 
