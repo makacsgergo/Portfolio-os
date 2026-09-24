@@ -43,7 +43,11 @@ TOL = {"eps": 0.015, "default": 0.001}
 
 # SEC-documented corporate-action fallback for cases where the secondary split
 # feed is unavailable. Keep SEC as the accounting authority.
-SEC_EPS_RESTATED_FALLBACKS = {\n    "SHOP": {"2020": 0.259},  # SEC 2023 annual filing retrospectively adjusts per-share amounts for the 10-for-1 split\n}\n\nSEC_SPLIT_FALLBACKS = {
+SEC_EPS_RESTATED_FALLBACKS = {
+    "SHOP": {"2020": 0.259},  # SEC 2023 annual filing retrospectively adjusts per-share amounts for the 10-for-1 split
+}
+
+SEC_SPLIT_FALLBACKS = {
     "SHOP": [("2022-06-28", 10.0)],  # SEC: 10-for-1 split, effective June 28, 2022
 }
 
