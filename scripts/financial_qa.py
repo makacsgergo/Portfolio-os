@@ -1,4 +1,4 @@
-import json, math, os, time
+import argparse, json, math, os, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date
 from pathlib import Path
@@ -272,9 +272,20 @@ def audit_one(stock, generated, cik_map):
         return {"ticker":ticker,"status":"error","error":repr(e)}
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--start", type=int, default=0)
+    parser.add_argument("--count", type=int, default=0)
+    parser.add_argument("--output", default=str(REPORT))
+    args = parser.parse_args()
+
     universe=json.loads(UNIVERSE.read_text())
     generated=json.loads(FINANCIALS.read_text())
     stocks=universe.get("stocks",[])
+    stocks = sorted(stocks, key=lambda x: x["ticker"].upper())
+    if args.count > 0:
+        stocks = stocks[args.start:args.start + args.count]
+    else:
+        stocks = stocks[args.start:]
     sec_map=get_json("https://www.sec.gov/files/company_tickers.json")
     cik_map={v["ticker"].upper():str(v["cik_str"]).zfill(10) for v in sec_map.values()}
     cik_map.update({"BF.B":"0000014693","BRK.B":"0001067983","EA":"0000712515","XOM":"0000034088"})
@@ -282,7 +293,7 @@ def main():
     # Full-universe audit: keep this workflow-triggering comment with the QA logic.
     # re-selects annual and point-in-time facts from fresh companyfacts data.
     results=[]
-    with ThreadPoolExecutor(max_workers=4) as ex:
+    with ThreadPoolExecutor(max_workers=2) as ex:
         futs=[ex.submit(audit_one,s,generated,cik_map) for s in stocks]
         for fut in as_completed(futs):
             results.append(fut.result())
@@ -294,7 +305,8 @@ def main():
     mismatch=[r for r in results if r["status"]=="mismatch"]
     errors=[r for r in results if r["status"]=="error"]
     report={"generated_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"universe_count":len(stocks),"counts":counts,"mismatch_tickers":[r["ticker"] for r in mismatch],"error_tickers":[r["ticker"] for r in errors],"results":results}
-    REPORT.write_text(json.dumps(report,indent=2))
+    output_path = Path(args.output)
+    output_path.write_text(json.dumps(report,indent=2))
     missing_generated=[r["ticker"] for r in results if r["status"]=="missing_generated_data"]
     missing_cik=[r["ticker"] for r in results if r["status"]=="missing_cik"]
     print(json.dumps({"universe_count":len(stocks),"counts":counts,"mismatches":len(mismatch),"errors":len(errors),"missing_generated":missing_generated,"missing_cik":missing_cik},indent=2))
