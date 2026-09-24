@@ -350,7 +350,7 @@ def build_company(ticker, cik):
             else:
                 vals.append(None)
         if any(v is not None for v in vals):
-            result["metrics"].append({"name": label, "unit": unit, "category": ("income_statement" if label in ["Revenue","Gross profit","Operating income","Net income","Diluted EPS","R&D","D&A"] else "balance_sheet" if label in ["Cash","Current debt","Long-term debt","Total assets","Total equity","Shares outstanding"] else "cash_flow"), "values": vals})
+            # Capex is an annual cash-flow metric, so it follows the same 10-year\n        # historical series as the other annual financial metrics.\n        category = ("income_statement" if label in ["Revenue","Gross profit","Operating income","Net income","Diluted EPS","R&D","D&A"]\n                    else "balance_sheet" if label in ["Cash","Current debt","Long-term debt","Total assets","Total equity","Shares outstanding"]\n                    else "cash_flow")\n        result["metrics"].append({"name": label, "unit": unit, "category": category, "values": vals})
 
     buybacks = yearly.get("buybacks", {})
     cfo = yearly.get("cfo", {})
