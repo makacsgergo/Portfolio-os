@@ -39,6 +39,9 @@ TAGS = {
 FLOW_METRICS = ["revenue","gross_profit","operating_income","net_income","eps","rnd","da","capex","cfo"]
 INSTANT_METRICS = ["cash","assets","equity","debt_current","debt_noncurrent"]
 TOL = {"eps": 0.015, "default": 0.001}
+ANNUAL_FORMS = ("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
+INSTANT_FORMS = ("10-K","10-K/A","10-Q","10-Q/A","20-F","20-F/A","40-F","40-F/A","6-K","6-K/A")
+TAXONOMIES = ("us-gaap","ifrs-full")
 
 def get_json(url, headers=SEC_HEADERS):
     r = requests.get(url, headers=headers, timeout=45)
