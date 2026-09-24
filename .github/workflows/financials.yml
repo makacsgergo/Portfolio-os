@@ -45,7 +45,12 @@ jobs:
             echo "No financial data changes."
           else
             git commit -m "Update SEC financial data"
-            # Rebase generated data onto any newer main commit before pushing.
-            git pull --rebase origin main
+            # financials.json may also have changed in a newer bot commit.
+            # Keep this freshly generated file, but rebuild the commit on top
+            # of current main so overlapping generated-data commits cannot conflict.
+            git fetch origin main
+            git reset --mixed origin/main
+            git add financials.json
+            git commit -m "Update SEC financial data"
             git push
           fi
