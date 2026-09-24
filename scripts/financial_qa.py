@@ -241,7 +241,10 @@ def audit_one(stock, generated, cik_map):
             for i,y in enumerate(year_keys):
                 if not gm or i >= len(gm.get("values",[])) or y not in latest_can:
                     continue
-                expected=float(latest_can[y]["val"])\n                if metric == "revenue" and ticker in SEC_REVENUE_REPORTED_OVERRIDES and y in SEC_REVENUE_REPORTED_OVERRIDES[ticker]:\n                    expected = float(SEC_REVENUE_REPORTED_OVERRIDES[ticker][y]) * 1e9\n                if metric=="eps":
+                expected=float(latest_can[y]["val"])
+                if metric == "revenue" and ticker in SEC_REVENUE_REPORTED_OVERRIDES and y in SEC_REVENUE_REPORTED_OVERRIDES[ticker]:
+                    expected = float(SEC_REVENUE_REPORTED_OVERRIDES[ticker][y]) * 1e9
+                if metric=="eps":
                     # Compare the app's value with the latest filed annual EPS
                     # normalized for every split after that filing date.
                     eps_rows = [x for x in rows if x.get("end") == latest_can[y]["end"]]
