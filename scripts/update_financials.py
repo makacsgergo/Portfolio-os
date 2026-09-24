@@ -335,6 +335,7 @@ def build_company(ticker, cik):
         ("Total equity", "equity", "B"),
         ("Shares outstanding", "shares_outstanding", "M"),
         ("Share repurchases", "buybacks", "B"),
+        ("Capex spend", "capex", "B"),
     ]
     for label, key, unit in specs:
         vals = []
@@ -544,6 +545,9 @@ def build_company(ticker, cik):
     if "cfo" in ttm_metrics and "capex" in ttm_metrics:
         ttm_metrics["fcf"]={"value":round(ttm_metrics["cfo"]["value"]-abs(ttm_metrics["capex"]["value"]),6),"unit":"B","period_end":ttm_metrics["capex"]["period_end"]}
     if ttm_metrics:
+        ttm_periods=[v.get("period_end") for v in ttm_metrics.values() if v.get("period_end")]
+        if ttm_periods:
+            ttm_metrics["period_end"]=max(ttm_periods)
         result["latest_reported"]["ttm"]=ttm_metrics
 
         ttm_rev=ttm_metrics.get("revenue",{}).get("value")
