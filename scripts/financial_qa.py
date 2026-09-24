@@ -239,6 +239,10 @@ def audit_one(stock, generated, cik_map):
                     latest = latest_annual_eps(eps_rows).get(can[y]["end"]) if eps_rows else None
                     if latest:
                         expected = adjust_eps(latest,splits) if latest.get("form") in ("10-K","10-K/A") else float(latest["val"])
+                    # Some issuers retrospectively restate historical EPS after a split.
+                    # Prefer the explicitly documented SEC restatement over the original filing basis.
+                    if ticker in SEC_EPS_RESTATED_FALLBACKS and y in SEC_EPS_RESTATED_FALLBACKS[ticker]:
+                        expected = float(SEC_EPS_RESTATED_FALLBACKS[ticker][y])
                     actual=float(gm["values"][i])
                 else:
                     actual=float(gm["values"][i]) * 1e9
