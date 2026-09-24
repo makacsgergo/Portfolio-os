@@ -202,7 +202,7 @@ def audit_one(stock, generated, cik_map):
             special=SPECIAL_SEC_COVERAGE.get(ticker)
             if special:
                 # Confirm the dedicated SEC filer exists and has current XBRL filings.
-                sub=get_json(f"https://data.sec.gov/submissions/CIK{special["cik"]}.json")
+                sub=get_json(f"https://data.sec.gov/submissions/CIK{special['cik']}.json")
                 forms=sub.get("filings",{}).get("recent",{}).get("form",[])
                 period=sub.get("filings",{}).get("recent",{}).get("reportDate",[])
                 return {"ticker":ticker,"status":"special_source","cik":special["cik"],"reason":special["reason"],"latest_forms":forms[:10],"latest_report_dates":period[:10]}
@@ -316,6 +316,10 @@ def main():
     for r in results: counts[r["status"]]=counts.get(r["status"],0)+1
     mismatch=[r for r in results if r["status"]=="mismatch"]
     errors=[r for r in results if r["status"]=="error"]
+    for r in mismatch[:10]:
+        print("MISMATCH", r["ticker"], json.dumps({k:v for k,v in r["checks"].items() if v["mismatches"]}, separators=(",", ":")))
+    for r in errors[:10]:
+        print("ERROR", r["ticker"], r.get("error"))
     quality = {"missing_eps_tickers": [], "year_gaps": [], "revenue_jumps": []}
     for ticker, g in generated.items():
         years = g.get("years", [])
