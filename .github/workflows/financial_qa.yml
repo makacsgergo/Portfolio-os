@@ -27,23 +27,43 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Install dependencies
         run: pip install requests
-
-      - name: Audit all universe companies against fresh SEC XBRL
+      - name: Audit universe in increments
         env:
           SEC_USER_AGENT: "Portfolio OS research app contact@example.com"
-        run: python scripts/financial_qa.py
-
+        run: |
+          rm -f financial_qa_batch_*.json
+          for START in 0 50 100 150 200 250 300 350 400 450 500; do
+            echo "=== Auditing batch START=\$START COUNT=50 ==="
+            python scripts/financial_qa.py --start "\$START" --count 50 --output "financial_qa_batch_\${START}.json"
+          done
+      - name: Combine batch reports
+        run: |
+          python - <<'PY'
+          import json, glob
+          reports=[json.load(open(p)) for p in sorted(glob.glob("financial_qa_batch_*.json"))]
+          results=[]
+          for r in reports: results.extend(r["results"])
+          results.sort(key=lambda x:x["ticker"])
+          counts={}
+          for r in results: counts[r["status"]]=counts.get(r["status"],0)+1
+          mismatches=[r["ticker"] for r in results if r["status"]=="mismatch"]
+          errors=[r["ticker"] for r in results if r["status"]=="error"]
+          out={"generated_utc":max((r["generated_utc"] for r in reports),default=None),"universe_count":len(results),"counts":counts,"mismatch_tickers":mismatches,"error_tickers":errors,"results":results}
+          json.dump(out,open("financial_qa.json","w"),indent=2)
+          print(json.dumps({"universe_count":len(results),"counts":counts,"mismatches":len(mismatches),"errors":len(errors)},indent=2))
+          if errors: raise SystemExit(2)
+          PY
       - name: Upload QA report
         uses: actions/upload-artifact@v4
         with:
           name: financial-qa-report
-          path: financial_qa.json
+          path: |
+            financial_qa.json
+            financial_qa_batch_*.json
           retention-days: 30
