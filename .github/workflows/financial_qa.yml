@@ -1,0 +1,44 @@
+name: Financial data QA
+
+on:
+  workflow_run:
+    workflows: ["Update financial data"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: financial-data-qa
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Audit all universe companies against fresh SEC XBRL
+        env:
+          SEC_USER_AGENT: "Portfolio OS research app contact@example.com"
+        run: python scripts/financial_qa.py
+
+      - name: Upload QA report
+        uses: actions/upload-artifact@v4
+        with:
+          name: financial-qa-report
+          path: financial_qa.json
+          retention-days: 30
