@@ -1,6 +1,11 @@
 name: Financial data QA
 
 on:
+  push:
+    paths:
+      - "scripts/financial_qa.py"
+      - "financials.json"
+      - ".github/workflows/financial_qa.yml"
   workflow_run:
     workflows: ["Update financial data"]
     types: [completed]
