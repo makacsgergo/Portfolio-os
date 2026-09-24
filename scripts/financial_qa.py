@@ -139,9 +139,9 @@ def close(a,b,tol):
         return False
     return abs(a-b) <= max(tol, abs(b)*0.002)
 
-def audit_one(stock, generated):
+def audit_one(stock, generated, cik_map):
     ticker = stock["ticker"].upper()
-    cik = str(stock.get("cik","")).zfill(10)
+    cik = cik_map.get(ticker)
     if not cik or cik == "0000000000":
         return {"ticker":ticker,"status":"missing_cik"}
     try:
@@ -215,11 +215,13 @@ def main():
     universe=json.loads(UNIVERSE.read_text())
     generated=json.loads(FINANCIALS.read_text())
     stocks=universe.get("stocks",[])
+    sec_map=get_json("https://www.sec.gov/files/company_tickers.json")
+    cik_map={v["ticker"].upper():str(v["cik_str"]).zfill(10) for v in sec_map.values()}
     # SEC's API is the accounting source of truth; the audit independently
     # re-selects annual and point-in-time facts from fresh companyfacts data.
     results=[]
     with ThreadPoolExecutor(max_workers=4) as ex:
-        futs=[ex.submit(audit_one,s,generated) for s in stocks]
+        futs=[ex.submit(audit_one,s,generated,cik_map) for s in stocks]
         for fut in as_completed(futs):
             results.append(fut.result())
             if len(results)%25==0:
