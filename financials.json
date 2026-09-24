@@ -6,7 +6,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:14Z",
+    "price_updated_utc": "2026-09-24T09:12:14Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -619,7 +619,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:23Z",
+    "price_updated_utc": "2026-09-24T09:03:15Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -1264,7 +1264,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:25Z",
+    "price_updated_utc": "2026-09-24T09:03:16Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -1943,7 +1943,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:26Z",
+    "price_updated_utc": "2026-09-24T09:03:18Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -2493,7 +2493,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:27Z",
+    "price_updated_utc": "2026-09-24T09:03:19Z",
     "years": [
       "FY2021",
       "FY2022",
@@ -2936,7 +2936,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:28Z",
+    "price_updated_utc": "2026-09-24T09:03:21Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -3498,7 +3498,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:29Z",
+    "price_updated_utc": "2026-09-24T09:03:23Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -3781,7 +3781,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:30Z",
+    "price_updated_utc": "2026-09-24T09:03:25Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -4254,7 +4254,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:32Z",
+    "price_updated_utc": "2026-09-24T09:03:26Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -4905,7 +4905,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:33Z",
+    "price_updated_utc": "2026-09-24T09:03:28Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -5518,7 +5518,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:34Z",
+    "price_updated_utc": "2026-09-24T09:03:30Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -6042,7 +6042,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:35Z",
+    "price_updated_utc": "2026-09-24T09:03:32Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -6459,7 +6459,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:37Z",
+    "price_updated_utc": "2026-09-24T09:03:33Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -7049,7 +7049,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:38Z",
+    "price_updated_utc": "2026-09-24T09:03:35Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -7606,7 +7606,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:39Z",
+    "price_updated_utc": "2026-09-24T09:03:37Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -8196,7 +8196,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:40Z",
+    "price_updated_utc": "2026-09-24T09:03:39Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -8619,7 +8619,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:42Z",
+    "price_updated_utc": "2026-09-24T09:03:42Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -8964,7 +8964,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:43Z",
+    "price_updated_utc": "2026-09-24T09:03:44Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -9281,7 +9281,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:44Z",
+    "price_updated_utc": "2026-09-24T09:03:46Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -9682,7 +9682,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:45Z",
+    "price_updated_utc": "2026-09-24T09:03:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -10082,7 +10082,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:46Z",
+    "price_updated_utc": "2026-09-24T09:03:49Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -10583,7 +10583,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:47Z",
+    "price_updated_utc": "2026-09-24T09:03:50Z",
     "years": [
       "FY2024",
       "FY2025"
@@ -10900,7 +10900,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:48Z",
+    "price_updated_utc": "2026-09-24T09:03:51Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -11579,7 +11579,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:49Z",
+    "price_updated_utc": "2026-09-24T09:03:53Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -12114,7 +12114,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:51Z",
+    "price_updated_utc": "2026-09-24T09:03:55Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -12503,7 +12503,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:52Z",
+    "price_updated_utc": "2026-09-24T09:03:56Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -13102,7 +13102,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:53Z",
+    "price_updated_utc": "2026-09-24T09:03:57Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -13603,7 +13603,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:54Z",
+    "price_updated_utc": "2026-09-24T09:03:59Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -14277,7 +14277,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:55Z",
+    "price_updated_utc": "2026-09-24T09:04:00Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -14767,7 +14767,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:56Z",
+    "price_updated_utc": "2026-09-24T09:04:02Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -15441,7 +15441,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:57Z",
+    "price_updated_utc": "2026-09-24T09:04:03Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -15935,7 +15935,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:42:59Z",
+    "price_updated_utc": "2026-09-24T09:04:05Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -16580,7 +16580,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:00Z",
+    "price_updated_utc": "2026-09-24T09:04:06Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -16857,7 +16857,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:01Z",
+    "price_updated_utc": "2026-09-24T09:04:09Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -17408,7 +17408,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:02Z",
+    "price_updated_utc": "2026-09-24T09:04:11Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -18014,7 +18014,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:03Z",
+    "price_updated_utc": "2026-09-24T09:04:13Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -18549,7 +18549,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:05Z",
+    "price_updated_utc": "2026-09-24T09:04:16Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -19043,7 +19043,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:06Z",
+    "price_updated_utc": "2026-09-24T09:04:17Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -19599,7 +19599,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:08Z",
+    "price_updated_utc": "2026-09-24T09:04:19Z",
     "years": [
       "FY2021",
       "FY2022",
@@ -19829,7 +19829,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:09Z",
+    "price_updated_utc": "2026-09-24T09:04:22Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -20400,7 +20400,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:10Z",
+    "price_updated_utc": "2026-09-24T09:04:23Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -21026,7 +21026,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:11Z",
+    "price_updated_utc": "2026-09-24T09:04:25Z",
     "years": [
       "FY2022",
       "FY2023",
@@ -21280,7 +21280,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:13Z",
+    "price_updated_utc": "2026-09-24T09:04:26Z",
     "years": [
       "FY2021",
       "FY2022",
@@ -21774,7 +21774,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:14Z",
+    "price_updated_utc": "2026-09-24T09:04:27Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -22372,7 +22372,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:15Z",
+    "price_updated_utc": "2026-09-24T09:04:29Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -22639,7 +22639,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:16Z",
+    "price_updated_utc": "2026-09-24T09:04:30Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -22960,7 +22960,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:20Z",
+    "price_updated_utc": "2026-09-24T09:04:36Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -23446,7 +23446,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:21Z",
+    "price_updated_utc": "2026-09-24T09:04:38Z",
     "years": [
       "FY2018",
       "FY2019",
@@ -24003,7 +24003,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:22Z",
+    "price_updated_utc": "2026-09-24T09:04:39Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -24499,7 +24499,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:23Z",
+    "price_updated_utc": "2026-09-24T09:04:41Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -25093,7 +25093,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:25Z",
+    "price_updated_utc": "2026-09-24T09:04:42Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -25772,7 +25772,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:26Z",
+    "price_updated_utc": "2026-09-24T09:04:44Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -26245,7 +26245,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:27Z",
+    "price_updated_utc": "2026-09-24T09:04:45Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -26873,7 +26873,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:28Z",
+    "price_updated_utc": "2026-09-24T09:04:47Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -27455,7 +27455,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:30Z",
+    "price_updated_utc": "2026-09-24T09:04:49Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -27793,7 +27793,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:31Z",
+    "price_updated_utc": "2026-09-24T09:04:51Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -28367,7 +28367,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:32Z",
+    "price_updated_utc": "2026-09-24T09:04:53Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -28922,7 +28922,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:34Z",
+    "price_updated_utc": "2026-09-24T09:04:54Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -29537,7 +29537,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:35Z",
+    "price_updated_utc": "2026-09-24T09:04:57Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -30108,7 +30108,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:36Z",
+    "price_updated_utc": "2026-09-24T09:04:58Z",
     "years": [
       "FY2018",
       "FY2019",
@@ -30644,7 +30644,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:37Z",
+    "price_updated_utc": "2026-09-24T09:05:00Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -31150,7 +31150,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:38Z",
+    "price_updated_utc": "2026-09-24T09:05:01Z",
     "years": [
       "FY2023",
       "FY2024",
@@ -31506,7 +31506,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:39Z",
+    "price_updated_utc": "2026-09-24T09:05:02Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -32062,7 +32062,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:41Z",
+    "price_updated_utc": "2026-09-24T09:05:05Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -32640,7 +32640,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:42Z",
+    "price_updated_utc": "2026-09-24T09:05:06Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -33032,7 +33032,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:43Z",
+    "price_updated_utc": "2026-09-24T09:05:07Z",
     "years": [
       "FY2024",
       "FY2025"
@@ -33347,7 +33347,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:44Z",
+    "price_updated_utc": "2026-09-24T09:05:09Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -33876,7 +33876,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:46Z",
+    "price_updated_utc": "2026-09-24T09:05:12Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -34293,7 +34293,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:47Z",
+    "price_updated_utc": "2026-09-24T09:05:13Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -34862,7 +34862,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:49Z",
+    "price_updated_utc": "2026-09-24T09:05:15Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -35336,7 +35336,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:50Z",
+    "price_updated_utc": "2026-09-24T09:05:17Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -35950,7 +35950,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:51Z",
+    "price_updated_utc": "2026-09-24T09:05:18Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -36350,7 +36350,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:52Z",
+    "price_updated_utc": "2026-09-24T09:05:21Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -36758,7 +36758,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:54Z",
+    "price_updated_utc": "2026-09-24T09:05:24Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -37203,7 +37203,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:55Z",
+    "price_updated_utc": "2026-09-24T09:05:25Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -37693,7 +37693,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:56Z",
+    "price_updated_utc": "2026-09-24T09:05:27Z",
     "years": [
       "FY2020",
       "FY2021",
@@ -38131,7 +38131,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:57Z",
+    "price_updated_utc": "2026-09-24T09:05:28Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -38633,7 +38633,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:43:58Z",
+    "price_updated_utc": "2026-09-24T09:05:30Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -39236,7 +39236,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:00Z",
+    "price_updated_utc": "2026-09-24T09:05:32Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -39609,7 +39609,7 @@
     "price_currency": "USD",
     "exchange": "BTS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:01Z",
+    "price_updated_utc": "2026-09-24T09:05:34Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -40249,7 +40249,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:02Z",
+    "price_updated_utc": "2026-09-24T09:05:35Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -40806,7 +40806,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:04Z",
+    "price_updated_utc": "2026-09-24T09:05:38Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -41168,7 +41168,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:05Z",
+    "price_updated_utc": "2026-09-24T09:05:39Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -41702,7 +41702,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:06Z",
+    "price_updated_utc": "2026-09-24T09:05:41Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -42203,7 +42203,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:07Z",
+    "price_updated_utc": "2026-09-24T09:05:42Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -42860,7 +42860,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:08Z",
+    "price_updated_utc": "2026-09-24T09:05:43Z",
     "years": [
       "FY2022",
       "FY2023",
@@ -43267,7 +43267,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:10Z",
+    "price_updated_utc": "2026-09-24T09:05:45Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -43886,7 +43886,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:11Z",
+    "price_updated_utc": "2026-09-24T09:05:46Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -44327,7 +44327,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:12Z",
+    "price_updated_utc": "2026-09-24T09:05:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -44983,7 +44983,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:13Z",
+    "price_updated_utc": "2026-09-24T09:05:50Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -45534,7 +45534,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:14Z",
+    "price_updated_utc": "2026-09-24T09:05:52Z",
     "years": [
       "FY2018",
       "FY2019",
@@ -46038,7 +46038,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:15Z",
+    "price_updated_utc": "2026-09-24T09:05:54Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -46651,7 +46651,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:17Z",
+    "price_updated_utc": "2026-09-24T09:05:56Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -47062,7 +47062,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:18Z",
+    "price_updated_utc": "2026-09-24T09:05:58Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -47720,7 +47720,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:19Z",
+    "price_updated_utc": "2026-09-24T09:06:00Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -48266,7 +48266,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:21Z",
+    "price_updated_utc": "2026-09-24T09:06:01Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -48722,7 +48722,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:22Z",
+    "price_updated_utc": "2026-09-24T09:06:03Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -49139,7 +49139,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:23Z",
+    "price_updated_utc": "2026-09-24T09:06:04Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -49612,7 +49612,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:24Z",
+    "price_updated_utc": "2026-09-24T09:06:06Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -50200,7 +50200,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:26Z",
+    "price_updated_utc": "2026-09-24T09:06:08Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -50806,7 +50806,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:27Z",
+    "price_updated_utc": "2026-09-24T09:06:10Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -51397,7 +51397,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:29Z",
+    "price_updated_utc": "2026-09-24T09:06:12Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -51986,7 +51986,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:30Z",
+    "price_updated_utc": "2026-09-24T09:06:13Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -52380,7 +52380,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:31Z",
+    "price_updated_utc": "2026-09-24T09:06:15Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -52931,7 +52931,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:32Z",
+    "price_updated_utc": "2026-09-24T09:06:16Z",
     "years": [
       "FY2021",
       "FY2022",
@@ -53431,7 +53431,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:33Z",
+    "price_updated_utc": "2026-09-24T09:06:18Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -54110,7 +54110,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:34Z",
+    "price_updated_utc": "2026-09-24T09:06:20Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -54438,7 +54438,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:35Z",
+    "price_updated_utc": "2026-09-24T09:06:21Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -55089,7 +55089,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:37Z",
+    "price_updated_utc": "2026-09-24T09:06:22Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -55746,7 +55746,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:38Z",
+    "price_updated_utc": "2026-09-24T09:06:24Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -56303,7 +56303,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:39Z",
+    "price_updated_utc": "2026-09-24T09:06:25Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -56776,7 +56776,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:40Z",
+    "price_updated_utc": "2026-09-24T09:06:27Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -57110,7 +57110,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:41Z",
+    "price_updated_utc": "2026-09-24T09:06:29Z",
     "years": [
       "FY2023",
       "FY2024",
@@ -57557,7 +57557,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:42Z",
+    "price_updated_utc": "2026-09-24T09:06:31Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -58079,7 +58079,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:43Z",
+    "price_updated_utc": "2026-09-24T09:06:32Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -58742,7 +58742,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:44Z",
+    "price_updated_utc": "2026-09-24T09:06:34Z",
     "years": [
       "FY2020",
       "FY2021",
@@ -59104,7 +59104,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:46Z",
+    "price_updated_utc": "2026-09-24T09:06:36Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -59773,7 +59773,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:47Z",
+    "price_updated_utc": "2026-09-24T09:06:39Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -60418,7 +60418,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:49Z",
+    "price_updated_utc": "2026-09-24T09:06:40Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -60891,7 +60891,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:50Z",
+    "price_updated_utc": "2026-09-24T09:06:42Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -61548,7 +61548,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:51Z",
+    "price_updated_utc": "2026-09-24T09:06:43Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -61919,7 +61919,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:52Z",
+    "price_updated_utc": "2026-09-24T09:06:44Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -62430,7 +62430,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:53Z",
+    "price_updated_utc": "2026-09-24T09:06:46Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -63045,7 +63045,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:54Z",
+    "price_updated_utc": "2026-09-24T09:06:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -63434,7 +63434,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:56Z",
+    "price_updated_utc": "2026-09-24T09:06:50Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -64046,7 +64046,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:57Z",
+    "price_updated_utc": "2026-09-24T09:06:51Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -64557,7 +64557,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:58Z",
+    "price_updated_utc": "2026-09-24T09:06:52Z",
     "years": [
       "FY2020",
       "FY2021",
@@ -64947,7 +64947,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:44:59Z",
+    "price_updated_utc": "2026-09-24T09:06:54Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -65372,7 +65372,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:00Z",
+    "price_updated_utc": "2026-09-24T09:06:56Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -65812,7 +65812,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:01Z",
+    "price_updated_utc": "2026-09-24T09:06:58Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -66330,7 +66330,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:02Z",
+    "price_updated_utc": "2026-09-24T09:06:59Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -66838,7 +66838,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:03Z",
+    "price_updated_utc": "2026-09-24T09:07:01Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -67426,7 +67426,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:04Z",
+    "price_updated_utc": "2026-09-24T09:07:02Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -67923,7 +67923,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:06Z",
+    "price_updated_utc": "2026-09-24T09:07:04Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -68557,7 +68557,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:07Z",
+    "price_updated_utc": "2026-09-24T09:07:05Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -68963,7 +68963,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:08Z",
+    "price_updated_utc": "2026-09-24T09:07:07Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -69520,7 +69520,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:10Z",
+    "price_updated_utc": "2026-09-24T09:07:09Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -70039,7 +70039,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:11Z",
+    "price_updated_utc": "2026-09-24T09:07:11Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -70362,7 +70362,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:12Z",
+    "price_updated_utc": "2026-09-24T09:07:13Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -71019,7 +71019,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:14Z",
+    "price_updated_utc": "2026-09-24T09:07:15Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -71346,7 +71346,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:15Z",
+    "price_updated_utc": "2026-09-24T09:07:17Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -71971,7 +71971,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:16Z",
+    "price_updated_utc": "2026-09-24T09:07:18Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -72346,7 +72346,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:17Z",
+    "price_updated_utc": "2026-09-24T09:07:19Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -72904,7 +72904,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:19Z",
+    "price_updated_utc": "2026-09-24T09:07:21Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -73483,7 +73483,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:20Z",
+    "price_updated_utc": "2026-09-24T09:07:23Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -74005,7 +74005,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:22Z",
+    "price_updated_utc": "2026-09-24T09:07:25Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -74594,7 +74594,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:23Z",
+    "price_updated_utc": "2026-09-24T09:07:26Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -75073,7 +75073,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:24Z",
+    "price_updated_utc": "2026-09-24T09:07:28Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -75612,7 +75612,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:25Z",
+    "price_updated_utc": "2026-09-24T09:07:29Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -76147,7 +76147,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:26Z",
+    "price_updated_utc": "2026-09-24T09:07:31Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -76810,7 +76810,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:27Z",
+    "price_updated_utc": "2026-09-24T09:07:32Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -77390,7 +77390,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:29Z",
+    "price_updated_utc": "2026-09-24T09:07:34Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -77900,7 +77900,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:30Z",
+    "price_updated_utc": "2026-09-24T09:07:35Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -78441,7 +78441,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:32Z",
+    "price_updated_utc": "2026-09-24T09:07:37Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -78878,7 +78878,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:33Z",
+    "price_updated_utc": "2026-09-24T09:07:38Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -79161,7 +79161,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:35Z",
+    "price_updated_utc": "2026-09-24T09:07:40Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -79784,7 +79784,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:36Z",
+    "price_updated_utc": "2026-09-24T09:07:41Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -80268,7 +80268,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:38Z",
+    "price_updated_utc": "2026-09-24T09:07:43Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -80835,7 +80835,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:39Z",
+    "price_updated_utc": "2026-09-24T09:07:45Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -81248,7 +81248,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:40Z",
+    "price_updated_utc": "2026-09-24T09:07:46Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -81783,7 +81783,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:42Z",
+    "price_updated_utc": "2026-09-24T09:07:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -82288,7 +82288,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:43Z",
+    "price_updated_utc": "2026-09-24T09:07:49Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -82820,7 +82820,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:44Z",
+    "price_updated_utc": "2026-09-24T09:07:51Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -83420,7 +83420,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:46Z",
+    "price_updated_utc": "2026-09-24T09:07:52Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -83838,7 +83838,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:47Z",
+    "price_updated_utc": "2026-09-24T09:07:54Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -84412,7 +84412,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:48Z",
+    "price_updated_utc": "2026-09-24T09:07:55Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -84819,7 +84819,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:49Z",
+    "price_updated_utc": "2026-09-24T09:07:57Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -85454,7 +85454,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:51Z",
+    "price_updated_utc": "2026-09-24T09:07:59Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -86060,7 +86060,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:52Z",
+    "price_updated_utc": "2026-09-24T09:08:01Z",
     "years": [
       "FY2018",
       "FY2019",
@@ -86546,7 +86546,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:53Z",
+    "price_updated_utc": "2026-09-24T09:08:02Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -87219,7 +87219,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:55Z",
+    "price_updated_utc": "2026-09-24T09:08:04Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -87820,7 +87820,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:56Z",
+    "price_updated_utc": "2026-09-24T09:08:05Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -88414,7 +88414,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:58Z",
+    "price_updated_utc": "2026-09-24T09:08:07Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -88798,7 +88798,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:45:59Z",
+    "price_updated_utc": "2026-09-24T09:08:09Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -89421,7 +89421,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:00Z",
+    "price_updated_utc": "2026-09-24T09:08:11Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -89822,7 +89822,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:01Z",
+    "price_updated_utc": "2026-09-24T09:08:14Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -90217,7 +90217,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:03Z",
+    "price_updated_utc": "2026-09-24T09:08:15Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -90745,7 +90745,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:04Z",
+    "price_updated_utc": "2026-09-24T09:08:17Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -91392,7 +91392,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:05Z",
+    "price_updated_utc": "2026-09-24T09:08:18Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -91897,7 +91897,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:07Z",
+    "price_updated_utc": "2026-09-24T09:08:19Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -92537,7 +92537,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:08Z",
+    "price_updated_utc": "2026-09-24T09:08:21Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -93042,7 +93042,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:10Z",
+    "price_updated_utc": "2026-09-24T09:08:24Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -93457,7 +93457,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:13Z",
+    "price_updated_utc": "2026-09-24T09:08:26Z",
     "years": [
       "FY2024",
       "FY2025"
@@ -93814,7 +93814,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:14Z",
+    "price_updated_utc": "2026-09-24T09:08:27Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -94451,7 +94451,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:15Z",
+    "price_updated_utc": "2026-09-24T09:08:29Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -95096,7 +95096,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:16Z",
+    "price_updated_utc": "2026-09-24T09:08:30Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -95735,7 +95735,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:17Z",
+    "price_updated_utc": "2026-09-24T09:08:33Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -96186,7 +96186,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:19Z",
+    "price_updated_utc": "2026-09-24T09:08:35Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -96559,7 +96559,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:20Z",
+    "price_updated_utc": "2026-09-24T09:08:36Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -97150,7 +97150,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:21Z",
+    "price_updated_utc": "2026-09-24T09:08:38Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -97785,7 +97785,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:22Z",
+    "price_updated_utc": "2026-09-24T09:08:39Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -98154,7 +98154,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:23Z",
+    "price_updated_utc": "2026-09-24T09:08:40Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -98523,7 +98523,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:25Z",
+    "price_updated_utc": "2026-09-24T09:08:42Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -98858,7 +98858,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:26Z",
+    "price_updated_utc": "2026-09-24T09:08:43Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -99492,7 +99492,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:27Z",
+    "price_updated_utc": "2026-09-24T09:08:44Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -100086,7 +100086,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:28Z",
+    "price_updated_utc": "2026-09-24T09:08:46Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -100765,7 +100765,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:30Z",
+    "price_updated_utc": "2026-09-24T09:08:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -101248,7 +101248,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:31Z",
+    "price_updated_utc": "2026-09-24T09:08:49Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -101828,7 +101828,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:32Z",
+    "price_updated_utc": "2026-09-24T09:08:52Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -102322,7 +102322,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:33Z",
+    "price_updated_utc": "2026-09-24T09:08:53Z",
     "years": [
       "FY2023",
       "FY2024",
@@ -102673,7 +102673,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:35Z",
+    "price_updated_utc": "2026-09-24T09:08:54Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -103326,7 +103326,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:36Z",
+    "price_updated_utc": "2026-09-24T09:08:57Z",
     "years": [
       "FY2024",
       "FY2025"
@@ -103577,7 +103577,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:37Z",
+    "price_updated_utc": "2026-09-24T09:08:58Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -104140,7 +104140,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:38Z",
+    "price_updated_utc": "2026-09-24T09:09:01Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -104751,7 +104751,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:40Z",
+    "price_updated_utc": "2026-09-24T09:09:02Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -105275,7 +105275,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:41Z",
+    "price_updated_utc": "2026-09-24T09:09:04Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -105670,7 +105670,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:42Z",
+    "price_updated_utc": "2026-09-24T09:09:06Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -106149,7 +106149,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:43Z",
+    "price_updated_utc": "2026-09-24T09:09:08Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -106805,7 +106805,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:45Z",
+    "price_updated_utc": "2026-09-24T09:09:09Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -107384,7 +107384,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:46Z",
+    "price_updated_utc": "2026-09-24T09:09:11Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -107963,7 +107963,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:47Z",
+    "price_updated_utc": "2026-09-24T09:09:12Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -108594,7 +108594,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:48Z",
+    "price_updated_utc": "2026-09-24T09:09:14Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -109126,7 +109126,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:49Z",
+    "price_updated_utc": "2026-09-24T09:09:15Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -109622,7 +109622,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:51Z",
+    "price_updated_utc": "2026-09-24T09:09:17Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -109979,7 +109979,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:52Z",
+    "price_updated_utc": "2026-09-24T09:09:19Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -110613,7 +110613,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:53Z",
+    "price_updated_utc": "2026-09-24T09:09:20Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -111152,7 +111152,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:55Z",
+    "price_updated_utc": "2026-09-24T09:09:22Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -111748,7 +111748,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:56Z",
+    "price_updated_utc": "2026-09-24T09:09:24Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -112216,7 +112216,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:57Z",
+    "price_updated_utc": "2026-09-24T09:09:25Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -112706,7 +112706,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:46:59Z",
+    "price_updated_utc": "2026-09-24T09:09:29Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -113209,7 +113209,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:00Z",
+    "price_updated_utc": "2026-09-24T09:09:31Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -113619,7 +113619,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:01Z",
+    "price_updated_utc": "2026-09-24T09:09:32Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -114227,7 +114227,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:03Z",
+    "price_updated_utc": "2026-09-24T09:09:33Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -114723,7 +114723,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:04Z",
+    "price_updated_utc": "2026-09-24T09:09:35Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -115402,7 +115402,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:06Z",
+    "price_updated_utc": "2026-09-24T09:09:37Z",
     "years": [
       "FY2021",
       "FY2022",
@@ -115654,7 +115654,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:08Z",
+    "price_updated_utc": "2026-09-24T09:09:38Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -116204,7 +116204,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:09Z",
+    "price_updated_utc": "2026-09-24T09:09:40Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -116788,7 +116788,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:10Z",
+    "price_updated_utc": "2026-09-24T09:09:42Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -117439,7 +117439,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:11Z",
+    "price_updated_utc": "2026-09-24T09:09:43Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -117918,7 +117918,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:13Z",
+    "price_updated_utc": "2026-09-24T09:09:45Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -118280,7 +118280,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:14Z",
+    "price_updated_utc": "2026-09-24T09:09:47Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -118888,7 +118888,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:15Z",
+    "price_updated_utc": "2026-09-24T09:09:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -119438,7 +119438,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:17Z",
+    "price_updated_utc": "2026-09-24T09:09:50Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -119972,7 +119972,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:18Z",
+    "price_updated_utc": "2026-09-24T09:09:52Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -120617,7 +120617,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:19Z",
+    "price_updated_utc": "2026-09-24T09:09:53Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -120883,7 +120883,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:21Z",
+    "price_updated_utc": "2026-09-24T09:09:55Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -121413,7 +121413,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:22Z",
+    "price_updated_utc": "2026-09-24T09:09:57Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -121970,7 +121970,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:24Z",
+    "price_updated_utc": "2026-09-24T09:09:58Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -122649,7 +122649,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:25Z",
+    "price_updated_utc": "2026-09-24T09:09:59Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -123295,7 +123295,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:26Z",
+    "price_updated_utc": "2026-09-24T09:10:02Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -123974,7 +123974,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:28Z",
+    "price_updated_utc": "2026-09-24T09:10:04Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -124599,7 +124599,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:29Z",
+    "price_updated_utc": "2026-09-24T09:10:06Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -125022,7 +125022,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:30Z",
+    "price_updated_utc": "2026-09-24T09:10:07Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -125629,7 +125629,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:32Z",
+    "price_updated_utc": "2026-09-24T09:10:09Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -126208,7 +126208,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:33Z",
+    "price_updated_utc": "2026-09-24T09:10:10Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -126639,7 +126639,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:34Z",
+    "price_updated_utc": "2026-09-24T09:10:12Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -127023,7 +127023,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:35Z",
+    "price_updated_utc": "2026-09-24T09:10:13Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -127551,7 +127551,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:37Z",
+    "price_updated_utc": "2026-09-24T09:10:14Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -128076,7 +128076,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:38Z",
+    "price_updated_utc": "2026-09-24T09:10:16Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -128656,7 +128656,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:39Z",
+    "price_updated_utc": "2026-09-24T09:10:17Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -129057,7 +129057,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:40Z",
+    "price_updated_utc": "2026-09-24T09:10:19Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -129596,7 +129596,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:42Z",
+    "price_updated_utc": "2026-09-24T09:10:21Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -130159,7 +130159,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:43Z",
+    "price_updated_utc": "2026-09-24T09:10:22Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -130691,7 +130691,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:44Z",
+    "price_updated_utc": "2026-09-24T09:10:24Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -131276,7 +131276,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:46Z",
+    "price_updated_utc": "2026-09-24T09:10:26Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -131899,7 +131899,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:47Z",
+    "price_updated_utc": "2026-09-24T09:10:27Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -132578,7 +132578,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:48Z",
+    "price_updated_utc": "2026-09-24T09:10:29Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -133022,7 +133022,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:50Z",
+    "price_updated_utc": "2026-09-24T09:10:32Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -133590,7 +133590,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:51Z",
+    "price_updated_utc": "2026-09-24T09:10:34Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -134134,7 +134134,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:52Z",
+    "price_updated_utc": "2026-09-24T09:10:35Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -134450,7 +134450,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:54Z",
+    "price_updated_utc": "2026-09-24T09:10:37Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -135058,7 +135058,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:55Z",
+    "price_updated_utc": "2026-09-24T09:10:39Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -135361,7 +135361,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:56Z",
+    "price_updated_utc": "2026-09-24T09:10:40Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -135978,7 +135978,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:58Z",
+    "price_updated_utc": "2026-09-24T09:10:42Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -136430,7 +136430,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:47:59Z",
+    "price_updated_utc": "2026-09-24T09:10:43Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -136909,7 +136909,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:00Z",
+    "price_updated_utc": "2026-09-24T09:10:45Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -137270,7 +137270,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:01Z",
+    "price_updated_utc": "2026-09-24T09:10:46Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -137797,7 +137797,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:03Z",
+    "price_updated_utc": "2026-09-24T09:10:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -138317,7 +138317,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:04Z",
+    "price_updated_utc": "2026-09-24T09:10:49Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -138849,7 +138849,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:06Z",
+    "price_updated_utc": "2026-09-24T09:10:51Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -139441,7 +139441,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:08Z",
+    "price_updated_utc": "2026-09-24T09:10:53Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -139946,7 +139946,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:09Z",
+    "price_updated_utc": "2026-09-24T09:10:55Z",
     "years": [
       "FY2023",
       "FY2024",
@@ -140392,7 +140392,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:11Z",
+    "price_updated_utc": "2026-09-24T09:10:57Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -140815,7 +140815,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:12Z",
+    "price_updated_utc": "2026-09-24T09:10:58Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -141311,7 +141311,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:14Z",
+    "price_updated_utc": "2026-09-24T09:11:00Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -141744,7 +141744,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:15Z",
+    "price_updated_utc": "2026-09-24T09:11:01Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -142369,7 +142369,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:17Z",
+    "price_updated_utc": "2026-09-24T09:11:03Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -142986,7 +142986,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:18Z",
+    "price_updated_utc": "2026-09-24T09:11:05Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -143471,7 +143471,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:19Z",
+    "price_updated_utc": "2026-09-24T09:11:07Z",
     "years": [
       "FY2018",
       "FY2019",
@@ -144008,7 +144008,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:20Z",
+    "price_updated_utc": "2026-09-24T09:11:08Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -144599,7 +144599,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:22Z",
+    "price_updated_utc": "2026-09-24T09:11:10Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -144942,7 +144942,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:23Z",
+    "price_updated_utc": "2026-09-24T09:11:12Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -145459,7 +145459,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:25Z",
+    "price_updated_utc": "2026-09-24T09:11:13Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -146065,7 +146065,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:26Z",
+    "price_updated_utc": "2026-09-24T09:11:15Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -146680,7 +146680,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:27Z",
+    "price_updated_utc": "2026-09-24T09:11:17Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -147198,7 +147198,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:28Z",
+    "price_updated_utc": "2026-09-24T09:11:18Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -147738,7 +147738,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:30Z",
+    "price_updated_utc": "2026-09-24T09:11:20Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -148087,7 +148087,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:31Z",
+    "price_updated_utc": "2026-09-24T09:11:21Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -148549,7 +148549,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:32Z",
+    "price_updated_utc": "2026-09-24T09:11:23Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -149103,7 +149103,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:34Z",
+    "price_updated_utc": "2026-09-24T09:11:24Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -149537,7 +149537,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:36Z",
+    "price_updated_utc": "2026-09-24T09:11:26Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -150071,7 +150071,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:37Z",
+    "price_updated_utc": "2026-09-24T09:11:28Z",
     "years": [
       "FY2010",
       "FY2011",
@@ -150455,7 +150455,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:38Z",
+    "price_updated_utc": "2026-09-24T09:11:31Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -150942,7 +150942,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:39Z",
+    "price_updated_utc": "2026-09-24T09:11:32Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -151413,7 +151413,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:41Z",
+    "price_updated_utc": "2026-09-24T09:11:34Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -151981,7 +151981,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:42Z",
+    "price_updated_utc": "2026-09-24T09:11:36Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -152660,7 +152660,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:43Z",
+    "price_updated_utc": "2026-09-24T09:11:38Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -153305,7 +153305,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:45Z",
+    "price_updated_utc": "2026-09-24T09:11:39Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -153879,7 +153879,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:46Z",
+    "price_updated_utc": "2026-09-24T09:11:41Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -154391,7 +154391,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:48Z",
+    "price_updated_utc": "2026-09-24T09:11:42Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -155028,7 +155028,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:49Z",
+    "price_updated_utc": "2026-09-24T09:11:44Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -155567,7 +155567,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:51Z",
+    "price_updated_utc": "2026-09-24T09:11:46Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -155955,7 +155955,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:52Z",
+    "price_updated_utc": "2026-09-24T09:11:47Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -156486,7 +156486,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:53Z",
+    "price_updated_utc": "2026-09-24T09:11:49Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -157037,7 +157037,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:54Z",
+    "price_updated_utc": "2026-09-24T09:11:50Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -157688,7 +157688,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:56Z",
+    "price_updated_utc": "2026-09-24T09:11:52Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -158350,7 +158350,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:57Z",
+    "price_updated_utc": "2026-09-24T09:11:54Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -158907,7 +158907,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:48:59Z",
+    "price_updated_utc": "2026-09-24T09:11:55Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -159488,7 +159488,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:00Z",
+    "price_updated_utc": "2026-09-24T09:11:57Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -160156,7 +160156,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:02Z",
+    "price_updated_utc": "2026-09-24T09:11:58Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -160686,7 +160686,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:03Z",
+    "price_updated_utc": "2026-09-24T09:12:01Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -161142,7 +161142,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:04Z",
+    "price_updated_utc": "2026-09-24T09:12:02Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -161677,7 +161677,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:06Z",
+    "price_updated_utc": "2026-09-24T09:12:04Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -162166,7 +162166,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:07Z",
+    "price_updated_utc": "2026-09-24T09:12:05Z",
     "years": [
       "FY2018",
       "FY2019",
@@ -162672,7 +162672,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:08Z",
+    "price_updated_utc": "2026-09-24T09:12:07Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -163295,7 +163295,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:10Z",
+    "price_updated_utc": "2026-09-24T09:12:09Z",
     "years": [
       "FY2022",
       "FY2023",
@@ -163752,7 +163752,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:11Z",
+    "price_updated_utc": "2026-09-24T09:12:11Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -164074,7 +164074,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:13Z",
+    "price_updated_utc": "2026-09-24T09:12:12Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -164713,7 +164713,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:16Z",
+    "price_updated_utc": "2026-09-24T09:12:15Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -165297,7 +165297,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:17Z",
+    "price_updated_utc": "2026-09-24T09:12:18Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -165953,7 +165953,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:19Z",
+    "price_updated_utc": "2026-09-24T09:12:19Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -166325,7 +166325,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:20Z",
+    "price_updated_utc": "2026-09-24T09:12:20Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -166798,7 +166798,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:22Z",
+    "price_updated_utc": "2026-09-24T09:12:22Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -167350,7 +167350,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:24Z",
+    "price_updated_utc": "2026-09-24T09:12:24Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -167829,7 +167829,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:25Z",
+    "price_updated_utc": "2026-09-24T09:12:27Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -168476,7 +168476,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:27Z",
+    "price_updated_utc": "2026-09-24T09:12:28Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -169110,7 +169110,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:28Z",
+    "price_updated_utc": "2026-09-24T09:12:30Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -169504,7 +169504,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:29Z",
+    "price_updated_utc": "2026-09-24T09:12:32Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -169915,7 +169915,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:30Z",
+    "price_updated_utc": "2026-09-24T09:12:33Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -170560,7 +170560,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:32Z",
+    "price_updated_utc": "2026-09-24T09:12:35Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -171111,7 +171111,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:34Z",
+    "price_updated_utc": "2026-09-24T09:12:37Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -171618,7 +171618,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:35Z",
+    "price_updated_utc": "2026-09-24T09:12:38Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -172258,7 +172258,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:36Z",
+    "price_updated_utc": "2026-09-24T09:12:41Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -172920,7 +172920,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:38Z",
+    "price_updated_utc": "2026-09-24T09:12:42Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -173565,7 +173565,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:39Z",
+    "price_updated_utc": "2026-09-24T09:12:44Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -174129,7 +174129,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:40Z",
+    "price_updated_utc": "2026-09-24T09:12:46Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -174798,7 +174798,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:42Z",
+    "price_updated_utc": "2026-09-24T09:12:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -175159,7 +175159,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:44Z",
+    "price_updated_utc": "2026-09-24T09:12:49Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -175610,7 +175610,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:45Z",
+    "price_updated_utc": "2026-09-24T09:12:51Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -176198,7 +176198,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:46Z",
+    "price_updated_utc": "2026-09-24T09:12:52Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -176592,7 +176592,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:48Z",
+    "price_updated_utc": "2026-09-24T09:12:53Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -177043,7 +177043,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:49Z",
+    "price_updated_utc": "2026-09-24T09:12:54Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -177494,7 +177494,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:50Z",
+    "price_updated_utc": "2026-09-24T09:12:56Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -178018,7 +178018,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:51Z",
+    "price_updated_utc": "2026-09-24T09:12:57Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -178329,7 +178329,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:53Z",
+    "price_updated_utc": "2026-09-24T09:12:59Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -178713,7 +178713,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:54Z",
+    "price_updated_utc": "2026-09-24T09:13:01Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -179336,7 +179336,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:56Z",
+    "price_updated_utc": "2026-09-24T09:13:02Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -179865,7 +179865,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:57Z",
+    "price_updated_utc": "2026-09-24T09:13:04Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -180544,7 +180544,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:49:59Z",
+    "price_updated_utc": "2026-09-24T09:13:05Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -181057,7 +181057,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:00Z",
+    "price_updated_utc": "2026-09-24T09:13:06Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -181708,7 +181708,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:02Z",
+    "price_updated_utc": "2026-09-24T09:13:07Z",
     "years": [
       "FY2020",
       "FY2021",
@@ -182102,7 +182102,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:03Z",
+    "price_updated_utc": "2026-09-24T09:13:09Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -182592,7 +182592,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:05Z",
+    "price_updated_utc": "2026-09-24T09:13:10Z",
     "years": [
       "FY2016",
       "FY2018",
@@ -183223,7 +183223,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:06Z",
+    "price_updated_utc": "2026-09-24T09:13:11Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -183680,7 +183680,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:08Z",
+    "price_updated_utc": "2026-09-24T09:13:13Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -184303,7 +184303,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:09Z",
+    "price_updated_utc": "2026-09-24T09:13:14Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -184702,7 +184702,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:11Z",
+    "price_updated_utc": "2026-09-24T09:13:16Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -185242,7 +185242,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:14Z",
+    "price_updated_utc": "2026-09-24T09:13:19Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -185854,7 +185854,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:15Z",
+    "price_updated_utc": "2026-09-24T09:13:21Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -186404,7 +186404,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:17Z",
+    "price_updated_utc": "2026-09-24T09:13:22Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -186899,7 +186899,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:19Z",
+    "price_updated_utc": "2026-09-24T09:13:24Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -187273,7 +187273,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:20Z",
+    "price_updated_utc": "2026-09-24T09:13:26Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -187859,7 +187859,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:22Z",
+    "price_updated_utc": "2026-09-24T09:13:27Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -188214,7 +188214,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:24Z",
+    "price_updated_utc": "2026-09-24T09:13:29Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -188793,7 +188793,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:25Z",
+    "price_updated_utc": "2026-09-24T09:13:32Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -189183,7 +189183,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:27Z",
+    "price_updated_utc": "2026-09-24T09:13:33Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -189828,7 +189828,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:28Z",
+    "price_updated_utc": "2026-09-24T09:13:34Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -190209,7 +190209,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:29Z",
+    "price_updated_utc": "2026-09-24T09:13:36Z",
     "years": [
       "FY2020",
       "FY2021",
@@ -190657,7 +190657,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:31Z",
+    "price_updated_utc": "2026-09-24T09:13:37Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -191217,7 +191217,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:32Z",
+    "price_updated_utc": "2026-09-24T09:13:39Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -191515,7 +191515,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:34Z",
+    "price_updated_utc": "2026-09-24T09:13:41Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -192122,7 +192122,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:36Z",
+    "price_updated_utc": "2026-09-24T09:13:42Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -192627,7 +192627,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:37Z",
+    "price_updated_utc": "2026-09-24T09:13:43Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -193268,7 +193268,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:39Z",
+    "price_updated_utc": "2026-09-24T09:13:45Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -193842,7 +193842,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:40Z",
+    "price_updated_utc": "2026-09-24T09:13:47Z",
     "years": [
       "FY2012",
       "FY2013",
@@ -194399,7 +194399,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:42Z",
+    "price_updated_utc": "2026-09-24T09:13:49Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -194720,7 +194720,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:43Z",
+    "price_updated_utc": "2026-09-24T09:13:50Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -195175,7 +195175,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:46Z",
+    "price_updated_utc": "2026-09-24T09:13:53Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -195503,7 +195503,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:47Z",
+    "price_updated_utc": "2026-09-24T09:13:54Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -196182,7 +196182,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:48Z",
+    "price_updated_utc": "2026-09-24T09:13:56Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -196767,7 +196767,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:50Z",
+    "price_updated_utc": "2026-09-24T09:13:57Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -197316,7 +197316,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:52Z",
+    "price_updated_utc": "2026-09-24T09:14:01Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -197866,7 +197866,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:53Z",
+    "price_updated_utc": "2026-09-24T09:14:04Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -198283,7 +198283,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:54Z",
+    "price_updated_utc": "2026-09-24T09:14:05Z",
     "years": [
       "FY2024",
       "FY2025"
@@ -198576,7 +198576,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:55Z",
+    "price_updated_utc": "2026-09-24T09:14:07Z",
     "years": [
       "FY2013",
       "FY2014",
@@ -198953,7 +198953,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:57Z",
+    "price_updated_utc": "2026-09-24T09:14:08Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -199457,7 +199457,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:58Z",
+    "price_updated_utc": "2026-09-24T09:14:09Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -199797,7 +199797,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:50:59Z",
+    "price_updated_utc": "2026-09-24T09:14:12Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -200215,7 +200215,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:00Z",
+    "price_updated_utc": "2026-09-24T09:14:13Z",
     "years": [
       "FY2021",
       "FY2022",
@@ -200670,7 +200670,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:01Z",
+    "price_updated_utc": "2026-09-24T09:14:14Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -201203,7 +201203,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:03Z",
+    "price_updated_utc": "2026-09-24T09:14:16Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -201882,7 +201882,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:04Z",
+    "price_updated_utc": "2026-09-24T09:14:18Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -202561,7 +202561,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:05Z",
+    "price_updated_utc": "2026-09-24T09:14:20Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -203145,7 +203145,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:07Z",
+    "price_updated_utc": "2026-09-24T09:14:21Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -203714,7 +203714,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:08Z",
+    "price_updated_utc": "2026-09-24T09:14:23Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -204337,7 +204337,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:09Z",
+    "price_updated_utc": "2026-09-24T09:14:25Z",
     "years": [
       "FY2015",
       "FY2017",
@@ -204827,7 +204827,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:11Z",
+    "price_updated_utc": "2026-09-24T09:14:28Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -205456,7 +205456,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:12Z",
+    "price_updated_utc": "2026-09-24T09:14:30Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -206135,7 +206135,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:13Z",
+    "price_updated_utc": "2026-09-24T09:14:32Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -206726,7 +206726,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:15Z",
+    "price_updated_utc": "2026-09-24T09:14:33Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -207317,7 +207317,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:16Z",
+    "price_updated_utc": "2026-09-24T09:14:36Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -207746,7 +207746,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:17Z",
+    "price_updated_utc": "2026-09-24T09:14:37Z",
     "years": [
       "FY2024",
       "FY2025"
@@ -208052,7 +208052,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:18Z",
+    "price_updated_utc": "2026-09-24T09:14:39Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -208553,7 +208553,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:20Z",
+    "price_updated_utc": "2026-09-24T09:14:40Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -209050,7 +209050,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:21Z",
+    "price_updated_utc": "2026-09-24T09:14:42Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -209578,7 +209578,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:22Z",
+    "price_updated_utc": "2026-09-24T09:14:44Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -210215,7 +210215,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:24Z",
+    "price_updated_utc": "2026-09-24T09:14:45Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -210755,7 +210755,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:25Z",
+    "price_updated_utc": "2026-09-24T09:14:46Z",
     "years": [
       "FY2025",
       "FY2026"
@@ -211144,7 +211144,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:26Z",
+    "price_updated_utc": "2026-09-24T09:14:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -211823,7 +211823,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:27Z",
+    "price_updated_utc": "2026-09-24T09:14:50Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -212289,7 +212289,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:28Z",
+    "price_updated_utc": "2026-09-24T09:14:51Z",
     "years": [
       "FY2024",
       "FY2025"
@@ -212705,7 +212705,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:29Z",
+    "price_updated_utc": "2026-09-24T09:14:52Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -213055,7 +213055,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:31Z",
+    "price_updated_utc": "2026-09-24T09:14:54Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -213492,7 +213492,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:32Z",
+    "price_updated_utc": "2026-09-24T09:14:56Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -213846,7 +213846,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:33Z",
+    "price_updated_utc": "2026-09-24T09:14:57Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -214463,7 +214463,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:34Z",
+    "price_updated_utc": "2026-09-24T09:14:59Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -215120,7 +215120,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:36Z",
+    "price_updated_utc": "2026-09-24T09:15:00Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -215481,7 +215481,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:37Z",
+    "price_updated_utc": "2026-09-24T09:15:01Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -216126,7 +216126,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:38Z",
+    "price_updated_utc": "2026-09-24T09:15:03Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -216726,7 +216726,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:39Z",
+    "price_updated_utc": "2026-09-24T09:15:04Z",
     "years": [
       "FY2024",
       "FY2025"
@@ -217001,7 +217001,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:40Z",
+    "price_updated_utc": "2026-09-24T09:15:06Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -217625,7 +217625,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:42Z",
+    "price_updated_utc": "2026-09-24T09:15:07Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -218164,7 +218164,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:43Z",
+    "price_updated_utc": "2026-09-24T09:15:08Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -218464,7 +218464,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:44Z",
+    "price_updated_utc": "2026-09-24T09:15:11Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -219052,7 +219052,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:46Z",
+    "price_updated_utc": "2026-09-24T09:15:13Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -219498,7 +219498,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:47Z",
+    "price_updated_utc": "2026-09-24T09:15:14Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -219961,7 +219961,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:48Z",
+    "price_updated_utc": "2026-09-24T09:15:16Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -220612,7 +220612,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:49Z",
+    "price_updated_utc": "2026-09-24T09:15:17Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -221191,7 +221191,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:51Z",
+    "price_updated_utc": "2026-09-24T09:15:19Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -221743,7 +221743,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:52Z",
+    "price_updated_utc": "2026-09-24T09:15:21Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -222303,7 +222303,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:53Z",
+    "price_updated_utc": "2026-09-24T09:15:23Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -222891,7 +222891,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:55Z",
+    "price_updated_utc": "2026-09-24T09:15:25Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -223298,7 +223298,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:56Z",
+    "price_updated_utc": "2026-09-24T09:15:27Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -223873,7 +223873,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:57Z",
+    "price_updated_utc": "2026-09-24T09:15:30Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -224435,7 +224435,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:51:59Z",
+    "price_updated_utc": "2026-09-24T09:15:31Z",
     "years": [
       "FY2023",
       "FY2024",
@@ -224786,7 +224786,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:00Z",
+    "price_updated_utc": "2026-09-24T09:15:33Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -225386,7 +225386,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:01Z",
+    "price_updated_utc": "2026-09-24T09:15:34Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -226003,7 +226003,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:03Z",
+    "price_updated_utc": "2026-09-24T09:15:36Z",
     "years": [
       "FY2020",
       "FY2021",
@@ -226394,7 +226394,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:04Z",
+    "price_updated_utc": "2026-09-24T09:15:37Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -227051,7 +227051,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:05Z",
+    "price_updated_utc": "2026-09-24T09:15:39Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -227685,7 +227685,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:07Z",
+    "price_updated_utc": "2026-09-24T09:15:42Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -228364,7 +228364,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:08Z",
+    "price_updated_utc": "2026-09-24T09:15:43Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -228803,7 +228803,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:10Z",
+    "price_updated_utc": "2026-09-24T09:15:46Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -229096,7 +229096,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:11Z",
+    "price_updated_utc": "2026-09-24T09:15:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -229662,7 +229662,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:12Z",
+    "price_updated_utc": "2026-09-24T09:15:49Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -230228,7 +230228,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:13Z",
+    "price_updated_utc": "2026-09-24T09:15:51Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -230735,7 +230735,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:15Z",
+    "price_updated_utc": "2026-09-24T09:15:52Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -231247,7 +231247,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:16Z",
+    "price_updated_utc": "2026-09-24T09:15:54Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -231909,7 +231909,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:17Z",
+    "price_updated_utc": "2026-09-24T09:15:56Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -232499,7 +232499,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:19Z",
+    "price_updated_utc": "2026-09-24T09:15:57Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -232826,7 +232826,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:20Z",
+    "price_updated_utc": "2026-09-24T09:15:59Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -233441,7 +233441,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:21Z",
+    "price_updated_utc": "2026-09-24T09:16:00Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -233927,7 +233927,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:22Z",
+    "price_updated_utc": "2026-09-24T09:16:01Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -234485,7 +234485,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:23Z",
+    "price_updated_utc": "2026-09-24T09:16:03Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -234922,7 +234922,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:25Z",
+    "price_updated_utc": "2026-09-24T09:16:04Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -235466,7 +235466,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:26Z",
+    "price_updated_utc": "2026-09-24T09:16:05Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -236032,7 +236032,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:27Z",
+    "price_updated_utc": "2026-09-24T09:16:07Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -236583,7 +236583,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:29Z",
+    "price_updated_utc": "2026-09-24T09:16:08Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -237040,7 +237040,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:30Z",
+    "price_updated_utc": "2026-09-24T09:16:10Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -237576,7 +237576,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:31Z",
+    "price_updated_utc": "2026-09-24T09:16:11Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -238106,7 +238106,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:33Z",
+    "price_updated_utc": "2026-09-24T09:16:13Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -238433,7 +238433,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:34Z",
+    "price_updated_utc": "2026-09-24T09:16:15Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -238838,7 +238838,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:35Z",
+    "price_updated_utc": "2026-09-24T09:16:17Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -239334,7 +239334,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:36Z",
+    "price_updated_utc": "2026-09-24T09:16:18Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -239775,7 +239775,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:37Z",
+    "price_updated_utc": "2026-09-24T09:16:20Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -240136,7 +240136,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:38Z",
+    "price_updated_utc": "2026-09-24T09:16:21Z",
     "years": [
       "FY2023",
       "FY2024",
@@ -240588,7 +240588,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:40Z",
+    "price_updated_utc": "2026-09-24T09:16:22Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -241245,7 +241245,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:41Z",
+    "price_updated_utc": "2026-09-24T09:16:24Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -241607,7 +241607,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:43Z",
+    "price_updated_utc": "2026-09-24T09:16:26Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -242069,7 +242069,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:44Z",
+    "price_updated_utc": "2026-09-24T09:16:27Z",
     "years": [
       "FY2018",
       "FY2019",
@@ -242651,7 +242651,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:45Z",
+    "price_updated_utc": "2026-09-24T09:16:28Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -243152,7 +243152,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:46Z",
+    "price_updated_utc": "2026-09-24T09:16:30Z",
     "years": [
       "FY2018",
       "FY2019",
@@ -243719,7 +243719,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:47Z",
+    "price_updated_utc": "2026-09-24T09:16:32Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -244103,7 +244103,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:48Z",
+    "price_updated_utc": "2026-09-24T09:16:34Z",
     "years": [
       "FY2019",
       "FY2020",
@@ -244683,7 +244683,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:50Z",
+    "price_updated_utc": "2026-09-24T09:16:36Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -245054,7 +245054,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:51Z",
+    "price_updated_utc": "2026-09-24T09:16:38Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -245651,7 +245651,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:52Z",
+    "price_updated_utc": "2026-09-24T09:16:39Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -246061,7 +246061,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:53Z",
+    "price_updated_utc": "2026-09-24T09:16:41Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -246684,7 +246684,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:54Z",
+    "price_updated_utc": "2026-09-24T09:16:42Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -247250,7 +247250,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:56Z",
+    "price_updated_utc": "2026-09-24T09:16:45Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -247919,7 +247919,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:57Z",
+    "price_updated_utc": "2026-09-24T09:16:46Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -248542,7 +248542,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:52:59Z",
+    "price_updated_utc": "2026-09-24T09:16:48Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -248886,7 +248886,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:01Z",
+    "price_updated_utc": "2026-09-24T09:16:50Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -249225,7 +249225,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:02Z",
+    "price_updated_utc": "2026-09-24T09:16:53Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -249694,7 +249694,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:04Z",
+    "price_updated_utc": "2026-09-24T09:16:55Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -250144,7 +250144,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:05Z",
+    "price_updated_utc": "2026-09-24T09:16:56Z",
     "years": [
       "FY2017",
       "FY2018",
@@ -250729,7 +250729,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:07Z",
+    "price_updated_utc": "2026-09-24T09:16:58Z",
     "years": [
       "FY2014",
       "FY2015",
@@ -251113,7 +251113,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:09Z",
+    "price_updated_utc": "2026-09-24T09:16:59Z",
     "years": [
       "FY2015",
       "FY2016",
@@ -251711,7 +251711,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:11Z",
+    "price_updated_utc": "2026-09-24T09:17:01Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -252390,7 +252390,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:12Z",
+    "price_updated_utc": "2026-09-24T09:17:03Z",
     "years": [
       "FY2014",
       "FY2015",
@@ -252924,7 +252924,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:14Z",
+    "price_updated_utc": "2026-09-24T09:17:05Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -253597,7 +253597,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:16Z",
+    "price_updated_utc": "2026-09-24T09:17:06Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -254154,7 +254154,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:17Z",
+    "price_updated_utc": "2026-09-24T09:17:08Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -254616,7 +254616,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:20Z",
+    "price_updated_utc": "2026-09-24T09:17:11Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -255188,7 +255188,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:22Z",
+    "price_updated_utc": "2026-09-24T09:17:12Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -255838,7 +255838,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:23Z",
+    "price_updated_utc": "2026-09-24T09:17:14Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -256347,7 +256347,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:25Z",
+    "price_updated_utc": "2026-09-24T09:17:16Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -256969,7 +256969,7 @@
     "price_currency": "USD",
     "exchange": "NMS",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:26Z",
+    "price_updated_utc": "2026-09-24T09:17:17Z",
     "years": [
       "FY2016",
       "FY2017",
@@ -257559,7 +257559,7 @@
     "price_currency": "USD",
     "exchange": "NYQ",
     "price_source": "Yahoo Finance chart endpoint",
-    "price_updated_utc": "2026-09-24T08:53:27Z",
+    "price_updated_utc": "2026-09-24T09:17:19Z",
     "years": [
       "FY2016",
       "FY2017",
