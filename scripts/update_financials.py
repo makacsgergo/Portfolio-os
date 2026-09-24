@@ -45,6 +45,24 @@ SEC_EPS_RESTATED_FALLBACKS = {
     "TRI": {"2017": 1.94, "2018": 5.88, "2019": 3.11, "2020": 2.25, "2021": 11.50},
 }
 
+# Issuer-reported annual revenue overrides for documented XBRL context/tag-selection
+# errors. Values are in billions of USD and apply only to affected fiscal periods.
+SEC_REVENUE_REPORTED_OVERRIDES = {
+    "AMT": {"2019": 7.5803},
+    "CFG": {"2019": 6.491},
+    "COF": {"2018": 28.076},
+    "DOC": {"2016": 0.241034, "2017": 0.343584, "2018": 0.422551},
+    "ECHO": {"2021": 1.985720},
+    "GPN": {"2017": 3.975163},
+    "HIG": {"2017": 17.162},
+    "KEY": {"2022": 7.272},
+    "MET": {"2018": 67.941},
+    "MTB": {"2022": 7.662},
+    "SBAC": {"2017": 1.727674},
+    "URI": {"2019": 9.351},
+    "NBIS": {"2022": 0.0135},
+}
+
 def get_json(url):
     r = requests.get(url, headers=HEADERS, timeout=30)
     r.raise_for_status()
@@ -372,8 +390,7 @@ def build_company(ticker, cik):
         },
         "metrics": []
     }
-    for metric, row in latest_quarter.items():
-        result["latest_reported"]["metrics"][metric] = {
+    # Apply documented issuer-reported revenue corrections after SEC fact selection.\n    for fy, value in SEC_REVENUE_REPORTED_OVERRIDES.get(ticker, {}).items():\n        if fy in yearly.get("revenue", {}):\n            yearly["revenue"][fy]["val"] = float(value) * 1e9\n    for metric, row in latest_quarter.items():\n        result["latest_reported"]["metrics"][metric] = {
             "value": round(float(row["val"]) / (1e6 if metric == "shares_outstanding" else 1e9), 6),
             "unit": "M" if metric == "shares_outstanding" else "B",
             "period_end": row.get("_period_end"),
