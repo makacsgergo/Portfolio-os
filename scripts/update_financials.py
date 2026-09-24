@@ -215,6 +215,8 @@ def get_splits(ticker):
         return []
 
 def eps_split_adjustment(basis_date, splits, allow_external_splits=True):
+    if not allow_external_splits:
+        return 1.0
     # EPS is reported on the share basis used in the filing. A later stock
     # split is not necessarily reflected in older filings, so normalize based
     # on the filing date rather than the fiscal period end.
