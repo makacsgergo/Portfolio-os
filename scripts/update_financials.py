@@ -6,6 +6,10 @@ import requests
 ROOT = Path(__file__).resolve().parents[1]
 UNIVERSE = ROOT / "universe.json"
 OUTPUT = ROOT / "financials.json"
+# Regeneration marker: historical EPS is normalized from SEC annual filings and
+# only post-filing stock splits are applied. Bump this when the normalization
+# logic changes so the full universe is regenerated from SEC source data.
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-24-eps-normalization"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -328,6 +332,7 @@ def build_company(ticker, cik):
         latest_form = ("10-Q" if "10-Q" in forms else "10-Q/A" if "10-Q/A" in forms else "6-K" if "6-K" in forms else "6-K/A" if "6-K/A" in forms else "10-K" if "10-K" in forms else "10-K/A" if "10-K/A" in forms else "20-F" if "20-F" in forms else "20-F/A" if "20-F/A" in forms else "40-F" if "40-F" in forms else "40-F/A" if "40-F/A" in forms else None)
     result = {
         "source": "SEC XBRL companyfacts",
+        "financial_data_logic_version": FINANCIAL_DATA_LOGIC_VERSION,
         "cik": cik,
         "price": price,
         "price_currency": currency or "USD",
