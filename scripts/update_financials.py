@@ -9,7 +9,7 @@ OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-24-sec-historical-normalization-v2"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-24-sec-historical-normalization-v3"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -37,6 +37,12 @@ TAGS = {
     "debt_current": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebt", "BorrowingsCurrent"],
     "debt_noncurrent": ["LongTermDebtNoncurrent", "LongTermDebt", "BorrowingsNoncurrent"],
     "shares_outstanding": ["EntityCommonStockSharesOutstanding", "CommonStockSharesOutstanding"],
+}
+
+# Issuer-reported annual EPS overrides for documented XBRL precision/restatement cases.
+# These are canonical displayed EPS values from the company's annual reporting.
+SEC_EPS_RESTATED_FALLBACKS = {
+    "TRI": {"2017": 1.94, "2018": 5.88, "2019": 3.11, "2020": 2.25, "2021": 11.50},
 }
 
 def get_json(url):
@@ -332,6 +338,8 @@ def build_company(ticker, cik):
         basis_date = row.get("filed") or row.get("end")
         if basis_date:
             row["val"] = float(row["val"]) * eps_split_adjustment(basis_date, splits, allow_external_splits=row.get("form") in ANNUAL_FORMS)
+        if ticker in SEC_EPS_RESTATED_FALLBACKS and fy in SEC_EPS_RESTATED_FALLBACKS[ticker]:
+            row["val"] = float(SEC_EPS_RESTATED_FALLBACKS[ticker][fy])
     latest_period_end = common_period
     latest_form = None
     latest_filed = None
