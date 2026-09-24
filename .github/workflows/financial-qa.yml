@@ -1,4 +1,4 @@
-name: Audit financial data
+name: Audit financial data # v2
 
 on:
   push:
