@@ -245,35 +245,18 @@ def build_company(ticker, cik):
     # instant facts onto the same fiscal-year keys before building the output.
     instant_by_metric = {}
     for metric in ("cash","assets","equity","debt_current","debt_noncurrent","shares_outstanding"):
-        candidates=[]
-        for taxonomy,facts in _fact_sources(companyfacts):
-            for tag in TAGS[metric]:
-                obj=facts.get(tag)
+        rows=[]
+        for taxonomy, source_facts in _fact_sources(facts):
+            for tag in TAGS.get(metric,[]):
+                obj=source_facts.get(tag)
                 if not obj: continue
-                units=obj.get("units",{}); unit="USD" if "USD" in units else _monetary_unit(units)
+                units=obj.get("units",{})
+                unit="shares" if "shares" in units else ("USD" if "USD" in units else _monetary_unit(units))
                 if not unit: continue
                 for x in units[unit]:
-                    if x.get("form","") in INSTANT_FORMS and x.get("end") and not x.get("start"):
-                        row=dict(x); row["_tag"]=tag; row["_taxonomy"]=taxonomy; row["_unit"]=unit; candidates.append(row)
-        if candidates: instant_by_metric[metric]=select_instant(candidates)
-    for metric in ["cash", "assets", "equity", "debt_current", "debt_noncurrent", "shares_outstanding"]:
-        rows = []
-        for tag in TAGS.get(metric, []):
-            source_facts = dei_facts if tag == "EntityCommonStockSharesOutstanding" else raw_facts
-            if tag not in source_facts:
-                continue
-            units = source_facts[tag].get("units", {})
-            unit = "shares" if "shares" in units else ("USD" if "USD" in units else None)
-            if not unit:
-                continue
-            for x in units[unit]:
-                if x.get("form", "") not in ("10-K", "10-K/A", "10-Q", "10-Q/A") or not x.get("end") or x.get("start"):
-                    continue
-                row = dict(x)
-                row["_tag"] = tag
-                rows.append(row)
-        if rows:
-            instant_by_metric[metric] = select_instant(rows)
+                    if x.get("form","") not in INSTANT_FORMS or not x.get("end") or x.get("start"): continue
+                    row=dict(x); row["_tag"]=tag; row["_taxonomy"]=taxonomy; row["_unit"]=unit; rows.append(row)
+        if rows: instant_by_metric[metric]=select_instant(rows)
 
     # The annual facts provide the canonical fiscal-year labels and period
     # ends. Match each instant fact to the annual fiscal year with the same
