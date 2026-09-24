@@ -237,11 +237,15 @@ function financialSections(fd){
  const labels={cash:"Cash",debt_current:"Current debt",debt_noncurrent:"Long-term debt",assets:"Total assets",equity:"Total equity",shares_outstanding:"Shares outstanding"};
  const latestRows=Object.entries(labels).filter(([k])=>latest[k]).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(latest[k].value,latest[k].unit)+'</td></tr>').join("");
  const latestRatios=fd.latest_reported?.ratios||{};
- const ratioLabels={debt_equity:"Debt / equity",net_debt:"Net debt",net_debt_ebitda:"Net debt / EBITDA",roic:"Approx. ROIC",roe:"ROE"};
+ const ratioLabels={debt_equity:"Debt / equity",net_debt:"Net debt",net_debt_ebitda:"Net debt / EBITDA",net_debt_ebitda_ttm:"Net debt / TTM EBITDA",roic:"Approx. ROIC",roic_ttm:"Approx. ROIC (TTM)",roe:"ROE",roe_ttm:"ROE (TTM)",fcf_margin_ttm:"FCF margin (TTM)"};
+ const ttm=fd.latest_reported?.ttm||{};
+ const ttmLabels={revenue:"Revenue",operating_income:"Operating income",net_income:"Net income",cfo:"Operating cash flow",capex:"Capex spend",fcf:"Free cash flow",rnd:"R&D",da:"D&A"};
+ const ttmRows=Object.entries(ttmLabels).filter(([k])=>ttm[k]&&ttm[k].value!=null).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(ttm[k].value,ttm[k].unit)+'</td></tr>').join("");
  const latestRatioRows=Object.entries(ratioLabels).filter(([k])=>latestRatios[k]&&latestRatios[k].value!=null).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(latestRatios[k].value,latestRatios[k].unit)+'</td></tr>').join("");
  const ratioMethods=Object.entries(ratioLabels).filter(([k])=>latestRatios[k]&&latestRatios[k].method).map(([k,label])=>'<div>'+label+': '+latestRatios[k].method+'</div>').join("");
+ const ttmBlock=ttmRows?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">TTM financials</div><div class="muted small" style="margin-bottom:8px">Trailing twelve months through '+(ttm.period_end||fd.latest_reported.period_end||"—")+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>TTM</th></tr></thead><tbody>'+ttmRows+'</tbody></table></div></div>':"";
  const latestBlock=latestRows?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">Balance sheet · '+(fd.latest_reported.label||"Latest reported")+'</div><div class="muted small" style="margin-bottom:8px">Point-in-time data · period end: '+(fd.latest_reported.period_end||"—")+' · filed: '+(fd.latest_reported.filed||"—")+' · '+(fd.latest_reported.form||"SEC filing")+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRows+'</tbody></table></div>'+(latestRatioRows?'<div class="section-title" style="margin:14px 0 8px">Latest balance-sheet ratios</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRatioRows+'</tbody></table></div><div class="muted small" style="margin-top:8px">Methodology: '+ratioMethods+'. Net debt / EBITDA and ROIC use the latest fiscal-year income statement denominator until TTM data is added.</div>':"")+'</div>':"";
- return annual+latestBlock;
+ return annual+ttmBlock+latestBlock;
 }
 function stock(t){
  const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t), u=universe.find(p=>p.ticker===t), watched=isWatched(t);
