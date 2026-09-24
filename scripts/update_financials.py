@@ -9,7 +9,7 @@ OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-24-eps-normalization"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-24-sec-historical-normalization-v2"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -23,7 +23,7 @@ TAGS = {
     "gross_profit": ["GrossProfit"],
     "operating_income": ["OperatingIncomeLoss", "OperatingProfitLoss"],
     "net_income": ["NetIncomeLoss", "ProfitLoss"],
-    "eps": ["EarningsPerShareDiluted"],
+    "eps": ["EarningsPerShareDiluted", "DilutedEarningsLossPerShare", "BasicAndDilutedEarningsLossPerShare", "DilutedEarningsPerShare"],
     "cfo": ["NetCashProvidedByUsedInOperatingActivities", "NetCashFlowsFromUsedInOperatingActivities"],
     "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets", "PaymentsToAcquirePropertyPlantAndEquipmentAndOtherPropertyPlantAndEquipment", "PurchaseOfPropertyPlantAndEquipment"],
     "rnd": ["ResearchAndDevelopmentExpense", "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost", "ResearchAndDevelopmentExpenditure"],
@@ -154,12 +154,12 @@ def select_yearly(rows):
         out[str(fy)] = row
     return out
 
-def select_latest_annual_eps(rows, canonical_years):
-    """Use the latest annual filing's EPS for each fiscal period.
-    
-    Subsequent SEC filings normally retrospectively adjust historical
-    per-share amounts for stock splits. Using the latest filing for the same
-    fiscal period therefore keeps EPS on one consistent share basis.
+def select_latest_annual_period(rows, canonical_years):
+    """Use the latest annual SEC filing for each fiscal period.
+
+    Later 10-Ks can contain corrected/recast comparative figures. Selecting
+    the latest annual observation for the same period keeps historical values
+    aligned with the issuer's most recently reported accounting basis.
     """
     by_end = {}
     for x in rows:
@@ -170,14 +170,18 @@ def select_latest_annual_eps(rows, canonical_years):
             days = (date.fromisoformat(end) - date.fromisoformat(x["start"])).days
         except Exception:
             continue
-        if 300 <= days <= 400:
-            prev = by_end.get(end)
-            if prev is None or filed > prev.get("filed", ""):
-                by_end[end] = dict(x)
+        if not (300 <= days <= 400):
+            continue
+        prev = by_end.get(end)
+        if prev is None or filed > prev.get("filed", ""):
+            by_end[end] = dict(x)
     return {
         str(fy): by_end.get(original.get("end"), original)
         for fy, original in canonical_years.items()
     }
+
+def select_latest_annual_eps(rows, canonical_years):
+    return select_latest_annual_period(rows, canonical_years)
 
 def get_market_data(ticker):
     try:
@@ -241,6 +245,13 @@ def build_company(ticker, cik):
     raw_facts = facts.get("facts", {}).get("us-gaap", {})
     dei_facts = facts.get("facts", {}).get("dei", {})
     yearly = {m: select_yearly(rows) for m, rows in metrics.items()}
+
+    # Historical flow metrics are normalized to the latest annual SEC filing
+    # available for each fiscal period. This captures retrospective corrections
+    # and comparative recasts instead of freezing the original filing forever.
+    for metric, rows in metrics.items():
+        if metric in yearly and metric != "eps":
+            yearly[metric] = select_latest_annual_period(rows, yearly[metric])
 
     # EPS is special: later 10-Ks generally restate historical EPS after
     # stock splits. Use the latest annual filing for each period so EPS growth
