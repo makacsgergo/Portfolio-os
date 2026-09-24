@@ -218,6 +218,7 @@ def main():
     sec_map=get_json("https://www.sec.gov/files/company_tickers.json")
     cik_map={v["ticker"].upper():str(v["cik_str"]).zfill(10) for v in sec_map.values()}
     # SEC's API is the accounting source of truth; v2 the audit independently
+    # Full-universe audit: keep this workflow-triggering comment with the QA logic.
     # re-selects annual and point-in-time facts from fresh companyfacts data.
     results=[]
     with ThreadPoolExecutor(max_workers=4) as ex:
