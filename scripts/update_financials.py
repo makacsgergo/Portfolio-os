@@ -453,6 +453,118 @@ def build_company(ticker, cik):
     if latest_equity not in (None, 0) and latest_ni is not None:
         latest_ratios["roe"] = {"value": round(latest_ni / latest_equity, 6), "unit": "%", "method": "Latest fiscal-year net income / latest reported equity"}
     result["latest_reported"]["ratios"] = latest_ratios
+
+    # TTM flow metrics: use the latest four reported quarters from SEC 10-Q/10-K
+    # data where available. These are used for current-period capital efficiency
+    # ratios and are kept separate from the annual historical series.
+    def quarterly_facts(metric):
+        rows = []
+        for tag in TAGS.get(metric, []):
+            if tag not in raw_facts:
+                continue
+            units = raw_facts[tag].get("units", {})
+            unit = "USD/shares" if "USD/shares" in units else ("USD" if "USD" in units else None)
+            if not unit:
+                continue
+            for x in units[unit]:
+                if x.get("form") not in ("10-Q", "10-Q/A", "10-K", "10-K/A") or not x.get("start") or not x.get("end"):
+                    continue
+                try:
+                    days = (date.fromisoformat(x["end"]) - date.fromisoformat(x["start"])).days
+                except Exception:
+                    continue
+                # Standalone quarter facts are ~3 months; annual facts are ~12 months.
+                # Keep both because the TTM builder below derives standalone quarters
+                # from cumulative YTD filings when necessary.
+                row = dict(x); row["_tag"] = tag; rows.append(row)
+        return rows
+
+    def ttm_from_sec(metric):
+        rows = quarterly_facts(metric)
+        if not rows:
+            return None, None
+        # Prefer direct quarterly facts (roughly 70-110 days).
+        direct = [r for r in rows if 70 <= (date.fromisoformat(r["end"]) - date.fromisoformat(r["start"])).days <= 110]
+        by_end = {}
+        for r in direct:
+            end=r["end"]; filed=r.get("filed",""); rank=(0, filed)
+            if end not in by_end or rank < by_end[end][0]: by_end[end]=(rank,r)
+        direct = {e:r for e,(rank,r) in by_end.items()}
+        if len(direct) >= 4:
+            ends=sorted(direct)[-4:]
+            return sum(float(direct[e]["val"]) for e in ends), ends[-1]
+
+        # Otherwise derive standalone quarters from cumulative YTD 10-Q values.
+        qrows=[]
+        for r in rows:
+            days=(date.fromisoformat(r["end"])-date.fromisoformat(r["start"])).days
+            if r.get("form") not in ("10-Q","10-Q/A") or not (120 <= days <= 300):
+                continue
+            qrows.append(r)
+        by_end={}
+        for r in qrows:
+            end=r["end"]; rank=(0 if r.get("form")=="10-Q" else 1,r.get("filed",""))
+            if end not in by_end or rank < by_end[end][0]: by_end[end]=(rank,r)
+        cumulative={e:r for e,(rank,r) in by_end.items()}
+        quarters=[]
+        for end,r in sorted(cumulative.items()):
+            end_date=date.fromisoformat(end)
+            # Same fiscal-year cumulative periods: Q1 itself, Q2 YTD minus Q1,
+            # Q3 YTD minus Q2. Q4 is annual FY minus Q3 YTD.
+            quarters.append((end,r))
+        standalone=[]
+        for idx,(end,r) in enumerate(quarters):
+            fy=r.get("fy")
+            prev_same=[(pe,pr) for pe,pr in quarters[:idx] if pr.get("fy")==fy]
+            if prev_same:
+                prev=prev_same[-1][1]
+                val=float(r["val"])-float(prev["val"])
+            else:
+                val=float(r["val"])
+            standalone.append((end,val))
+        # Add annual-minus-Q3 for each FY when an annual fact exists.
+        annual=select_yearly(rows)
+        for fy,ar in annual.items():
+            q3=[(e,v) for e,v in standalone if cumulative.get(e,{}).get("fy")==ar.get("fy")]
+            if q3:
+                q3_end,q3_val=q3[-1]
+                if date.fromisoformat(ar["end"]) > date.fromisoformat(q3_end):
+                    standalone.append((ar["end"],float(ar["val"])-q3_val))
+        by_end={e:v for e,v in standalone}
+        ends=sorted(by_end)[-4:]
+        if len(ends)<4: return None, None
+        return sum(by_end[e] for e in ends), ends[-1]
+
+    ttm_metrics={}
+    for metric in ("revenue","operating_income","net_income","cfo","capex","rnd","da","tax_expense","pretax_income"):
+        value, period=ttm_from_sec(metric)
+        if value is not None:
+            divisor=1e9
+            ttm_metrics[metric]={"value":round(value/divisor,6),"unit":"B","period_end":period}
+    if "cfo" in ttm_metrics and "capex" in ttm_metrics:
+        ttm_metrics["fcf"]={"value":round(ttm_metrics["cfo"]["value"]-abs(ttm_metrics["capex"]["value"]),6),"unit":"B","period_end":ttm_metrics["capex"]["period_end"]}
+    if ttm_metrics:
+        result["latest_reported"]["ttm"]=ttm_metrics
+
+        ttm_rev=ttm_metrics.get("revenue",{}).get("value")
+        ttm_op=ttm_metrics.get("operating_income",{}).get("value")
+        ttm_ni=ttm_metrics.get("net_income",{}).get("value")
+        ttm_da=ttm_metrics.get("da",{}).get("value")
+        ttm_tax=ttm_metrics.get("tax_expense",{}).get("value")
+        ttm_pre=ttm_metrics.get("pretax_income",{}).get("value")
+        ttm_ebitda=None if ttm_op is None or ttm_da is None else ttm_op+ttm_da
+        ttm_nopat=None
+        if ttm_op is not None:
+            tax_rate=(max(0,min(1,ttm_tax/ttm_pre)) if ttm_tax is not None and ttm_pre not in (None,0) else None)
+            ttm_nopat=ttm_op*(1-tax_rate) if tax_rate is not None else None
+        if latest_net_debt is not None and ttm_ebitda not in (None,0):
+            result["latest_reported"]["ratios"]["net_debt_ebitda_ttm"]={"value":round(latest_net_debt/ttm_ebitda,6),"unit":"x","method":"Latest reported net debt / TTM EBITDA"}
+        if latest_invested not in (None,0) and ttm_nopat is not None:
+            result["latest_reported"]["ratios"]["roic_ttm"]={"value":round(ttm_nopat/latest_invested,6),"unit":"%","method":"TTM NOPAT / latest reported invested capital"}
+        if latest_equity not in (None,0) and ttm_ni is not None:
+            result["latest_reported"]["ratios"]["roe_ttm"]={"value":round(ttm_ni/latest_equity,6),"unit":"%","method":"TTM net income / latest reported equity"}
+        if ttm_rev not in (None,0) and ttm_ni is not None:
+            result["latest_reported"]["ratios"]["fcf_margin_ttm"]={"value":round(ttm_metrics.get("fcf",{}).get("value",0)/ttm_rev,6),"unit":"%","method":"TTM free cash flow / TTM revenue"}
     return result
 
 def main():
