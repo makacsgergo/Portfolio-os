@@ -214,7 +214,7 @@ def get_splits(ticker):
         print(ticker, "SPLIT ERROR", repr(e))
         return []
 
-def eps_split_adjustment(basis_date, splits):
+def eps_split_adjustment(basis_date, splits, allow_external_splits=True):
     # EPS is reported on the share basis used in the filing. A later stock
     # split is not necessarily reflected in older filings, so normalize based
     # on the filing date rather than the fiscal period end.
@@ -313,7 +313,7 @@ def build_company(ticker, cik):
     for fy, row in yearly.get("eps", {}).items():
         basis_date = row.get("filed") or row.get("end")
         if basis_date:
-            row["val"] = float(row["val"]) * eps_split_adjustment(basis_date, splits)
+            row["val"] = float(row["val"]) * eps_split_adjustment(basis_date, splits, allow_external_splits=row.get("form") in ("10-K", "10-K/A"))
     latest_period_end = common_period
     latest_form = None
     latest_filed = None
@@ -627,7 +627,7 @@ def main():
             continue
         try:
             data = build_company(ticker, cik)
-            if len(data.get("years", [])) >= 2:
+            if len(data.get("years", [])) >= 1:
                 existing[ticker] = data
                 successful += 1
                 print(ticker, "OK", len(data["years"]), "years")
