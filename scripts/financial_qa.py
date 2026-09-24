@@ -217,6 +217,7 @@ def main():
     stocks=universe.get("stocks",[])
     sec_map=get_json("https://www.sec.gov/files/company_tickers.json")
     cik_map={v["ticker"].upper():str(v["cik_str"]).zfill(10) for v in sec_map.values()}
+    cik_map.update({"BF.B":"0000014693","BRK.B":"0001067983","EA":"0000712515","XOM":"0000034088"})
     # SEC's API is the accounting source of truth; v2 the audit independently
     # Full-universe audit: keep this workflow-triggering comment with the QA logic.
     # re-selects annual and point-in-time facts from fresh companyfacts data.
