@@ -233,7 +233,9 @@ def main():
     errors=[r for r in results if r["status"]=="error"]
     report={"generated_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"universe_count":len(stocks),"counts":counts,"mismatch_tickers":[r["ticker"] for r in mismatch],"error_tickers":[r["ticker"] for r in errors],"results":results}
     REPORT.write_text(json.dumps(report,indent=2))
-    missing_generated=[r["ticker"] for r in results if r["status"]=="missing_generated_data"]\n    missing_cik=[r["ticker"] for r in results if r["status"]=="missing_cik"]\n    print(json.dumps({"universe_count":len(stocks),"counts":counts,"mismatches":len(mismatch),"errors":len(errors),"missing_generated":missing_generated,"missing_cik":missing_cik},indent=2))
+    missing_generated=[r["ticker"] for r in results if r["status"]=="missing_generated_data"]
+    missing_cik=[r["ticker"] for r in results if r["status"]=="missing_cik"]
+    print(json.dumps({"universe_count":len(stocks),"counts":counts,"mismatches":len(mismatch),"errors":len(errors),"missing_generated":missing_generated,"missing_cik":missing_cik},indent=2))
     # Do not fail on a mismatch: the report is the diagnostic artifact. Fail on
     # infrastructure/data retrieval errors only.
     if errors:
