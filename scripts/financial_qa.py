@@ -34,10 +34,11 @@ TAGS = {
     "equity": ["StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest", "Equity"],
     "debt_current": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebt", "BorrowingsCurrent"],
     "debt_noncurrent": ["LongTermDebtNoncurrent", "LongTermDebt", "BorrowingsNoncurrent"],
+    "shares_outstanding": ["EntityCommonStockSharesOutstanding", "CommonStockSharesOutstanding"],
 }
 
 FLOW_METRICS = ["revenue","gross_profit","operating_income","net_income","eps","rnd","da","capex","cfo"]
-INSTANT_METRICS = ["cash","assets","equity","debt_current","debt_noncurrent"]
+INSTANT_METRICS = ["cash","assets","equity","debt_current","debt_noncurrent","shares_outstanding"]
 TOL = {"eps": 0.015, "default": 0.001}
 ANNUAL_FORMS = ("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
 INSTANT_FORMS = ("10-K","10-K/A","10-Q","10-Q/A","20-F","20-F/A","40-F","40-F/A","6-K","6-K/A")
@@ -54,8 +55,8 @@ def _unit(units):
     return candidates[0] if candidates else None
 
 def _unit_for(units, metric):
-    if metric == "eps" and "USD/shares" in units:
-        return "USD/shares"
+    if metric == "eps":
+        return next((u for u in units if "-per-" in u or u == "USD/shares"), None)
     if "USD" in units:
         return "USD"
     for u in units:
@@ -89,7 +90,8 @@ def annual_rows(facts, metric):
 
 def instant_rows(facts, metric):
     rows = []
-    for taxonomy in TAXONOMIES:
+    taxonomies = list(TAXONOMIES) + (["dei"] if metric == "shares_outstanding" else [])
+    for taxonomy in taxonomies:
         source = facts.get("facts", {}).get(taxonomy, {})
         for tag in TAGS.get(metric, []):
             obj = source.get(tag)
@@ -231,7 +233,7 @@ def audit_one(stock, generated, cik_map):
             actual_obj=latest.get("metrics",{}).get(metric)
             if not actual_obj:
                 bs_issues.append(metric); continue
-            actual=float(actual_obj["value"])*1e9
+            actual=float(actual_obj["value"]) * (1e6 if metric == "shares_outstanding" else 1e9)
             expected=float(row["val"])
             if not close(actual,expected,max(1.0,abs(expected))*0.001):
                 bs_issues.append(metric)
