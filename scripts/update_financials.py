@@ -46,6 +46,8 @@ def sec_ticker_map():
     m = {v["ticker"].upper(): str(v["cik_str"]).zfill(10) for v in data.values()}
     if "BRK-B" in m: m["BRK.B"] = m["BRK-B"]
     if "BF-B" in m: m["BF.B"] = m["BF-B"]
+    m["EA"] = "0000712515"
+    m["BF.B"] = "0000014693"
     m["XOM"] = "0000034088"
     return m
 
