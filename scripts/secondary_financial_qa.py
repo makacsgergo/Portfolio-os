@@ -81,7 +81,12 @@ def main():
     with ThreadPoolExecutor(max_workers=4) as ex:
         futs=[ex.submit(compare,s["ticker"],generated) for s in stocks]
         for i,f in enumerate(as_completed(futs),1):
-            r=f.result(); results.append(r); print(i,r["ticker"],r["status"])
+            r=f.result(); results.append(r)
+            print(i,r["ticker"],r["status"],"compared",r.get("compared",0),"mismatches",len(r.get("mismatches",[])))
+            if r["ticker"] in {"GIS","MTB","AMT","COF","MET","SBAC","KEY"}:
+                print("DETAIL",r["ticker"],json.dumps(r.get("mismatches",[])[:20],separators=(",",":")))
+            if r["status"]=="unavailable":
+                print("UNAVAILABLE_DETAIL",r["ticker"],r.get("error","no overlapping financial values"))
     results.sort(key=lambda x:x["ticker"]); counts={}
     for r in results: counts[r["status"]]=counts.get(r["status"],0)+1
     Path(args.output).write_text(json.dumps({"generated_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"start":args.start,"count":len(results),"counts":counts,"results":results},indent=2))
