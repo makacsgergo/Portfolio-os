@@ -250,3 +250,55 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
  .stock-sheet .stock-heading .btn{font-size:10px;padding:7px}
  .financial-chart-current{flex-wrap:wrap}
 }
+
+
+/* Shared Portfolio OS visual system */
+:root{
+ --bg:#f4f7f6;--panel:#fff;--panel2:#edf5f2;--line:#e2e9e8;--text:#203640;--muted:#71818a;
+ --blue:#176d67;--green:#13815d;--red:#c44f53;--yellow:#9a6c18;
+}
+html,body{background:#f4f7f6;color:#203640}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+.app{max-width:1180px;padding:0 22px 30px}
+.app>.top{position:relative;margin:0 -22px 0;padding:17px 22px 15px;background:#fff;border-bottom:1px solid #e5ebe9}
+.brand{color:#183b42;font-size:21px;letter-spacing:-.035em;font-weight:800}
+.sub{color:#71818a;font-size:11px}
+.app>.top .btn{background:#f7faf9;border-color:#dce5e2;color:#29414a;border-radius:9px;padding:9px 12px;font-size:12px}
+.app>.top .btn.primary{background:#176d67;border-color:#176d67;color:#fff}
+.app>.nav{position:sticky;top:0;z-index:30;margin:0 -22px 17px;padding:8px 22px;background:#fff;border-bottom:1px solid #e5ebe9;gap:6px}
+.app>.nav button{padding:9px 13px;border-radius:8px;color:#71818a;font-size:12px;font-weight:700;transition:background .15s,color .15s}
+.app>.nav button:hover{background:#f4f8f6;color:#29414a}
+.app>.nav .active{background:#e8f2ef;color:#176d67}
+.app>.nav .active:hover{background:#e2efeb;color:#145d58}
+.app main{color:#203640}
+.app main:not(:has(.dashboard)) .section-head{margin:2px 0 13px}
+.app main:not(:has(.dashboard)) .section-title{color:#203640;font-size:16px}
+.app main:not(:has(.dashboard)) .muted,.app main:not(:has(.dashboard)) .small{color:#71818a}
+.app main:not(:has(.dashboard)) .card{background:#fff;border:1px solid #e2e9e8;border-radius:12px;box-shadow:0 1px 2px #173b3910}
+.app main:not(:has(.dashboard)) .list-item{background:#fff;border-color:#e2e9e8;border-radius:10px;color:#203640}
+.app main:not(:has(.dashboard)) .pill{background:#edf5f2;color:#176d67}
+.app main:not(:has(.dashboard)) .table-wrap{background:#fff;border-color:#e2e9e8;border-radius:12px}
+.app main:not(:has(.dashboard)) .table th,.app main:not(:has(.dashboard)) .table td{border-color:#edf0ef;color:#334850}
+.app main:not(:has(.dashboard)) .table th{color:#71818a}
+.app main:not(:has(.dashboard)) .table tbody tr:hover{background:#f7faf9}
+.app main:not(:has(.dashboard)) .search,.app main:not(:has(.dashboard)) input,.app main:not(:has(.dashboard)) select{background:#fff;border:1px solid #dce5e2;color:#29414a;border-radius:9px}
+.btn{background:#fff;border:1px solid #dce5e2;border-radius:9px;color:#29414a}
+.btn:hover{background:#f7faf9}
+.btn.primary{background:#176d67;border-color:#176d67;color:#fff}
+.bottom{background:#fffffff2;border-top-color:#e2e9e8;box-shadow:0 -5px 18px #183b4209}
+.bottom button{color:#71818a}
+.bottom button b{color:#53676d}
+.bottom .active,.bottom .active b{color:#176d67}
+.modal{background:#20364055;backdrop-filter:blur(3px)}
+.sheet{background:#fff;color:#203640;border-color:#dce5e2}
+.toast{background:#203640;color:#fff}
+@media(max-width:700px){
+ .app{padding-left:14px;padding-right:14px}
+ .app>.top{margin-left:-14px;margin-right:-14px;padding:13px 14px}
+ .app>.nav{margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px}
+ .brand{font-size:19px}
+}
+@media(max-width:430px){
+ .app>.top .btn{padding:8px 9px;font-size:11px}
+ .app>.nav{margin-bottom:12px}
+}
