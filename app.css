@@ -134,3 +134,111 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
  .dashboard-stat-value{font-size:17px}
  .dashboard-watch-chip span:nth-child(2){max-width:100px}
 }
+
+
+/* Company research: compact navigation, metric summary, selectable trend and expandable statements */
+.stock-sheet{padding-bottom:26px}
+.stock-sheet .stock-heading{position:relative;display:flex;justify-content:space-between;gap:14px;margin-bottom:0;padding:3px 0 14px}
+.stock-sheet .stock-heading h1{margin:2px 0 1px;font-size:26px;line-height:1.1;letter-spacing:-.035em;color:#203640}
+.stock-sheet .stock-heading .muted{font-size:12px}
+.stock-heading-actions{display:flex;gap:7px;align-items:center}
+.stock-sheet .stock-close{font-size:18px;line-height:1;min-width:36px}
+.stock-sector-separator{padding:0 3px;color:#a2b0b2}
+.stock-detail-nav{position:sticky;top:-22px;z-index:12;display:flex;gap:5px;margin:0 -22px;padding:9px 22px;background:#fff;border-bottom:1px solid #e8edeb}
+.stock-detail-nav button{padding:8px 12px;border-radius:8px;color:#687c81;font-size:12px;font-weight:700}
+.stock-detail-nav button.active{background:#e8f2ef;color:#176d67}
+.stock-section{scroll-margin-top:58px;margin:20px 0 0}
+.stock-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 13px}
+.stock-section-heading h2{margin:4px 0 3px;color:#203640;font-size:20px;letter-spacing:-.025em}
+.stock-section-heading p,.financial-detail-heading p{margin:0;color:#75878b;font-size:12px}
+.stock-section-kicker{font-size:9px;font-weight:800;letter-spacing:.12em;color:#819194}
+.stock-market-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin:14px 0}
+.stock-market-card{min-width:0;padding:12px 13px;border:1px solid #e2e9e8;border-radius:10px;background:#f8faf9}
+.stock-market-card span,.stock-market-card small{display:block;color:#71818a;font-size:10px}
+.stock-market-card b{display:block;margin:7px 0 3px;color:#203640;font-size:19px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stock-market-card.stock-market-primary{background:#edf5f2;border-color:#d9e9e3}
+.stock-market-card .positive{color:#13815d}.stock-market-card .negative{color:#c44f53}
+.company-description{padding:14px 15px;background:#f7faf9;border:1px solid #e3eae8;border-radius:11px}
+.company-description p{margin:6px 0 0;color:#334850;font-size:13px;line-height:1.55}
+.data-source-badge{flex:none;padding:6px 8px;border-radius:20px;background:#edf5f2;color:#176d67;font-size:9px;font-weight:800;letter-spacing:.06em}
+.financial-highlights{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 12px}
+.financial-highlight{display:flex;flex-direction:column;gap:4px;min-width:0;padding:11px 12px;border:1px solid #e2e9e8;border-radius:10px;background:#f8faf9}
+.financial-highlight span,.financial-highlight small{color:#71818a;font-size:10px}
+.financial-highlight b{color:#203640;font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.financial-chart{padding:14px 16px 11px;border:1px solid #e2e9e8;border-radius:12px;background:#fbfcfc}
+.financial-chart-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.financial-chart-eyebrow{color:#819194;font-size:9px;font-weight:800;letter-spacing:.11em}
+.financial-chart-title{margin-top:3px;color:#203640;font-size:15px;font-weight:750}
+.financial-chart-select-label{display:flex;align-items:center;gap:7px;color:#75878b;font-size:10px}
+.financial-chart-select-label select{max-width:190px;padding:7px 9px;border:1px solid #dce5e2;border-radius:8px;background:#fff;color:#29414a;font-size:11px}
+.financial-chart-current{display:flex;align-items:baseline;gap:9px;margin:13px 0 0}
+.financial-chart-current strong{color:#203640;font-size:21px;font-variant-numeric:tabular-nums}
+.financial-chart-current span{color:#71818a;font-size:10px}
+.financial-chart-current .positive{color:#13815d}.financial-chart-current .negative{color:#c44f53}
+.financial-chart-plot{margin-top:5px}
+.financial-chart-plot svg{display:block;width:100%;height:150px;overflow:visible}
+.financial-chart-plot line{stroke:#e6ecea;stroke-width:1}
+.financial-chart-plot polyline{fill:none;stroke:#218277;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.financial-chart-plot circle{fill:#218277;stroke:#fff;stroke-width:2}
+.financial-chart-years{display:flex;justify-content:space-between;gap:4px;margin-top:-3px;color:#75878b;font-size:9px;font-variant-numeric:tabular-nums}
+.financial-year-muted{display:none}
+.financial-chart-years span:first-child,.financial-chart-years span:last-child{display:inline}
+.financial-chart-caption{margin-top:9px;color:#87969a;font-size:9px}
+.financial-detail-heading{margin:21px 0 9px}
+.financial-detail-heading h3{margin:0 0 3px;color:#203640;font-size:15px}
+.financial-history-list{display:grid;gap:8px}
+.financial-group{border:1px solid #e2e9e8;border-radius:10px;background:#fff;overflow:hidden}
+.financial-group>summary,.financial-history>summary,.financial-methods>summary,.financial-source>summary,.research-group>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none;cursor:pointer}
+.financial-group>summary::-webkit-details-marker,.financial-history>summary::-webkit-details-marker,.financial-methods>summary::-webkit-details-marker,.financial-source>summary::-webkit-details-marker,.research-group>summary::-webkit-details-marker{display:none}
+.financial-group>summary{padding:12px 14px;color:#253f48;font-size:12px;font-weight:750}
+.financial-group>summary small{margin-left:auto;color:#859497;font-size:10px;font-weight:500}
+.financial-group[open]>summary{border-bottom:1px solid #edf0ef;background:#fbfcfc}
+.financial-chevron{color:#809195;font-size:14px;transition:transform .15s}
+.financial-group[open] .financial-chevron{transform:rotate(180deg)}
+.financial-group-content{padding:10px 12px 12px}
+.financial-table-note{margin:0 0 7px;color:#819194;font-size:10px}
+.financial-table-wrap{overflow:auto;border:1px solid #e9eeec;border-radius:8px}
+.stock-sheet .financial-table{width:100%;min-width:580px;border-collapse:collapse}
+.stock-sheet .financial-table th,.stock-sheet .financial-table td{padding:8px 10px;border-bottom:1px solid #edf0ef;text-align:right;font-size:10px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stock-sheet .financial-table th:first-child{text-align:left;position:sticky;left:0;background:#fff;min-width:160px}
+.stock-sheet .financial-table thead th{background:#f7faf9;color:#708186;font-size:9px;font-weight:750}
+.stock-sheet .financial-table tbody th{color:#334850;font-weight:600}
+.stock-sheet .financial-table tr:last-child th,.stock-sheet .financial-table tr:last-child td{border-bottom:0}
+.financial-history{margin-top:8px}
+.financial-history>summary{justify-content:flex-start;padding:8px 10px;color:#176d67;font-size:10px;font-weight:700}
+.financial-history[open]>summary{margin-bottom:7px}
+.financial-support-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.financial-subheading{margin:13px 0 7px;color:#40565e;font-size:11px;font-weight:750}
+.financial-methods{margin-top:10px;padding-top:9px;border-top:1px solid #edf0ef}
+.financial-methods>summary,.financial-source>summary{justify-content:flex-start;color:#176d67;font-size:10px;font-weight:700}
+.financial-methods ul{padding-left:17px;color:#71818a;font-size:10px;line-height:1.5}
+.financial-methods p,.financial-source p{color:#71818a;font-size:10px;line-height:1.5}
+.financial-source{padding:10px 12px;border:1px solid #e2e9e8;border-radius:9px;background:#fbfcfc}
+.financial-source[open]>summary{margin-bottom:6px}
+.financial-empty{padding:16px;border:1px dashed #d7e1de;border-radius:10px;background:#f8faf9;color:#75878b;font-size:12px}
+.research-group{margin:8px 0;border:1px solid #e2e9e8;border-radius:10px;background:#fff;overflow:hidden}
+.research-group>summary{padding:12px 14px;color:#253f48;font-size:12px;font-weight:750}
+.research-group>summary small{margin-left:auto;color:#859497;font-size:10px;font-weight:500}
+.research-group[open]>summary{border-bottom:1px solid #edf0ef;background:#fbfcfc}
+.research-group ul{padding:4px 24px 8px;color:#4b6168;font-size:12px;line-height:1.6}
+.research-group li{padding:4px 0}
+.research-segments{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:11px}
+.research-segments article{display:flex;flex-direction:column;gap:6px;padding:11px;background:#f7faf9;border-radius:8px}
+.research-segments b{color:#29414a;font-size:11px}
+.research-segments span{color:#71818a;font-size:10px;line-height:1.45}
+.stock-section{scroll-margin-top:60px}
+@media(max-width:700px){
+ .stock-sheet .stock-heading h1{font-size:23px}
+ .stock-detail-nav{margin:0 -17px;padding:8px 17px}
+ .stock-detail-nav button{padding:8px 10px;font-size:11px}
+ .financial-highlights{grid-template-columns:1fr 1fr}
+ .financial-support-grid{grid-template-columns:1fr}
+ .research-segments{grid-template-columns:1fr}
+ .financial-chart-head{align-items:flex-start;flex-direction:column}
+ .financial-chart-select-label{width:100%;justify-content:space-between}
+ .financial-chart-select-label select{max-width:65%}
+ .financial-chart-plot svg{height:125px}
+ .stock-heading-actions{gap:5px}
+ .stock-sheet .stock-heading .btn{font-size:10px;padding:7px}
+ .financial-chart-current{flex-wrap:wrap}
+}
