@@ -475,9 +475,14 @@ def audit_one(stock, generated, cik_map):
                     # Prefer the explicitly documented SEC restatement over the original filing basis.
                     if ticker in SEC_EPS_RESTATED_FALLBACKS and y in SEC_EPS_RESTATED_FALLBACKS[ticker]:
                         expected = float(SEC_EPS_RESTATED_FALLBACKS[ticker][y])
-                    actual=float(gm["values"][i])
-                else:
-                    actual=float(gm["values"][i]) * 1e9
+                raw_actual = gm["values"][i]
+                if raw_actual is None:
+                    checked += 1
+                    mismatches.append({"fy": y, "actual": None, "expected": expected,
+                                       "source_tag": latest_can[y].get("_tag"),
+                                       "filed": latest_can[y].get("filed")})
+                    continue
+                actual = float(raw_actual) if metric == "eps" else float(raw_actual) * 1e9
                 checked += 1
                 if not close(actual, expected, TOL["eps"] if metric=="eps" else max(1.0,abs(expected))*0.001):
                     mismatches.append({"fy":y,"actual":actual,"expected":expected,"source_tag":latest_can[y].get("_tag"),"filed":latest_can[y].get("filed")})
