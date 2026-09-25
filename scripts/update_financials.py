@@ -635,7 +635,7 @@ def build_company(ticker, cik):
             standalone.append((end,val))
         # Add annual-minus-Q3 for each FY when an annual fact exists.
         annual=select_latest_annual_period(rows, select_yearly(rows))
-        for fy,ar in annual.items()
+        for fy,ar in annual.items():
             q3=[(e,v) for e,v in standalone if cumulative.get(e,{}).get("fy")==ar.get("fy")]
             if q3:
                 q3_end,q3_val=q3[-1]
