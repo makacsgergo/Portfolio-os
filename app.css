@@ -177,12 +177,11 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
 .financial-chart-current .positive{color:#13815d}.financial-chart-current .negative{color:#c44f53}
 .financial-chart-plot{margin-top:5px}
 .financial-chart-plot svg{display:block;width:100%;height:176px;overflow:visible}
-.financial-chart-grid{stroke:#e6ecea;stroke-width:1}\n.financial-chart-axis-label,.financial-chart-year-label{fill:#71818a;font-size:12px;font-variant-numeric:tabular-nums}\n.financial-chart-year-label{fill:#53676d;font-size:11px}
+.financial-chart-grid{stroke:#e6ecea;stroke-width:1}
+.financial-chart-axis-label,.financial-chart-year-label{fill:#71818a;font-size:12px;font-variant-numeric:tabular-nums}
+.financial-chart-year-label{fill:#53676d;font-size:11px}
 .financial-chart-plot polyline{fill:none;stroke:#218277;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .financial-chart-plot circle{fill:#218277;stroke:#fff;stroke-width:2}
-.financial-chart-years{display:flex;justify-content:space-between;gap:4px;margin-top:-3px;color:#75878b;font-size:9px;font-variant-numeric:tabular-nums}
-.financial-year-muted{display:none}
-.financial-chart-years span:first-child,.financial-chart-years span:last-child{display:inline}
 .financial-chart-caption{margin-top:9px;color:#87969a;font-size:9px}
 .financial-detail-heading{margin:21px 0 9px}
 .financial-detail-heading h3{margin:0 0 3px;color:#203640;font-size:15px}
