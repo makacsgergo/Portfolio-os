@@ -56,8 +56,8 @@ def compare(ticker,generated):
         ext=parse_page(ticker); g=generated[ticker]; mismatches=[]; compared=0
         for gm in g.get("metrics",[]):
             name=gm.get("name"); label=METRIC_ROWS.get(name)
-            if not label or label not in ext["metrics"]: continue
-            ev=ext["metrics"][label]
+            if not label or name not in ext["metrics"]: continue
+            ev=ext["metrics"][name]
             for fy,actual in zip(g.get("years",[]),gm.get("values",[])):
                 if fy not in ev or actual is None or ev[fy] is None: continue
                 expected=ev[fy]; app=actual*1000 if name!="Diluted EPS" else actual
