@@ -62,7 +62,212 @@ SEC_SPLIT_FALLBACKS = {
 # HONA is a special case: it became independently traded on June 29, 2026.
 # Its historical FY2024/FY2025 financials were released by Honeywell Aerospace
 # in SEC-filed supplemental historical information rather than legacy HONA 10-Ks.
-SPECIAL_SEC_COVERAGE = {
+HONA_HISTORICAL_FINANCIALS = {\n    "2023": {"revenue": 13.790, "gross_profit": 5.283, "operating_income": 3.564, "net_income": 2.886, "eps": 9.11},\n    "2024": {"revenue": 15.445, "gross_profit": 5.502, "operating_income": 3.509, "net_income": 2.817, "eps": 8.89},\n    "2025": {"revenue": 17.404, "gross_profit": 6.063, "operating_income": 3.257, "net_income": 1.780, "eps": 5.62},\n}\n\nSPECIAL_SEC_COVERAGE = {
+    "HONA": {"cik": "0002089271", "reason": "2026 spin-off; historical FY2024/FY2025 supplemental SEC filing; latest 10-Q available"}
+}
+ANNUAL_FORMS = ("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
+INSTANT_FORMS = ("10-K","10-K/A","10-Q","10-Q/A","20-F","20-F/A","40-F","40-F/A","6-K","6-K/A")
+TAXONOMIES = ("us-gaap","ifrs-full")
+
+def get_json(url, headers=SEC_HEADERS):
+    r = requests.get(url, headers=headers, timeout=45)
+    r.raise_for_status()
+    return r.json()
+
+def _unit(units):
+    if "USD" in units: return "USD"
+    candidates=[u for u in units if u not in ("shares","pure","USD/shares") and "-per-" not in u]
+    return candidates[0] if candidates else None
+
+def _unit_for(units, metric):
+    if metric == "eps":
+        return next((u for u in units if "-per-" in u or u == "USD/shares"), None)
+    if "USD" in units:
+        return "USD"
+    for u in units:
+        if u not in ("shares","pure") and "-per-" not in u:
+            return u
+    return None
+
+def annual_rows(facts, metric):
+    rows = []
+    for taxonomy in TAXONOMIES:
+        source = facts.get("facts", {}).get(taxonomy, {})
+        for tag in TAGS[metric]:
+            obj = source.get(tag)
+            if not obj:
+                continue
+            units = obj.get("units", {})
+            unit = _unit_for(units, metric)
+            if not unit:
+                continue
+            for x in units[unit]:
+                if x.get("form") not in ANNUAL_FORMS or not x.get("start") or not x.get("end"):
+                    continue
+                try:
+                    days = (date.fromisoformat(x["end"]) - date.fromisoformat(x["start"])).days
+                except Exception:
+                    continue
+                if 300 <= days <= 400:
+                    y = dict(x); y["_tag"] = tag; y["_taxonomy"] = taxonomy; y["_unit"] = unit
+                    rows.append(y)
+    return rows
+
+def instant_rows(facts, metric):
+    rows = []
+    taxonomies = list(TAXONOMIES) + (["dei"] if metric == "shares_outstanding" else [])
+    for taxonomy in taxonomies:
+        source = facts.get("facts", {}).get(taxonomy, {})
+        for tag in TAGS.get(metric, []):
+            obj = source.get(tag)
+            if not obj:
+                continue
+            units = obj.get("units", {})
+            unit = _unit_for(units, metric)
+            if not unit:
+                continue
+            for x in units[unit]:
+                if x.get("form") in INSTANT_FORMS and x.get("end") and not x.get("start"):
+                    y = dict(x); y["_tag"] = tag; y["_taxonomy"] = taxonomy; y["_unit"] = unit
+                    rows.append(y)
+    return rows
+
+def canonical_annual(rows):
+    by_end = {}
+    for x in rows:
+        try:
+            lag = (date.fromisoformat(x["filed"]) - date.fromisoformat(x["end"])).days
+        except Exception:
+            continue
+        if lag < 0:
+            continue
+        rank = (0 if x.get("form") == "10-K" else 1, lag, x.get("filed",""))
+        if x["end"] not in by_end or rank < by_end[x["end"]][0]:
+            by_end[x["end"]] = (rank, x)
+    out = {}
+    for end, (_, x) in by_end.items():
+        fy = str(x.get("fy") or date.fromisoformat(end).year)
+        out[fy] = x
+    return out
+
+def latest_annual_by_end(rows):
+    by_end = {}
+    for x in rows:
+        try:
+            days = (date.fromisoformat(x["end"]) - date.fromisoformat(x["start"])).days
+        except Exception:
+            continue
+        if not (300 <= days <= 400):
+            continue
+        prev = by_end.get(x["end"])
+        if prev is None or x.get("filed","") > prev.get("filed",""):
+            by_end[x["end"]] = x
+    return by_end
+
+def latest_annual_eps(rows):
+    return latest_annual_by_end(rows)
+def get_splits(ticker):
+    try:
+        d = get_json(YAHOO_URL.format(ticker, int(time.time())), headers={"User-Agent":"Mozilla/5.0"})
+        events = d["chart"]["result"][0].get("events", {}).get("splits", {})
+        out=[]
+        for ts,e in events.items():
+            ratio=e.get("splitRatio","")
+            if ":" not in ratio: continue
+            a,b=ratio.split(":",1)
+            factor=float(a)/float(b)
+            if factor and factor != 1:
+                out.append((date.fromtimestamp(int(ts)).isoformat(), factor))
+        return sorted(out)
+    except Exception:
+        return []
+
+def adjust_eps(row, splits):
+    basis = row.get("filed") or row.get("end")
+    factor = 1.0
+    for split_date, share_factor in splits:
+        if split_date > basis:
+            factor /= share_factor
+    return float(row["val"]) * factor
+
+def close(a,b,tol):
+    if a is None or b is None or not math.isfinite(a) or not math.isfinite(b):
+        return False
+    return abs(a-b) <= max(tol, abs(b)*0.002)
+
+def audit_one(stock, generated, cik_map):
+    ticker = stock["ticker"].upper()
+    cik = cik_map.get(ticker)
+    if not cik or cik == "0000000000":
+        special=SPECIAL_SEC_COVERAGE.get(ticker)
+        if special:
+            return {"ticker":ticker,"status":"special_source","cik":special["cik"],"reason":special["reason"]}
+        return {"ticker":ticker,"status":"missing_cik"}
+    try:\n        if ticker == "HONA":\n            g = generated.get(ticker)\n            if not g:\n                return {"ticker": ticker, "status": "missing_generated_data", "reason": "HONA special-source normalization missing"}\n            labels = {"revenue": "Revenue", "gross_profit": "Gross profit", "operating_income": "Operating income", "net_income": "Net income", "eps": "Diluted EPS"}\n            issues = []\n            years = [y.replace("FY", "") for y in g.get("years", [])]\n            for metric in ("revenue", "gross_profit", "operating_income", "net_income", "eps"):\n                gm = next((m for m in g.get("metrics", []) if m.get("name") == labels[metric]), None)\n                if not gm:\n                    issues.append(metric + "_missing")\n                    continue\n                for fy, expected in HONA_HISTORICAL_FINANCIALS.items():\n                    if fy not in years:\n                        issues.append(metric + "_" + fy + "_missing")\n                        continue\n                    actual = float(gm["values"][years.index(fy)])\n                    target = expected[metric]\n                    tol = 0.015 if metric == "eps" else max(0.001, abs(target) * 0.001)\n                    if not close(actual, target, tol):\n                        issues.append({"metric": metric, "fy": fy, "actual": actual, "expected": target})\n            return {"ticker": ticker, "status": "pass" if not issues else "mismatch", "issues": issues, "special_source": "SEC-filed HONA standalone historical information"}\n\n        facts=get_json(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")\n        g=generated.get(ticker)\nimport argparse, json, math, os, time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import date
+from pathlib import Path
+import requests
+
+ROOT = Path(__file__).resolve().parents[1]
+UNIVERSE = ROOT / "universe.json"
+FINANCIALS = ROOT / "financials.json"
+REPORT = ROOT / "financial_qa.json"
+
+SEC_HEADERS = {"User-Agent": os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com"), "Accept-Encoding": "gzip, deflate"}
+YAHOO_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{}?period1=0&period2={}&interval=1d&events=split"
+
+ANNUAL_FORMS=("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
+INSTANT_FORMS=("10-K","10-K/A","10-Q","10-Q/A","20-F","20-F/A","40-F","40-F/A","6-K","6-K/A")
+TAXONOMIES=("us-gaap","ifrs-full")
+ANNUAL_FORMS = ("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
+INSTANT_FORMS = ("10-K","10-K/A","10-Q","10-Q/A","20-F","20-F/A","40-F","40-F/A","6-K","6-K/A")
+TAXONOMIES = ("us-gaap","ifrs-full")
+
+TAGS = {
+    "revenue": ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet", "Revenue"],
+    "gross_profit": ["GrossProfit"],
+    "operating_income": ["OperatingIncomeLoss", "OperatingProfitLoss"],
+    "net_income": ["NetIncomeLoss", "ProfitLoss"],
+    "eps": ["EarningsPerShareDiluted", "DilutedEarningsLossPerShare", "BasicAndDilutedEarningsLossPerShare", "DilutedEarningsPerShare"],
+    "rnd": ["ResearchAndDevelopmentExpense", "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost", "ResearchAndDevelopmentExpenditure"],
+    "da": ["DepreciationDepletionAndAmortization", "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment", "DepreciationDepletionAndAmortizationAndAccretion", "DepreciationAndAmortisation"],
+    "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets", "PaymentsToAcquirePropertyPlantAndEquipmentAndOtherPropertyPlantAndEquipment", "PurchaseOfPropertyPlantAndEquipment"],
+    "cfo": ["NetCashProvidedByUsedInOperatingActivities", "NetCashFlowsFromUsedInOperatingActivities"],
+    "cash": ["CashAndCashEquivalentsAtCarryingValue", "CashAndCashEquivalents"],
+    "assets": ["Assets"],
+    "equity": ["StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest", "Equity"],
+    "debt_current": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebt", "BorrowingsCurrent"],
+    "debt_noncurrent": ["LongTermDebtNoncurrent", "LongTermDebt", "BorrowingsNoncurrent"],
+    "shares_outstanding": ["EntityCommonStockSharesOutstanding", "CommonStockSharesOutstanding"],
+}
+
+FLOW_METRICS = ["revenue","gross_profit","operating_income","net_income","eps","rnd","da","capex","cfo"]
+INSTANT_METRICS = ["cash","assets","equity","debt_current","debt_noncurrent","shares_outstanding"]
+TOL = {"eps": 0.015, "default": 0.001}
+
+# SEC-documented corporate-action fallback for cases where the secondary split
+# feed is unavailable. Keep SEC as the accounting authority.
+SEC_EPS_RESTATED_FALLBACKS = {
+    "SHOP": {"2020": 0.259},  # SEC 2023 annual filing retrospectively adjusts per-share amounts for the 10-for-1 split
+}
+
+SEC_REVENUE_REPORTED_OVERRIDES = {
+    "AMT": {"2019": 7.5803}, "CFG": {"2019": 6.491}, "COF": {"2018": 28.076},
+    "DOC": {"2016": 0.241034, "2017": 0.343584, "2018": 0.422551},
+    "ECHO": {"2021": 2.720916}, "GPN": {"2017": 3.975163}, "HIG": {"2017": 17.162},
+    "KEY": {"2022": 7.272}, "MET": {"2018": 67.941}, "MTB": {"2022": 7.662},
+    "SBAC": {"2017": 1.727674}, "URI": {"2019": 9.351}, "NBIS": {"2022": 0.0135},
+}
+
+SEC_SPLIT_FALLBACKS = {
+    "SHOP": [("2022-06-28", 10.0)],  # SEC: 10-for-1 split, effective June 28, 2022
+}
+
+# HONA is a special case: it became independently traded on June 29, 2026.
+# Its historical FY2024/FY2025 financials were released by Honeywell Aerospace
+# in SEC-filed supplemental historical information rather than legacy HONA 10-Ks.
+HONA_HISTORICAL_FINANCIALS = {\n    "2023": {"revenue": 13.790, "gross_profit": 5.283, "operating_income": 3.564, "net_income": 2.886, "eps": 9.11},\n    "2024": {"revenue": 15.445, "gross_profit": 5.502, "operating_income": 3.509, "net_income": 2.817, "eps": 8.89},\n    "2025": {"revenue": 17.404, "gross_profit": 6.063, "operating_income": 3.257, "net_income": 1.780, "eps": 5.62},\n}\n\nSPECIAL_SEC_COVERAGE = {
     "HONA": {"cik": "0002089271", "reason": "2026 spin-off; historical FY2024/FY2025 supplemental SEC filing; latest 10-Q available"}
 }
 ANNUAL_FORMS = ("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
