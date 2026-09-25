@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 UNIVERSE=ROOT/"universe.json"
 FINANCIALS=ROOT/"financials.json"
 HEADERS={"User-Agent":"Portfolio OS independent financial cross-check/1.0","Accept-Language":"en-US,en;q=0.9"}
-METRIC_ROWS={"Revenue":"Revenue","Gross profit":"Gross Profit","Operating income":"Operating Income","Net income":"Net Income","Diluted EPS":"EPS (Diluted)"}
+METRIC_ROWS={"Revenue":("Revenue",),"Gross profit":("Gross Profit",),"Operating income":("Operating Income",),"Net income":("Net Income",),"Diluted EPS":("EPS (Diluted)","Earnings Per Share","Diluted EPS")}
 
 def parse_num(s):
     s=s.strip().replace(",","")
@@ -40,12 +40,15 @@ def parse_page(ticker):
     if not fiscal: raise ValueError("fiscal-year header not found")
     out={}
     for row in rows:
-        if not row or row[0] not in METRIC_ROWS.values(): continue
+        if not row: continue
+        metric_name = next((name for name, labels in METRIC_ROWS.items()
+                            if any(row[0] == label or row[0].startswith(label + " ") for label in labels)), None)
+        if not metric_name: continue
         parsed={}
         for fy,v in zip(fiscal,row[1:]):
             m=re.search(r"(?:FY\s*|[A-Za-z]{3,9}\.?\s+\d{1,2},?\s+|^)(\d{4})\b",fy)
             if m: parsed["FY"+m.group(1)]=parse_num(v)
-        out[row[0]]=parsed
+        out[metric_name]=parsed
     return {"ticker":ticker,"url":url,"metrics":out}
 
 def compare(ticker,generated):
