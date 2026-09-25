@@ -5,6 +5,7 @@ from pathlib import Path
 import requests
 
 from financial_eps_overrides import SEC_EPS_RESTATED_FALLBACKS
+from financial_tag_selection import prefer_total_revenue_annual_facts
 
 ROOT = Path(__file__).resolve().parents[1]
 UNIVERSE = ROOT / "universe.json"
@@ -116,6 +117,8 @@ def annual_rows(facts, metric):
                 if 300 <= days <= 400:
                     y = dict(x); y["_tag"] = tag; y["_taxonomy"] = taxonomy; y["_unit"] = unit
                     rows.append(y)
+    if metric == "revenue":
+        rows = prefer_total_revenue_annual_facts(rows)
     return rows
 
 def instant_rows(facts, metric):

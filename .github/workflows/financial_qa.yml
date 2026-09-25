@@ -5,6 +5,7 @@ on:
     paths:
       - "scripts/financial_eps_overrides.py"
       - "scripts/financial_qa.py"
+      - "scripts/financial_tag_selection.py"
       - "scripts/secondary_financial_qa.py"
       - "financials.json"
       - ".github/workflows/financial_qa.yml"
@@ -69,7 +70,7 @@ jobs:
           out={"generated_utc":max((r["generated_utc"] for r in reports),default=None),"universe_count":len(results),"counts":counts,"mismatch_tickers":mismatches,"error_tickers":errors,"derived_formula_mismatches":derived_formula_mismatches,"quality_diagnostics":quality,"results":results}
           json.dump(out,open("financial_qa.json","w"),indent=2)
           print(json.dumps({"universe_count":len(results),"counts":counts,"mismatches":len(mismatches),"derived_formula_mismatches":len(derived_formula_mismatches),"errors":len(errors),"quality_diagnostics":quality},indent=2))
-          if errors: raise SystemExit(2)
+          if errors or mismatches or derived_formula_mismatches: raise SystemExit(2)
           PY
       - name: Independent secondary-source cross-check in increments
         run: |
@@ -78,6 +79,24 @@ jobs:
             echo "=== Secondary-source cross-check START=$START COUNT=50 ==="
             python scripts/secondary_financial_qa.py --start ${START} --count 50 --output secondary_qa_batch_${START}.json
           done
+
+      - name: Require clean secondary-source results
+        run: |
+          python - <<'PY'
+          import glob, json
+          reports = [json.load(open(path)) for path in sorted(glob.glob("secondary_qa_batch_*.json"))]
+          results = [row for report in reports for row in report.get("results", [])]
+          counts = {}
+          for row in results:
+              counts[row["status"]] = counts.get(row["status"], 0) + 1
+          summary = {"stocks_checked": len(results), "counts": counts,
+                     "flagged": [row["ticker"] for row in results if row["status"] == "flag"],
+                     "unavailable": [row["ticker"] for row in results if row["status"] == "unavailable"]}
+          json.dump(summary, open("secondary_qa_summary.json", "w"), indent=2)
+          print(json.dumps(summary, indent=2))
+          if len(results) != 515 or counts.get("match", 0) != 515:
+              raise SystemExit("Secondary-source QA did not confirm matches for all 515 stocks")
+          PY
       - name: Upload QA report
         uses: actions/upload-artifact@v4
         with:
@@ -86,4 +105,5 @@ jobs:
             financial_qa.json
             financial_qa_batch_*.json
             secondary_qa_batch_*.json
+            secondary_qa_summary.json
           retention-days: 30

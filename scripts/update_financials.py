@@ -4,6 +4,7 @@ from pathlib import Path
 import requests
 
 from financial_eps_overrides import SEC_EPS_RESTATED_FALLBACKS
+from financial_tag_selection import prefer_total_revenue_annual_facts, prefer_total_revenue_period_facts
 
 ROOT = Path(__file__).resolve().parents[1]
 UNIVERSE = ROOT / "universe.json"
@@ -11,7 +12,7 @@ OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v7-ttm-amendments"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v8-revenue-tag-priority"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -115,6 +116,8 @@ def annual_facts(companyfacts):
                     if 300<=days<=400:
                         row=dict(x); row["_tag"]=tag; row["_taxonomy"]=taxonomy; row["_unit"]=unit; rows.append(row)
         if rows: by_metric[metric]=rows
+    if "revenue" in by_metric:
+        by_metric["revenue"] = prefer_total_revenue_annual_facts(by_metric["revenue"])
     return by_metric
 
 def select_instant(rows, allowed_forms=INSTANT_FORMS):
@@ -584,6 +587,8 @@ def build_company(ticker, cik):
                 # Keep both because the TTM builder below derives standalone quarters
                 # from cumulative YTD filings when necessary.
                 row = dict(x); row["_tag"] = tag; rows.append(row)
+        if metric == "revenue":
+            rows = prefer_total_revenue_period_facts(rows)
         return rows
 
     def ttm_from_sec(metric):
