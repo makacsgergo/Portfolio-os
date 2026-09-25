@@ -4,6 +4,8 @@ from datetime import date
 from pathlib import Path
 import requests
 
+from financial_eps_overrides import SEC_EPS_RESTATED_FALLBACKS
+
 ROOT = Path(__file__).resolve().parents[1]
 UNIVERSE = ROOT / "universe.json"
 FINANCIALS = ROOT / "financials.json"
@@ -40,12 +42,6 @@ TAGS = {
 FLOW_METRICS = ["revenue","gross_profit","operating_income","net_income","eps","rnd","da","capex","cfo"]
 INSTANT_METRICS = ["cash","assets","equity","debt_current","debt_noncurrent","shares_outstanding"]
 TOL = {"eps": 0.015, "default": 0.001}
-
-# SEC-documented corporate-action fallback for cases where the secondary split
-# feed is unavailable. Keep SEC as the accounting authority.
-SEC_EPS_RESTATED_FALLBACKS = {
-    "SHOP": {"2020": 0.259},  # SEC 2023 annual filing retrospectively adjusts per-share amounts for the 10-for-1 split
-}
 
 SEC_REVENUE_REPORTED_OVERRIDES = {
     "AMT": {"2019": 7.5803}, "CFG": {"2019": 6.491}, "COF": {"2018": 28.076},

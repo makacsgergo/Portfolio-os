@@ -3,6 +3,7 @@ name: Financial data QA
 on:
   push:
     paths:
+      - "scripts/financial_eps_overrides.py"
       - "scripts/financial_qa.py"
       - "scripts/secondary_financial_qa.py"
       - "financials.json"

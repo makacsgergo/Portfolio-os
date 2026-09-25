@@ -3,13 +3,15 @@ from datetime import date
 from pathlib import Path
 import requests
 
+from financial_eps_overrides import SEC_EPS_RESTATED_FALLBACKS
+
 ROOT = Path(__file__).resolve().parents[1]
 UNIVERSE = ROOT / "universe.json"
 OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v5-hona"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v6-shared-eps-overrides"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -37,12 +39,6 @@ TAGS = {
     "debt_current": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebt", "BorrowingsCurrent"],
     "debt_noncurrent": ["LongTermDebtNoncurrent", "LongTermDebt", "BorrowingsNoncurrent"],
     "shares_outstanding": ["EntityCommonStockSharesOutstanding", "CommonStockSharesOutstanding"],
-}
-
-# Issuer-reported annual EPS overrides for documented XBRL precision/restatement cases.
-# These are canonical displayed EPS values from the company's annual reporting.
-SEC_EPS_RESTATED_FALLBACKS = {
-    "TRI": {"2017": 1.94, "2018": 5.88, "2019": 3.11, "2020": 2.25, "2021": 11.50},
 }
 
 # Issuer-reported annual revenue overrides for documented XBRL context/tag-selection

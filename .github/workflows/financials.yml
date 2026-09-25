@@ -3,6 +3,7 @@ name: Update financial data # v3 HONA historical normalization
 on:
   push:
     paths:
+      - "scripts/financial_eps_overrides.py"
       - "scripts/update_financials.py"
       - ".github/workflows/financials.yml"
   workflow_dispatch:

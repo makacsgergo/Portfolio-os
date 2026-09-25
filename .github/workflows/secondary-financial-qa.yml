@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "financials.json"
+      - "scripts/financial_eps_overrides.py"
       - "scripts/secondary_financial_qa.py"
       - ".github/workflows/secondary-financial-qa.yml"
 
