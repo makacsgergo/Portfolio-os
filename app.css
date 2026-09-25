@@ -176,8 +176,8 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
 .financial-chart-current span{color:#71818a;font-size:10px}
 .financial-chart-current .positive{color:#13815d}.financial-chart-current .negative{color:#c44f53}
 .financial-chart-plot{margin-top:5px}
-.financial-chart-plot svg{display:block;width:100%;height:150px;overflow:visible}
-.financial-chart-plot line{stroke:#e6ecea;stroke-width:1}
+.financial-chart-plot svg{display:block;width:100%;height:176px;overflow:visible}
+.financial-chart-grid{stroke:#e6ecea;stroke-width:1}\n.financial-chart-axis-label,.financial-chart-year-label{fill:#71818a;font-size:12px;font-variant-numeric:tabular-nums}\n.financial-chart-year-label{fill:#53676d;font-size:11px}
 .financial-chart-plot polyline{fill:none;stroke:#218277;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .financial-chart-plot circle{fill:#218277;stroke:#fff;stroke-width:2}
 .financial-chart-years{display:flex;justify-content:space-between;gap:4px;margin-top:-3px;color:#75878b;font-size:9px;font-variant-numeric:tabular-nums}
@@ -237,7 +237,7 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
  .financial-chart-head{align-items:flex-start;flex-direction:column}
  .financial-chart-select-label{width:100%;justify-content:space-between}
  .financial-chart-select-label select{max-width:65%}
- .financial-chart-plot svg{height:125px}
+ .financial-chart-plot svg{height:165px}
  .stock-heading-actions{gap:5px}
  .stock-sheet .stock-heading .btn{font-size:10px;padding:7px}
  .financial-chart-current{flex-wrap:wrap}
