@@ -167,6 +167,8 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
 .financial-highlight b{color:#203640;font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .financial-chart{padding:14px 16px 11px;border:1px solid #e2e9e8;border-radius:12px;background:#fbfcfc}
 .financial-chart-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.financial-chart-controls{display:flex;align-items:center;gap:8px}
+.financial-chart-controls .financial-chart-select-label{min-width:0}
 .financial-chart-eyebrow{color:#819194;font-size:9px;font-weight:800;letter-spacing:.11em}
 .financial-chart-title{margin-top:3px;color:#203640;font-size:15px;font-weight:750}
 .financial-chart-select-label{display:flex;align-items:center;gap:7px;color:#75878b;font-size:10px}
