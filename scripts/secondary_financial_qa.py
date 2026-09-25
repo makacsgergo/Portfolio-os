@@ -43,7 +43,7 @@ def parse_page(ticker):
         if not row or row[0] not in METRIC_ROWS.values(): continue
         parsed={}
         for fy,v in zip(fiscal,row[1:]):
-            m=re.search(r"FY\s*(\d{4})",fy)
+            m=re.search(r"(?:FY\s*|[A-Za-z]{3,9}\\.?\\s+\\d{1,2},?\\s+|^)(\\d{4})\\b",fy)
             if m: parsed["FY"+m.group(1)]=parse_num(v)
         out[row[0]]=parsed
     return {"ticker":ticker,"url":url,"metrics":out}
