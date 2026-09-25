@@ -302,3 +302,34 @@ body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
  .app>.top .btn{padding:8px 9px;font-size:11px}
  .app>.nav{margin-bottom:12px}
 }
+
+/* Slightly deeper neutrals and stronger separation for legibility */
+:root{--bg:#e9eeec;--panel:#f8faf9;--panel2:#e4eeea;--line:#d2ddda;--text:#192e38;--muted:#5f737b}
+html,body{background:#e9eeec;color:#192e38}
+.app>.top{background:#f8faf9;border-color:#d2ddda}
+.app>.nav{background:#f8faf9;border-color:#d2ddda}
+.app>.nav button{color:#60747b}
+.app>.nav button.active{background:#dcebe6;color:#145e58}
+.dashboard{--dash-ink:#192e38;--dash-muted:#5f737b;--dash-line:#d2ddda;--dash-panel:#f9fbfa;--dash-soft:#e9efed;background:#e9eeec;color:#192e38}
+.dashboard-value,.dashboard-stat{background:#f9fbfa}
+.dashboard-value{background:#e1eee9}
+.dashboard-panel{background:#f9fbfa;border-color:#d2ddda}
+.dashboard .dashboard-table th,.dashboard .dashboard-table td{border-color:#e3e9e7}
+.dashboard .dashboard-table tbody tr:hover{background:#edf3f1}
+.dashboard-allocation-row{border-color:#e3e9e7;color:#192e38}
+.dashboard-watch-chip{background:#f9fbfa;border-color:#d2ddda}
+.app main:not(:has(.dashboard)) .card,.app main:not(:has(.dashboard)) .list-item,.app main:not(:has(.dashboard)) .table-wrap{background:#f9fbfa;border-color:#d2ddda}
+.app main:not(:has(.dashboard)) .table th,.app main:not(:has(.dashboard)) .table td{border-color:#e3e9e7;color:#263f49}
+.app main:not(:has(.dashboard)) .table tbody tr:hover{background:#edf3f1}
+.app main:not(:has(.dashboard)) .search,.app main:not(:has(.dashboard)) input,.app main:not(:has(.dashboard)) select{background:#f9fbfa;border-color:#cbd7d3;color:#223c46}
+.btn{background:#f9fbfa;border-color:#ccd8d4;color:#223c46}
+.btn:hover{background:#edf3f1}
+.bottom{background:#f8faf9f5;border-color:#d2ddda}
+.bottom button{color:#5f737b}.bottom button b{color:#405861}
+.stock-sheet{background:#f9fbfa;border-color:#d2ddda}
+.stock-sheet .financial-chart,.stock-sheet .financial-group,.stock-sheet .research-group{background:#f9fbfa;border-color:#d2ddda}
+.stock-sheet .financial-chart{background:#f4f7f6}
+.stock-sheet .card,.stock-sheet .list-item,.stock-sheet .profile-section{background:#f0f4f2;border-color:#d2ddda}
+.stock-sheet .financial-group[open]>summary,.stock-sheet .research-group[open]>summary{background:#edf2f0;border-color:#dce4e1}
+.stock-sheet .stock-detail-nav{background:#f9fbfa;border-color:#d2ddda}
+.stock-sheet .financial-chart-grid,.stock-sheet .financial-table th,.stock-sheet .financial-table td{stroke:#d8e1de;border-color:#e0e7e5}
