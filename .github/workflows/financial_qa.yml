@@ -56,9 +56,10 @@ jobs:
           for r in results: counts[r["status"]]=counts.get(r["status"],0)+1
           mismatches=[r["ticker"] for r in results if r["status"]=="mismatch"]
           errors=[r["ticker"] for r in results if r["status"]=="error"]
-          out={"generated_utc":max((r["generated_utc"] for r in reports),default=None),"universe_count":len(results),"counts":counts,"mismatch_tickers":mismatches,"error_tickers":errors,"results":results}
+          derived_formula_mismatches=[{"ticker":r["ticker"],"checks":{name:check for name,check in r.get("derived_checks",{}).items() if check.get("mismatches")}} for r in results if any(check.get("mismatches") for check in r.get("derived_checks",{}).values())]
+          out={"generated_utc":max((r["generated_utc"] for r in reports),default=None),"universe_count":len(results),"counts":counts,"mismatch_tickers":mismatches,"error_tickers":errors,"derived_formula_mismatches":derived_formula_mismatches,"results":results}
           json.dump(out,open("financial_qa.json","w"),indent=2)
-          print(json.dumps({"universe_count":len(results),"counts":counts,"mismatches":len(mismatches),"errors":len(errors)},indent=2))
+          print(json.dumps({"universe_count":len(results),"counts":counts,"mismatches":len(mismatches),"derived_formula_mismatches":len(derived_formula_mismatches),"errors":len(errors)},indent=2))
           if errors: raise SystemExit(2)
           PY
       - name: Independent secondary-source cross-check in increments

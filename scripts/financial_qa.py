@@ -28,6 +28,8 @@ TAGS = {
     "net_income": ["NetIncomeLoss", "ProfitLoss"],
     "eps": ["EarningsPerShareDiluted", "DilutedEarningsLossPerShare", "BasicAndDilutedEarningsLossPerShare", "DilutedEarningsPerShare"],
     "rnd": ["ResearchAndDevelopmentExpense", "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost", "ResearchAndDevelopmentExpenditure"],
+    "tax_expense": ["IncomeTaxExpenseBenefit", "IncomeTaxExpenseContinuingOperations"],
+    "pretax_income": ["IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest", "IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments", "ProfitLossBeforeTax"],
     "da": ["DepreciationDepletionAndAmortization", "DepreciationDepletionAndAmortizationPropertyPlantAndEquipment", "DepreciationDepletionAndAmortizationAndAccretion", "DepreciationAndAmortisation"],
     "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets", "PaymentsToAcquirePropertyPlantAndEquipmentAndOtherPropertyPlantAndEquipment", "PurchaseOfPropertyPlantAndEquipment"],
     "cfo": ["NetCashProvidedByUsedInOperatingActivities", "NetCashFlowsFromUsedInOperatingActivities"],
@@ -198,6 +200,191 @@ def close(a,b,tol):
         return False
     return abs(a-b) <= max(tol, abs(b)*0.002)
 
+def audit_derived_metrics(g, facts=None):
+    """Recompute stored derived series and latest ratios from generated inputs."""
+    years = [str(y).replace("FY", "") for y in g.get("years", [])]
+    size = len(years)
+    metric_rows = {m.get("name"): m.get("values", []) for m in g.get("metrics", [])}
+
+    def values(name):
+        row = metric_rows.get(name, [])
+        return row if len(row) == size else (row + [None] * size)[:size]
+
+    def divide(a, b):
+        return None if a is None or b in (None, 0) else a / b
+
+    def combine(a, b, operation):
+        return [None if x is None or y is None else operation(x, y) for x, y in zip(a, b)]
+
+    rev = values("Revenue")
+    gp = values("Gross profit")
+    op = values("Operating income")
+    ni = values("Net income")
+    eps = values("Diluted EPS")
+    da = values("D&A")
+    cash = values("Cash")
+    debtc = values("Current debt")
+    debtl = values("Long-term debt")
+    equity = values("Total equity")
+    fcf = values("Free cash flow")
+    capex = values("Capex spend")
+    netdebt = [None if any(x is None for x in row) else row[0] + row[1] - row[2]
+               for row in zip(debtc, debtl, cash)]
+    ebitda = combine(op, da, lambda a, b: a + b)
+
+    def growth(series):
+        out = [None] if size else []
+        for i in range(1, size):
+            out.append(None if series[i] is None or series[i-1] in (None, 0)
+                       else series[i] / series[i-1] - 1)
+        return out
+
+    expected = {
+        "EBITDA": ebitda,
+        "EBIT": op,
+        "Net debt": netdebt,
+        "Gross margin": [divide(gp[i], rev[i]) for i in range(size)],
+        "Operating margin": [divide(op[i], rev[i]) for i in range(size)],
+        "FCF margin": [divide(fcf[i], rev[i]) for i in range(size)],
+        "Revenue growth": growth(rev),
+        "EPS growth": growth(eps),
+        "FCF growth": growth(fcf),
+        "FCF conversion": [divide(fcf[i], ni[i]) for i in range(size)],
+        "Debt / equity": [None if equity[i] in (None, 0) or debtc[i] is None or debtl[i] is None
+                          else (debtc[i] + debtl[i]) / equity[i] for i in range(size)],
+        "Net debt / EBITDA": [divide(netdebt[i], ebitda[i]) for i in range(size)],
+    }
+
+    # Independently reproduce annual FCF and ROIC from freshly fetched SEC facts.
+    annual_nopat = [None] * size
+    if facts is not None:
+        def latest_fy(metric):
+            rows = annual_rows(facts, metric)
+            canonical = canonical_annual(rows)
+            latest = latest_annual_by_end(rows)
+            return {fy: latest.get(original.get("end"), original)
+                    for fy, original in canonical.items()}
+
+        cfo_by_fy = latest_fy("cfo")
+        tax_by_fy = latest_fy("tax_expense")
+        pretax_by_fy = latest_fy("pretax_income")
+        fcf_expected = []
+        for i, fy in enumerate(years):
+            cfo = cfo_by_fy.get(fy)
+            fcf_expected.append(None if cfo is None or capex[i] is None else
+                                (float(cfo["val"]) - abs(capex[i] * 1e9)) / 1e9)
+            tax, pretax = tax_by_fy.get(fy), pretax_by_fy.get(fy)
+            if tax and pretax and float(pretax["val"]) != 0 and op[i] is not None:
+                rate = max(0, min(1, float(tax["val"]) / float(pretax["val"])))
+                annual_nopat[i] = op[i] * (1 - rate)
+        expected["Free cash flow"] = fcf_expected
+    else:
+        expected["Free cash flow"] = [None] * size
+
+    avg_equity = [None] + [
+        None if equity[i] is None or equity[i-1] is None
+        else (equity[i] + equity[i-1]) / 2 for i in range(1, size)
+    ] if size else []
+    expected["ROE"] = [divide(ni[i], avg_equity[i]) for i in range(size)]
+    invested = [None if netdebt[i] is None or equity[i] is None else netdebt[i] + equity[i]
+                for i in range(size)]
+    avg_invested = [None] + [
+        None if invested[i] is None or invested[i-1] is None
+        else (invested[i] + invested[i-1]) / 2 for i in range(1, size)
+    ] if size else []
+    expected["ROIC"] = [divide(annual_nopat[i], avg_invested[i]) for i in range(size)]
+
+    checks = {}
+
+    def same(a, b):
+        if a is None or b is None:
+            return a is None and b is None
+        try:
+            return math.isfinite(float(a)) and math.isfinite(float(b)) and abs(float(a) - float(b)) <= 1.1e-6
+        except (TypeError, ValueError):
+            return False
+
+    for name, exp_values in expected.items():
+        actual = metric_rows.get(name)
+        mismatches = []
+        checked = 0
+        if actual is None:
+            actual_values = [None] * size
+        else:
+            actual_values = actual
+            if len(actual_values) != size:
+                mismatches.append({"reason": "length", "actual": len(actual_values), "expected": size})
+        for i, fy in enumerate(years):
+            exp = exp_values[i] if i < len(exp_values) else None
+            got = actual_values[i] if i < len(actual_values) else None
+            if exp is not None or got is not None:
+                checked += 1
+            if not same(got, exp):
+                mismatches.append({"fy": "FY" + fy, "actual": got, "expected": exp})
+        checks[name] = {"checked": checked, "mismatches": mismatches}
+
+    latest = g.get("latest_reported", {})
+    latest_metrics = latest.get("metrics", {})
+    latest_ratios = latest.get("ratios", {})
+    latest_cash = latest_metrics.get("cash", {}).get("value")
+    latest_debtc = latest_metrics.get("debt_current", {}).get("value")
+    latest_debtl = latest_metrics.get("debt_noncurrent", {}).get("value")
+    latest_equity = latest_metrics.get("equity", {}).get("value")
+    latest_debt = None if latest_debtc is None and latest_debtl is None else (latest_debtc or 0) + (latest_debtl or 0)
+    latest_netdebt = None if latest_debt is None or latest_cash is None else latest_debt - latest_cash
+    latest_invested = None if latest_equity is None or latest_debt is None or latest_cash is None else latest_equity + latest_debt - latest_cash
+    latest_idx = size - 1 if size else None
+
+    def scalar(label, expected_value, actual_value):
+        mismatch = [] if same(actual_value, expected_value) else [
+            {"actual": actual_value, "expected": expected_value}
+        ]
+        checks[label] = {"checked": 0 if expected_value is None and actual_value is None else 1,
+                         "mismatches": mismatch}
+
+    scalar("Latest net debt", latest_netdebt, latest_ratios.get("net_debt", {}).get("value"))
+    scalar("Latest debt / equity", divide(latest_debt, latest_equity),
+           latest_ratios.get("debt_equity", {}).get("value"))
+    scalar("Latest net debt / annual EBITDA",
+           divide(latest_netdebt, ebitda[latest_idx]) if latest_idx is not None else None,
+           latest_ratios.get("net_debt_ebitda", {}).get("value"))
+    scalar("Latest annual ROE",
+           divide(ni[latest_idx], latest_equity) if latest_idx is not None else None,
+           latest_ratios.get("roe", {}).get("value"))
+    scalar("Latest annual ROIC",
+           divide(annual_nopat[latest_idx], latest_invested) if latest_idx is not None else None,
+           latest_ratios.get("roic", {}).get("value"))
+
+    ttm = latest.get("ttm", {})
+    ttm_fcf = ttm.get("fcf", {})
+    ttm_cfo, ttm_capex = ttm.get("cfo", {}), ttm.get("capex", {})
+    expected_ttm_fcf = None
+    if (ttm_cfo.get("value") is not None and ttm_capex.get("value") is not None
+            and ttm_cfo.get("period_end") == ttm_capex.get("period_end")):
+        expected_ttm_fcf = ttm_cfo["value"] - abs(ttm_capex["value"])
+    scalar("TTM free cash flow", expected_ttm_fcf, ttm_fcf.get("value"))
+
+    ttm_rev = ttm.get("revenue", {}).get("value")
+    ttm_op = ttm.get("operating_income", {}).get("value")
+    ttm_ni = ttm.get("net_income", {}).get("value")
+    ttm_da = ttm.get("da", {}).get("value")
+    ttm_tax = ttm.get("tax_expense", {}).get("value")
+    ttm_pretax = ttm.get("pretax_income", {}).get("value")
+    ttm_ebitda = None if ttm_op is None or ttm_da is None else ttm_op + ttm_da
+    ttm_nopat = None
+    if ttm_op is not None and ttm_tax is not None and ttm_pretax not in (None, 0):
+        ttm_rate = max(0, min(1, ttm_tax / ttm_pretax))
+        ttm_nopat = ttm_op * (1 - ttm_rate)
+    for key, label, expected_value in [
+        ("net_debt_ebitda_ttm", "TTM net debt / EBITDA", divide(latest_netdebt, ttm_ebitda)),
+        ("roic_ttm", "TTM ROIC", divide(ttm_nopat, latest_invested)),
+        ("roe_ttm", "TTM ROE", divide(ttm_ni, latest_equity)),
+        ("fcf_margin_ttm", "TTM FCF margin", divide(ttm_fcf.get("value"), ttm_rev)),
+    ]:
+        scalar(label, expected_value, latest_ratios.get(key, {}).get("value"))
+
+    return checks
+
 def audit_one(stock, generated, cik_map):
     ticker = stock["ticker"].upper()
     cik = cik_map.get(ticker)
@@ -228,7 +415,10 @@ def audit_one(stock, generated, cik_map):
                     tol = 0.015 if metric == "eps" else max(0.001, abs(target) * 0.001)
                     if not close(actual, target, tol):
                         issues.append({"metric": metric, "fy": fy, "actual": actual, "expected": target})
-            return {"ticker": ticker, "status": "pass" if not issues else "mismatch", "issues": issues, "special_source": "SEC-filed HONA standalone historical information"}
+            derived_checks = audit_derived_metrics(g)
+            if any(check["mismatches"] for check in derived_checks.values()):
+                issues.append("derived_metrics")
+            return {"ticker": ticker, "status": "pass" if not issues else "mismatch", "issues": issues, "derived_checks": derived_checks, "special_source": "SEC-filed HONA standalone historical information"}
         facts=get_json(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")
         g=generated.get(ticker)
         if not g:
@@ -314,7 +504,10 @@ def audit_one(stock, generated, cik_map):
                 bs_issues.append(metric)
         if bs_issues:
             issues.append("latest_"+",".join(bs_issues))
-        return {"ticker":ticker,"status":"pass" if not issues else "mismatch","issues":issues,"checks":metric_checks,"latest_period":latest_end,"latest_form":latest.get("form")}
+        derived_checks = audit_derived_metrics(g, facts)
+        if any(check["mismatches"] for check in derived_checks.values()):
+            issues.append("derived_metrics")
+        return {"ticker":ticker,"status":"pass" if not issues else "mismatch","issues":issues,"checks":metric_checks,"derived_checks":derived_checks,"latest_period":latest_end,"latest_form":latest.get("form")}
     except Exception as e:
         return {"ticker":ticker,"status":"error","error":repr(e)}
 
