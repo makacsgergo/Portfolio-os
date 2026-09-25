@@ -11,7 +11,7 @@ OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v6-shared-eps-overrides"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v7-ttm-amendments"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -594,9 +594,11 @@ def build_company(ticker, cik):
         direct = [r for r in rows if 70 <= (date.fromisoformat(r["end"]) - date.fromisoformat(r["start"])).days <= 110]
         by_end = {}
         for r in direct:
-            end=r["end"]; filed=r.get("filed",""); rank=(0, filed)
-            if end not in by_end or rank < by_end[end][0]: by_end[end]=(rank,r)
-        direct = {e:r for e,(rank,r) in by_end.items()}
+            end=r["end"]; filed=r.get("filed","")
+            previous=by_end.get(end)
+            if previous is None or filed > previous.get("filed",""):
+                by_end[end]=r
+        direct = by_end
         if len(direct) >= 4:
             ends=sorted(direct)[-4:]
             return sum(float(direct[e]["val"]) for e in ends), ends[-1]
@@ -610,9 +612,11 @@ def build_company(ticker, cik):
             qrows.append(r)
         by_end={}
         for r in qrows:
-            end=r["end"]; rank=(0 if r.get("form")=="10-Q" else 1,r.get("filed",""))
-            if end not in by_end or rank < by_end[end][0]: by_end[end]=(rank,r)
-        cumulative={e:r for e,(rank,r) in by_end.items()}
+            end=r["end"]; filed=r.get("filed","")
+            previous=by_end.get(end)
+            if previous is None or filed > previous.get("filed",""):
+                by_end[end]=r
+        cumulative=by_end
         quarters=[]
         for end,r in sorted(cumulative.items()):
             end_date=date.fromisoformat(end)
@@ -630,8 +634,8 @@ def build_company(ticker, cik):
                 val=float(r["val"])
             standalone.append((end,val))
         # Add annual-minus-Q3 for each FY when an annual fact exists.
-        annual=select_yearly(rows)
-        for fy,ar in annual.items():
+        annual=select_latest_annual_period(rows, select_yearly(rows))
+        for fy,ar in annual.items()
             q3=[(e,v) for e,v in standalone if cumulative.get(e,{}).get("fy")==ar.get("fy")]
             if q3:
                 q3_end,q3_val=q3[-1]
@@ -648,8 +652,9 @@ def build_company(ticker, cik):
         if value is not None:
             divisor=1e9
             ttm_metrics[metric]={"value":round(value/divisor,6),"unit":"B","period_end":period}
-    if "cfo" in ttm_metrics and "capex" in ttm_metrics:
-        ttm_metrics["fcf"]={"value":round(ttm_metrics["cfo"]["value"]-abs(ttm_metrics["capex"]["value"]),6),"unit":"B","period_end":ttm_metrics["capex"]["period_end"]}
+    if ("cfo" in ttm_metrics and "capex" in ttm_metrics
+            and ttm_metrics["cfo"]["period_end"] == ttm_metrics["capex"]["period_end"]):
+        ttm_metrics["fcf"]={"value":round(ttm_metrics["cfo"]["value"]-abs(ttm_metrics["capex"]["value"]),6),"unit":"B","period_end":ttm_metrics["cfo"]["period_end"]}
     if ttm_metrics:
         ttm_periods=[v.get("period_end") for v in ttm_metrics.values() if v.get("period_end")]
         if ttm_periods:
@@ -673,8 +678,9 @@ def build_company(ticker, cik):
             result["latest_reported"]["ratios"]["roic_ttm"]={"value":round(ttm_nopat/latest_invested,6),"unit":"%","method":"TTM NOPAT / latest reported invested capital"}
         if latest_equity not in (None,0) and ttm_ni is not None:
             result["latest_reported"]["ratios"]["roe_ttm"]={"value":round(ttm_ni/latest_equity,6),"unit":"%","method":"TTM net income / latest reported equity"}
-        if ttm_rev not in (None,0) and ttm_ni is not None:
-            result["latest_reported"]["ratios"]["fcf_margin_ttm"]={"value":round(ttm_metrics.get("fcf",{}).get("value",0)/ttm_rev,6),"unit":"%","method":"TTM free cash flow / TTM revenue"}
+        ttm_fcf=ttm_metrics.get("fcf",{}).get("value")
+        if ttm_rev not in (None,0) and ttm_fcf is not None:
+            result["latest_reported"]["ratios"]["fcf_margin_ttm"]={"value":round(ttm_fcf/ttm_rev,6),"unit":"%","method":"TTM free cash flow / TTM revenue"}
     return result
 
 def main():
