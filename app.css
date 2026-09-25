@@ -181,7 +181,14 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
 .financial-chart-axis-label,.financial-chart-year-label{fill:#71818a;font-size:12px;font-variant-numeric:tabular-nums}
 .financial-chart-year-label{fill:#53676d;font-size:11px}
 .financial-chart-plot polyline{fill:none;stroke:#218277;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.financial-chart-plot circle{fill:#218277;stroke:#fff;stroke-width:2}
+.financial-chart-point{cursor:pointer;outline:none}
+.financial-chart-hit{fill:transparent;stroke:none}
+.financial-chart-dot{fill:#218277;stroke:#fff;stroke-width:2}
+.financial-chart-tooltip{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .08s ease}
+.financial-chart-point:hover .financial-chart-tooltip,.financial-chart-point:focus .financial-chart-tooltip{opacity:1;visibility:visible}
+.financial-chart-tooltip rect{fill:#e5f5ee;stroke:#218277;stroke-width:1.5}
+.financial-chart-tooltip text{fill:#176d5c;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.financial-chart-point:focus-visible .financial-chart-dot{stroke:#176d5c;stroke-width:3}
 .financial-chart-caption{margin-top:9px;color:#87969a;font-size:9px}
 .financial-detail-heading{margin:21px 0 9px}
 .financial-detail-heading h3{margin:0 0 3px;color:#203640;font-size:15px}
