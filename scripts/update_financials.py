@@ -12,7 +12,7 @@ OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v8-revenue-tag-priority"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v9-revenue-tag-origin"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
