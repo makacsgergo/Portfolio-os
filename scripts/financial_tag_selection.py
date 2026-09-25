@@ -6,6 +6,8 @@ other revenue. Use it only when no broader standard revenue concept exists
 in the period's original filing. Later amendments update the selected concept.
 """
 
+from datetime import date
+
 REVENUE_TAG_PRIORITY = {
     "Revenues": 0,
     "SalesRevenueNet": 1,
