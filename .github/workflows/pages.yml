@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
   workflow_run:
-    workflows: ["Update financial data"]
+    workflows: ["Update financial data", "Update daily prices"]
     types: [completed]
   workflow_dispatch:
 permissions:

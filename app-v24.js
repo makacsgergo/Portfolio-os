@@ -33,6 +33,68 @@ let financials={};
 async function loadFinancials(){try{financials=await fetch("financials.json?ts="+Date.now(),{cache:"no-store"}).then(r=>r.json());if(current==="universe")render();}catch(e){console.error("Financial data load failed",e)}}
 loadFinancials();
 function companyFinancials(t){return financials[t]||null}
+let prices=null,pricesLoading=false;
+async function loadPrices(){
+ if(prices||pricesLoading)return;
+ pricesLoading=true;
+ try{prices=await fetch("prices.json?ts="+Date.now(),{cache:"no-store"}).then(r=>r.json())}
+ catch(e){console.error("Price history load failed",e);prices={tickers:{}}}
+ pricesLoading=false;
+ if(current==="home")render();
+}
+function performanceSeries(){
+ const txs=[...(state.transactions||[])].filter(x=>["BUY","SELL"].includes(x.type)&&x.date&&x.ticker).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+ if(!txs.length||!prices)return null;
+ const tickers=[...new Set(txs.map(x=>x.ticker))];
+ const priceMaps={};
+ tickers.forEach(t=>{
+  const s=prices.tickers?.[t];
+  if(!s)return;
+  const m={};
+  s.dates.forEach((d,i)=>{if(s.closes[i]!=null)m[d]=s.closes[i]});
+  priceMaps[t]=m;
+ });
+ const dateSet=new Set();
+ Object.values(priceMaps).forEach(m=>Object.keys(m).forEach(d=>dateSet.add(d)));
+ const earliest=txs[0].date;
+ const dates=[...dateSet].filter(d=>d>=earliest).sort();
+ if(!dates.length)return null;
+ const shares={},lastClose={};
+ let ti=0;
+ return dates.map(d=>{
+  while(ti<txs.length&&txs[ti].date<=d){const x=txs[ti];shares[x.ticker]=(shares[x.ticker]||0)+(x.type==="BUY"?x.qty:-x.qty);ti++}
+  let value=0;
+  for(const t of tickers){
+   const sh=shares[t]||0;
+   if(sh<=0)continue;
+   const pm=priceMaps[t];
+   if(pm&&pm[d]!=null)lastClose[t]=pm[d];
+   const px=lastClose[t];
+   if(px!=null)value+=sh*px;
+  }
+  return{date:d,value};
+ });
+}
+function fmtShortDate(iso){return new Date(iso+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})}
+function performanceChartHtml(){
+ const hasTx=(state.transactions||[]).some(x=>["BUY","SELL"].includes(x.type));
+ if(!hasTx)return{filled:false,html:"Add a transaction to see your performance history."};
+ if(!prices)return{filled:false,html:"Loading price history…"};
+ const pts=performanceSeries();
+ if(!pts||pts.length<2)return{filled:false,html:"Price history not available yet for your holdings."};
+ const w=600,h=140,pad=6;
+ const vals=pts.map(p=>p.value);
+ const min=Math.min(...vals),max=Math.max(...vals),range=(max-min)||1;
+ const stepX=(w-pad*2)/(pts.length-1);
+ const xy=pts.map((p,i)=>[pad+i*stepX,h-pad-((p.value-min)/range)*(h-pad*2)]);
+ const line=xy.map((p,i)=>(i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+ const area=line+` L${xy[xy.length-1][0].toFixed(1)},${h-pad} L${xy[0][0].toFixed(1)},${h-pad} Z`;
+ const first=vals[0],last=vals[vals.length-1],chg=first?((last/first)-1)*100:0,up=last>=first;
+ const color=up?"#5ee09a":"#ff7185";
+ return{filled:true,html:`<div class="perf-head"><div><b class="${up?"green":"red"}">${money(last)}</b> <span class="muted small">${pct(chg)}</span></div><span class="muted small">since ${fmtShortDate(pts[0].date)}</span></div>
+ <svg class="perf-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${area}" fill="${color}" opacity=".16" stroke="none"></path><path d="${line}" fill="none" stroke="${color}" stroke-width="2"></path></svg>
+ <div class="perf-range muted small"><span>${fmtShortDate(pts[0].date)}</span><span>${fmtShortDate(pts[pts.length-1].date)}</span></div>`};
+}
 function financialChart(data){if(!data?.years?.length)return "<div class=\"muted small\">Financial history not available yet.</div>";const metrics=(data.metrics||[]).filter(m=>(m.category||"income_statement")!=="balance_sheet");return metrics.map(m=>{const vals=m.values||[],nums=vals.map(Number).filter(Number.isFinite),max=Math.max(...nums.map(Math.abs),1),first=Number(vals.find(v=>v!=null)||0),last=Number(vals[vals.length-1]||0),growth=first?((last/first)-1)*100:null;return '<div style="margin:16px 0;padding:12px;border:1px solid #303b4d;border-radius:10px;background:#0f1722"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px"><b>'+m.name+'</b><span>'+finFmt(last,m.unit)+(growth===null?"":" · "+(growth>=0?"+":"")+growth.toFixed(0)+"%")+'</span></div><div style="display:flex;align-items:flex-end;gap:8px;height:130px">'+vals.map((v,j)=>'<div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center"><div style="font-size:10px;margin-bottom:4px">'+finFmt(v,m.unit)+'</div><div style="width:70%;height:'+Math.max(8,(Math.abs(Number(v)||0)/max)*100)+'px;background:#5b9cff;border-radius:5px 5px 0 0"></div><div style="font-size:10px;opacity:.6;margin-top:5px">'+data.years[j]+'</div></div>').join("")+'</div></div>'}).join("")}
 
 const $=s=>document.querySelector(s);
@@ -74,7 +136,7 @@ function migrateUnappliedTransactions(){
 migrateUnappliedTransactions()
 function total(){return state.positions.reduce((a,x)=>a+x.value,0)}
 function totalPL(){return state.positions.reduce((a,x)=>a+x.pl,0)}
-function nav(tab){current=tab; render()}
+function nav(tab){current=tab; if(tab==="home")loadPrices(); render()}
 function render(){
  document.body.innerHTML=`<div class="app">
   <header class="top"><div><div class="brand">Portfolio OS</div><div class="sub">Personal high-growth portfolio tracker</div></div>
@@ -87,12 +149,13 @@ function render(){
 }
 function home(){
  const t=total(),p=totalPL(),cost=t-p, top=[...state.positions].sort((a,b)=>b.value-a.value).slice(0,6);
+ const perf=performanceChartHtml();
  return `<div class="cards">
  <div class="card"><div class="label">Portfolio</div><div class="big">${money(t)}</div></div>
  <div class="card"><div class="label">P/L</div><div class="big ${p>=0?"green":"red"}">${money(p)}</div></div>
  <div class="card"><div class="label">Return</div><div class="big ${p>=0?"green":"red"}">${pct(cost?p/cost*100:0)}</div></div>
  <div class="card"><div class="label">Positions</div><div class="big">${state.positions.length}</div></div></div>
- <div class="grid2 section"><div class="card"><div class="section-head"><span class="section-title">Performance</span><span class="pill">V2</span></div><div class="chart">Historical performance chart connects in V3 with daily prices.</div></div>
+ <div class="grid2 section"><div class="card"><div class="section-head"><span class="section-title">Performance</span></div><div class="chart${perf.filled?" filled":""}">${perf.html}</div></div>
  <div class="card"><div class="section-head"><span class="section-title">Top positions</span></div>${top.map(x=>`<div class="alloc-row"><b>${x.ticker}</b><div class="bar"><i style="width:${Math.min(100,x.value/t*300)}%"></i></div><span>${(x.value/t*100).toFixed(1)}%</span></div>`).join("")}</div></div>
  <div class="section"><div class="section-head"><span class="section-title">Portfolio snapshot</span><button class="btn" onclick="nav('allocate')">Where to put new money →</button></div>
  <div class="list">${top.slice(0,4).map(x=>`<div class="list-item" onclick="stock('${x.ticker}')"><div><span class="ticker">${x.ticker}</span><div class="muted small">${money(x.value)} position</div></div><div class="${x.pl>=0?"green":"red"}">${money(x.pl)}<br><span class="small">${pct(x.ret)}</span></div></div>`).join("")}</div></div>`;
@@ -298,4 +361,5 @@ function importBroker(){
 function parseCSV(text){const lines=text.split(/\r?\n/).filter(Boolean); if(!lines.length)return[]; const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}; const h=parseLine(lines[0]); return lines.slice(1).map(l=>{const v=parseLine(l); return Object.fromEntries(h.map((k,i)=>[k,v[i]??""]))})}
 window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;
 save();render();
+if(current==="home")loadPrices();
 if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}

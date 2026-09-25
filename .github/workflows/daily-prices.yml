@@ -1,0 +1,56 @@
+name: Update daily prices
+
+on:
+  push:
+    paths:
+      - "scripts/update_daily_prices.py"
+      - ".github/workflows/daily-prices.yml"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 21 * * 1-5"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-prices-update
+  cancel-in-progress: false
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Pull daily price history
+        env:
+          SEC_USER_AGENT: "Portfolio OS research app contact@example.com"
+        run: python scripts/update_daily_prices.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "portfolio-os-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add prices.json
+          if git diff --cached --quiet; then
+            echo "No price changes."
+          else
+            git commit -m "Update daily price history"
+            # prices.json may also have changed in a newer bot commit.
+            # Keep this freshly generated file, but rebuild the commit on top
+            # of current main so overlapping generated-data commits cannot conflict.
+            git fetch origin main
+            git reset --mixed origin/main
+            git add prices.json
+            git commit -m "Update daily price history"
+            git push
+          fi
