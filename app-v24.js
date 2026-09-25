@@ -33,31 +33,38 @@ let financials={};
 async function loadFinancials(){try{financials=await fetch("financials.json?ts="+Date.now(),{cache:"no-store"}).then(r=>r.json());if(current==="universe")render();}catch(e){console.error("Financial data load failed",e)}}
 loadFinancials();
 function companyFinancials(t){return financials[t]||null}
-function financialChart(data,selectedName,ticker){
+function financialChart(data,selectedName,ticker,selectedHorizon){
  const metrics=(data?.metrics||[]).filter(m=>(m.category||"income_statement")!=="balance_sheet"&&(m.values||[]).some(v=>v!=null&&Number.isFinite(Number(v))));
  if(!data?.years?.length||!metrics.length)return '<div class="financial-empty">Financial history is not available yet.</div>';
  const preferred=["Revenue","Operating income","Free cash flow","Diluted EPS","Net income"];
  const selected=metrics.find(m=>m.name===selectedName)||preferred.map(n=>metrics.find(m=>m.name===n)).find(Boolean)||metrics[0];
- const values=data.years.map((_,i)=>selected.values?.[i]==null?null:Number(selected.values[i]));
+ const allYears=data.years;
+ const availableHorizons=[3,5,10].filter(n=>allYears.length>=n).map(String);
+ const horizon=selectedHorizon&&(selectedHorizon==="all"||availableHorizons.includes(selectedHorizon))?selectedHorizon:(allYears.length>=10?"10":"all");
+ const startIndex=horizon==="all"?0:Math.max(0,allYears.length-Number(horizon));
+ const years=allYears.slice(startIndex);
+ const values=years.map((_,i)=>selected.values?.[startIndex+i]==null?null:Number(selected.values[startIndex+i]));
  const valid=values.filter(v=>v!=null&&Number.isFinite(v)),min=Math.min(...valid),max=Math.max(...valid),span=max-min||Math.max(Math.abs(max)*0.08,1);
  const left=104,right=766,top=28,bottom=174,xAt=i=>left+i*((right-left)/Math.max(1,values.length-1)),yAt=v=>bottom-((v-min)/span)*(bottom-top);
  const points=values.map((v,i)=>v==null?null:xAt(i)+","+yAt(v)).filter(Boolean).join(" ");
  const markers=values.map((v,i)=>{
   if(v==null)return "";
   const x=xAt(i),y=yAt(v),tipX=Math.max(4,Math.min(678,x-49)),tipY=y<58?y+13:y-36;
-  return '<g class="financial-chart-point" tabindex="0" role="img" aria-label="'+data.years[i]+': '+finFmt(v,selected.unit)+'"><circle class="financial-chart-hit" cx="'+x+'" cy="'+y+'" r="10"></circle><circle class="financial-chart-dot" cx="'+x+'" cy="'+y+'" r="4"></circle><g class="financial-chart-tooltip" transform="translate('+tipX+' '+tipY+')"><rect width="98" height="26" rx="7"></rect><text x="49" y="17" text-anchor="middle">'+finFmt(v,selected.unit)+'</text></g></g>';
+  return '<g class="financial-chart-point" tabindex="0" role="img" aria-label="'+years[i]+': '+finFmt(v,selected.unit)+'"><circle class="financial-chart-hit" cx="'+x+'" cy="'+y+'" r="10"></circle><circle class="financial-chart-dot" cx="'+x+'" cy="'+y+'" r="4"></circle><g class="financial-chart-tooltip" transform="translate('+tipX+' '+tipY+')"><rect width="98" height="26" rx="7"></rect><text x="49" y="17" text-anchor="middle">'+finFmt(v,selected.unit)+'</text></g></g>';
  }).join("");
  let latestIndex=-1; for(let i=values.length-1;i>=0;i--)if(values[i]!=null){latestIndex=i;break}
  const latest=latestIndex>=0?finFmt(values[latestIndex],selected.unit):"—";
  const options=metrics.map(m=>'<option value="'+m.name.replace(/"/g,"&quot;")+'" '+(m.name===selected.name?"selected":"")+'>'+m.name+'</option>').join("");
+ const horizonOptions=availableHorizons.map(n=>'<option value="'+n+'" '+(horizon===n?"selected":"")+'>'+n+'Y</option>').join("")+'<option value="all" '+(horizon==="all"?"selected":"")+'>Full history</option>';
  const yLabels=[0,1,2,3,4].map(i=>{const v=max-(span*i/4);const y=top+(bottom-top)*i/4;return '<g><line class="financial-chart-grid" x1="'+left+'" y1="'+y+'" x2="'+right+'" y2="'+y+'"></line><text class="financial-chart-axis-label" x="'+(left-10)+'" y="'+(y+4)+'" text-anchor="end">'+finFmt(v,selected.unit)+'</text></g>'}).join("");
- const yearLabels=data.years.map((y,i)=>'<text class="financial-chart-year-label" x="'+xAt(i)+'" y="204" text-anchor="middle">'+y+'</text>').join("");
+ const yearLabels=years.map((y,i)=>'<text class="financial-chart-year-label" x="'+xAt(i)+'" y="204" text-anchor="middle">'+y+'</text>').join("");
  const delta=valid.length>1&&valid[0]!==0?((valid[valid.length-1]/valid[0]-1)*100):null;
- return '<div class="financial-chart" id="financial-chart-'+ticker+'"><div class="financial-chart-head"><div><div class="financial-chart-eyebrow">FINANCIAL TREND</div><div class="financial-chart-title">'+selected.name+'</div></div><label class="financial-chart-select-label">Metric<select aria-label="Select financial chart metric" onchange="renderFinancialChart(&quot;'+ticker+'&quot;,this.value)">'+options+'</select></label></div><div class="financial-chart-current"><strong>'+latest+'</strong><span>FY '+(data.years[latestIndex]||"—")+'</span>'+(delta===null?"":'<span class="'+(delta>=0?"positive":"negative")+'">'+(delta>=0?"+":"")+delta.toFixed(1)+"% across history</span>")+'</div><div class="financial-chart-plot"><svg viewBox="0 0 780 220" role="img" aria-label="'+selected.name+' trend over '+data.years.length+' fiscal years, with value scale and annual labels" preserveAspectRatio="none">'+yLabels+'<polyline points="'+points+'"></polyline>'+markers+yearLabels+'</svg></div><div class="financial-chart-caption">Annual SEC-reported values · '+(selected.unit==="B"||selected.unit==="M"?"USD "+selected.unit:"reported unit")+' · Hover a point for its exact value</div></div>';
+ const horizonLabel=horizon==="all"?"full history":horizon+" years";
+ return '<div class="financial-chart" id="financial-chart-'+ticker+'"><div class="financial-chart-head"><div><div class="financial-chart-eyebrow">FINANCIAL TREND</div><div class="financial-chart-title">'+selected.name+'</div></div><div class="financial-chart-controls"><label class="financial-chart-select-label">Metric<select id="financial-metric-'+ticker+'" aria-label="Select financial chart metric" onchange="renderFinancialChart(&quot;'+ticker+'&quot;,this.value,document.getElementById(&quot;financial-horizon-'+ticker+'&quot;).value)">'+options+'</select></label><label class="financial-chart-select-label">Period<select id="financial-horizon-'+ticker+'" aria-label="Select chart time horizon" onchange="renderFinancialChart(&quot;'+ticker+'&quot;,document.getElementById(&quot;financial-metric-'+ticker+'&quot;).value,this.value)">'+horizonOptions+'</select></label></div></div><div class="financial-chart-current"><strong>'+latest+'</strong><span>FY '+(years[latestIndex]||"—")+'</span>'+(delta===null?"":'<span class="'+(delta>=0?"positive":"negative")+'">'+(delta>=0?"+":"")+delta.toFixed(1)+"% across "+horizonLabel+"</span>")+'</div><div class="financial-chart-plot"><svg viewBox="0 0 780 220" role="img" aria-label="'+selected.name+' trend over '+years.length+' fiscal years, with value scale and annual labels" preserveAspectRatio="none">'+yLabels+'<polyline points="'+points+'"></polyline>'+markers+yearLabels+'</svg></div><div class="financial-chart-caption">Annual SEC-reported values · '+(selected.unit==="B"||selected.unit==="M"?"USD "+selected.unit:"reported unit")+' · Hover a point for its exact value</div></div>';
 }
-function renderFinancialChart(ticker,name){
+function renderFinancialChart(ticker,name,horizon){
  const host=document.getElementById("financial-chart-"+ticker);
- if(host)host.outerHTML=financialChart(companyFinancials(ticker),name,ticker);
+ if(host)host.outerHTML=financialChart(companyFinancials(ticker),name,ticker,horizon);
 }
 
 
