@@ -42,7 +42,7 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
 .metric-bar-year{font-size:10px;opacity:.55;margin-top:6px}
 
 /* Dashboard and company-research first-pass refresh */
-.dashboard{--dash-ink:#172a37;--dash-muted:#71818a;--dash-line:#e2e9e8;--dash-panel:#fff;--dash-soft:#f6f9f8;color:var(--dash-ink);padding:16px 0 8px}
+.dashboard{--dash-ink:#172a37;--dash-muted:#71818a;--dash-line:#e2e9e8;--dash-panel:#fff;--dash-soft:#f6f9f8;color:var(--dash-ink);background:#f4f7f6;border-radius:14px;padding:18px}
 .dashboard .dashboard-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:20px}
 .dashboard-kicker,.stock-overline{color:#71818a;font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
 .dashboard h1{font-size:29px;line-height:1.1;letter-spacing:-.035em;margin:8px 0 6px;color:#172a37}
