@@ -3,7 +3,7 @@
   "short_name": "Portfolio OS",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#0b1018",
-  "theme_color": "#0b1018",
+  "background_color": "#eef3ef",
+  "theme_color": "#eef3ef",
   "description": "Personal high-growth portfolio tracker"
 }

@@ -1,7 +1,23 @@
 const S=window.PORTFOLIO_SEED;
 const KEY="portfolio_os_v2";
+const THEME_KEY="portfolio_os_theme";
 let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(S);
 let current="home";
+function isDark(){
+ const saved=localStorage.getItem(THEME_KEY);
+ return saved?saved==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+function applyThemeMeta(){
+ const m=document.querySelector('meta[name="theme-color"]');
+ if(m)m.setAttribute("content",isDark()?"#0b1310":"#eef3ef");
+}
+(function(){const saved=localStorage.getItem(THEME_KEY); if(saved)document.documentElement.setAttribute("data-theme",saved); applyThemeMeta();})();
+function toggleTheme(){
+ localStorage.setItem(THEME_KEY,isDark()?"light":"dark");
+ document.documentElement.setAttribute("data-theme",isDark()?"dark":"light");
+ applyThemeMeta();
+ render();
+}
 let universe=[];
 let universeMarketCaps={};
 async function loadUniverse(){
@@ -186,7 +202,7 @@ function nav(tab){current=tab; if(tab==="home")loadPrices(); render()}
 function render(){
  document.body.innerHTML=`<div class="app">
   <header class="top"><div><div class="brand">Portfolio OS</div><div class="sub">Personal high-growth portfolio tracker</div></div>
-  <div class="top-actions"><button class="btn primary" onclick="openTx()">＋ Transaction</button><button class="btn" onclick="importBroker()">Import</button></div></header>
+  <div class="top-actions"><button class="btn icon-btn" onclick="toggleTheme()" title="Toggle theme">${isDark()?"☀":"☾"}</button><button class="btn primary" onclick="openTx()">＋ Transaction</button><button class="btn" onclick="importBroker()">Import</button></div></header>
   <nav class="nav">${["home","holdings","watchlist","allocate","universe"].map((x,i)=>`<button class="${current===x?"active":""}" onclick="nav('${x}')">${["Dashboard","Holdings","Watchlist","Allocation","Universe"][i]}</button>`).join("")}</nav>
   <main>${current==="home"?home():current==="holdings"?holdings():current==="watchlist"?watchlist():current==="allocate"?allocation():universePage()}</main>
  </div>
@@ -215,12 +231,13 @@ function home(){
  <div class="chip-row">${state.watchlist.slice(0,4).map(x=>`<button class="chip" onclick="stock('${x.ticker}')"><b>${x.ticker}</b>${x.name}</button>`).join("")}${state.watchlist.length>4?`<button class="chip" onclick="nav('watchlist')">+${state.watchlist.length-4} more</button>`:""}</div></div>`;
 }
 function holdings(){
- return `<div class="section-head"><div><span class="section-title">Holdings</span><div class="muted small">${state.positions.length} current positions</div></div><input class="search" placeholder="Search ticker" oninput="filterHold(this.value)"></div>
+ return `<div class="page-head"><div><div class="eyebrow">Positions</div><div class="h2">Holdings</div><div class="lede">${state.positions.length} current position${state.positions.length===1?"":"s"}.</div></div>
+ <div class="actions"><input class="search" placeholder="Search ticker" oninput="filterHold(this.value)"></div></div>
  <div class="table-wrap"><table class="table" id="ht"><thead><tr><th>Ticker</th><th>Shares</th><th>Price</th><th>Value</th><th>P/L</th><th>Return</th><th>Weight</th></tr></thead><tbody>${[...state.positions].sort((a,b)=>b.value-a.value).map(x=>`<tr data-t="${x.ticker}" onclick="stock('${x.ticker}')"><td class="ticker">${x.ticker}</td><td>${x.shares.toFixed(4)}</td><td>${money(x.price)}</td><td>${money(x.value)}</td><td class="${x.pl>=0?"green":"red"}">${money(x.pl)}</td><td class="${x.ret>=0?"green":"red"}">${pct(x.ret)}</td><td>${(x.value/total()*100).toFixed(2)}%</td></tr>`).join("")}</tbody></table></div>`;
 }
 function filterHold(q){document.querySelectorAll("#ht tbody tr").forEach(r=>r.style.display=r.dataset.t.toLowerCase().includes(q.toLowerCase())?"":"none")}
 function watchlist(){
- return `<div class="section-head"><div><span class="section-title">Watchlist</span><div class="muted small">Research candidates</div></div></div>
+ return `<div class="page-head"><div><div class="eyebrow">Research</div><div class="h2">Watchlist</div><div class="lede">Companies you're tracking but don't yet hold.</div></div></div>
  <div class="watch-grid">${state.watchlist.map(x=>`<div class="card" onclick="stock('${x.ticker}')"><div class="section-head"><b>${x.ticker}</b><span class="pill">WATCH</span></div><div>${x.name}</div><div class="muted small" style="margin-top:8px">Open company research →</div></div>`).join("")}</div>`;
 }
 function fmtCap(x){
@@ -244,8 +261,8 @@ function universePage(){
    return matchesQ&&matchesSector&&matchesIndex;
  });
  rows.sort((a,b)=>(universeMarketCaps[b.ticker]||0)-(universeMarketCaps[a.ticker]||0));
- return `<div class="section-head"><div><span class="section-title">Stock Universe</span><div class="muted small">${rows.length} of ${universe.length} stocks • ranked by market cap</div></div>
- <input class="search" placeholder="Search ticker or company" value="${window.universeQuery||""}" oninput="filterUniverse(this.value)"></div>
+ return `<div class="page-head"><div><div class="eyebrow">Screener</div><div class="h2">Stock universe</div><div class="lede">${rows.length} of ${universe.length} stocks · ranked by market cap.</div></div>
+ <div class="actions"><input class="search" placeholder="Search ticker or company" value="${window.universeQuery||""}" oninput="filterUniverse(this.value)"></div></div>
  <div class="filters" style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0">
    <select class="search" onchange="filterUniverseSector(this.value)"><option value="ALL">All sectors</option>${sectors.map(s=>`<option value="${s}" ${sector===s?"selected":""}>${s}</option>`).join("")}</select>
    <select class="search" onchange="filterUniverseIndex(this.value)">
@@ -260,7 +277,8 @@ function filterUniverse(q){window.universeQuery=q; render();}
 function filterUniverseSector(v){window.universeSector=v; render();}
 function filterUniverseIndex(v){window.universeIndex=v; render();}
 function allocation(){
- return `<div class="card"><div class="section-head"><div><span class="section-title">Concentrated new-capital plan</span><div class="muted small">High-growth / high-risk framework</div></div><span class="pill">100%</span></div>
+ return `<div class="page-head"><div><div class="eyebrow">Capital plan</div><div class="h2">Allocation</div><div class="lede">Where new capital goes across the current high-conviction plan.</div></div></div>
+ <div class="card"><div class="section-head"><div><span class="section-title">Concentrated new-capital plan</span><div class="section-sub">High-growth / high-risk framework</div></div><span class="pill">100%</span></div>
  ${state.allocation.map(x=>`<div class="alloc-row"><b>${x.ticker}</b><div class="bar"><i style="width:${x.pct*3.2}%"></i></div><span>${x.pct}%</span></div>`).join("")}
  <div class="section"><button class="btn primary" onclick="allocationAmount()">Calculate an investment amount</button></div></div>`;
 }
@@ -456,7 +474,7 @@ function importBroker(){
  }catch(e){toast("Could not read that CSV.")}}; r.readAsText(f)}; input.click();
 }
 function parseCSV(text){const lines=text.split(/\r?\n/).filter(Boolean); if(!lines.length)return[]; const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}; const h=parseLine(lines[0]); return lines.slice(1).map(l=>{const v=parseLine(l); return Object.fromEntries(h.map((k,i)=>[k,v[i]??""]))})}
-window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;window.setProfileMetric=setProfileMetric;window.setProfileRange=setProfileRange;window.showChartTip=showChartTip;window.hideChartTip=hideChartTip;window.toggleProfileSection=toggleProfileSection;
+window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;window.setProfileMetric=setProfileMetric;window.setProfileRange=setProfileRange;window.showChartTip=showChartTip;window.hideChartTip=hideChartTip;window.toggleProfileSection=toggleProfileSection;window.toggleTheme=toggleTheme;
 save();render();
 if(current==="home")loadPrices();
 if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}
