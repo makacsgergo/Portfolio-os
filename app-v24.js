@@ -163,39 +163,47 @@ const $=s=>document.querySelector(s);
 const money=x=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(x||0);
 const pct=x=>(x>=0?"+":"")+Number(x||0).toFixed(2)+"%";
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
-function applyTransaction(x){
-  if(!x||!["BUY","SELL"].includes(x.type)||!x.ticker||!x.qty||x.qty<=0)return;
-  let p=state.positions.find(v=>v.ticker===x.ticker);
-  if(x.type==="BUY"){
-    if(!p)p={ticker:x.ticker,shares:0,cost:0,price:x.price||0,value:0,pl:0,ret:0};
-    const oldShares=p.shares||0, oldCost=p.cost||0;
-    p.shares=oldShares+x.qty;
-    p.cost=oldCost+x.qty*x.price;
-    p.price=x.price||p.price||0;
-    p.value=p.shares*p.price;
-    p.pl=p.value-p.cost;
-    p.ret=p.cost?p.pl/p.cost*100:0;
-    if(!state.positions.includes(p))state.positions.push(p);
-  }else if(p){
-    const sold=Math.min(x.qty,p.shares||0);
-    const avgCost=(p.shares||0)>0?(p.cost||0)/(p.shares||1):0;
-    p.shares-=sold;
-    p.cost=Math.max(0,(p.cost||0)-sold*avgCost);
-    p.price=x.price||p.price||0;
-    p.value=p.shares*p.price;
-    p.pl=p.value-p.cost;
-    p.ret=p.cost?p.pl/p.cost*100:0;
-    if(p.shares<=0)state.positions=state.positions.filter(v=>v!==p);
-  }
-}
-function migrateUnappliedTransactions(){
+function nextTxId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function migrateTransactions(){
   let changed=false;
   for(const x of state.transactions||[]){
-    if(!x.applied&&["BUY","SELL"].includes(x.type)){applyTransaction(x);x.applied=true;changed=true}
+    if(!x.id){x.id=nextTxId();changed=true}
+    if(x.commission==null){x.commission=0;changed=true}
+    if("applied" in x){delete x.applied;changed=true}
   }
   if(changed)save();
 }
-migrateUnappliedTransactions()
+migrateTransactions();
+function recomputePositions(){
+  const byTicker={};
+  let realizedPL=0;
+  const txs=[...(state.transactions||[])].filter(x=>["BUY","SELL"].includes(x.type)&&x.ticker&&x.qty>0)
+    .sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+  for(const x of txs){
+    const commission=Number(x.commission)||0;
+    let p=byTicker[x.ticker];
+    if(x.type==="BUY"){
+      if(!p)p=byTicker[x.ticker]={ticker:x.ticker,shares:0,cost:0,price:x.price||0};
+      p.shares+=x.qty;
+      p.cost+=x.qty*x.price+commission;
+      p.price=x.price||p.price||0;
+    }else if(p&&p.shares>0){
+      const sold=Math.min(x.qty,p.shares);
+      const avgCost=p.shares>0?p.cost/p.shares:0;
+      realizedPL+=(sold*x.price-commission)-sold*avgCost;
+      p.shares-=sold;
+      p.cost=Math.max(0,p.cost-sold*avgCost);
+      p.price=x.price||p.price||0;
+      if(p.shares<=0)delete byTicker[x.ticker];
+    }
+  }
+  state.positions=Object.values(byTicker).map(p=>{
+    const value=p.shares*p.price, pl=value-p.cost;
+    return {...p,value,pl,ret:p.cost?pl/p.cost*100:0};
+  });
+  state.realizedPL=realizedPL;
+}
+recomputePositions();
 function total(){return state.positions.reduce((a,x)=>a+x.value,0)}
 function totalPL(){return state.positions.reduce((a,x)=>a+x.pl,0)}
 function nav(tab){current=tab; if(tab==="home")loadPrices(); render()}
@@ -218,7 +226,7 @@ function home(){
  <div class="actions"><button class="btn" onclick="nav('holdings')">View holdings →</button><button class="btn primary" onclick="openTx()">+ Transaction</button></div></div>
  <div class="cards">
  <div class="card hi"><div class="label">Market value</div><div class="big">${money(t)}</div><div class="foot">${state.positions.length} active position${state.positions.length===1?"":"s"}</div></div>
- <div class="card"><div class="label">Unrealized P/L</div><div class="big ${p>=0?"green":"red"}">${money(p)}</div><div class="foot">Cost basis ${money(cost)}</div></div>
+ <div class="card"><div class="label">Unrealized P/L</div><div class="big ${p>=0?"green":"red"}">${money(p)}</div><div class="foot">Cost basis ${money(cost)}${state.realizedPL?` · Realized ${money(state.realizedPL)}`:""}</div></div>
  <div class="card"><div class="label">Return on cost</div><div class="big ${p>=0?"green":"red"}">${pct(cost?p/cost*100:0)}</div><div class="foot">Across current holdings</div></div>
  <div class="card"><div class="label">Largest three</div><div class="big">${top3.toFixed(1)}%</div><div class="foot">Portfolio concentration</div></div></div>
  <div class="grid2 section">
@@ -231,9 +239,12 @@ function home(){
  <div class="chip-row">${state.watchlist.slice(0,4).map(x=>`<button class="chip" onclick="stock('${x.ticker}')"><b>${x.ticker}</b>${x.name}</button>`).join("")}${state.watchlist.length>4?`<button class="chip" onclick="nav('watchlist')">+${state.watchlist.length-4} more</button>`:""}</div></div>`;
 }
 function holdings(){
+ const txs=[...(state.transactions||[])].sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);
  return `<div class="page-head"><div><div class="eyebrow">Positions</div><div class="h2">Holdings</div><div class="lede">${state.positions.length} current position${state.positions.length===1?"":"s"}.</div></div>
  <div class="actions"><input class="search" placeholder="Search ticker" oninput="filterHold(this.value)"></div></div>
- <div class="table-wrap"><table class="table" id="ht"><thead><tr><th>Ticker</th><th>Shares</th><th>Price</th><th>Value</th><th>P/L</th><th>Return</th><th>Weight</th></tr></thead><tbody>${[...state.positions].sort((a,b)=>b.value-a.value).map(x=>`<tr data-t="${x.ticker}" onclick="stock('${x.ticker}')"><td class="ticker">${x.ticker}</td><td>${x.shares.toFixed(4)}</td><td>${money(x.price)}</td><td>${money(x.value)}</td><td class="${x.pl>=0?"green":"red"}">${money(x.pl)}</td><td class="${x.ret>=0?"green":"red"}">${pct(x.ret)}</td><td>${(x.value/total()*100).toFixed(2)}%</td></tr>`).join("")}</tbody></table></div>`;
+ <div class="table-wrap"><table class="table" id="ht"><thead><tr><th>Ticker</th><th>Shares</th><th>Price</th><th>Value</th><th>P/L</th><th>Return</th><th>Weight</th></tr></thead><tbody>${[...state.positions].sort((a,b)=>b.value-a.value).map(x=>`<tr data-t="${x.ticker}" onclick="stock('${x.ticker}')"><td class="ticker">${x.ticker}</td><td>${x.shares.toFixed(4)}</td><td>${money(x.price)}</td><td>${money(x.value)}</td><td class="${x.pl>=0?"green":"red"}">${money(x.pl)}</td><td class="${x.ret>=0?"green":"red"}">${pct(x.ret)}</td><td>${(x.value/total()*100).toFixed(2)}%</td></tr>`).join("")}</tbody></table></div>
+ <div class="section"><div class="section-head"><div><span class="section-title">Transaction history</span><div class="section-sub">Tap a row to edit or delete it.</div></div></div>
+ ${txs.length?`<div class="table-wrap"><table class="table"><thead><tr><th>Date</th><th>Ticker</th><th>Type</th><th>Qty</th><th>Price</th><th>Commission</th></tr></thead><tbody>${txs.map(x=>`<tr style="cursor:pointer" onclick="openTx('${x.id}')"><td>${x.date}</td><td class="ticker">${x.ticker}</td><td>${x.type}</td><td>${x.qty?Number(x.qty).toFixed(4):"—"}</td><td>${x.price?money(x.price):"—"}</td><td>${x.commission?money(x.commission):"—"}</td></tr>`).join("")}</tbody></table></div>`:'<div class="muted small">No transactions yet.</div>'}</div>`;
 }
 function filterHold(q){document.querySelectorAll("#ht tbody tr").forEach(r=>r.style.display=r.dataset.t.toLowerCase().includes(q.toLowerCase())?"":"none")}
 function watchlist(){
@@ -441,24 +452,43 @@ function stock(t,tab){
  ${tab==="overview"?overviewHtml:financialsHtml}</div>`;
  $("#modal").classList.add("open");
 }
-function openTx(){
- $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><b>Add transaction</b><button class="btn" onclick="closeModal()">×</button></div>
- <div class="form"><label>Ticker<input id="tt" placeholder="AVGO"></label><label>Type<select id="typ"><option>BUY</option><option>SELL</option><option>DIVIDEND</option><option>DEPOSIT</option><option>WITHDRAWAL</option></select></label><label>Quantity<input id="qq" type="number" step="0.000001"></label><label>Price<input id="pp" type="number" step="0.01"></label><label class="span2">Date<input id="dd" type="date" value="${new Date().toISOString().slice(0,10)}"></label></div>
- <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:15px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveTx()">Save transaction</button></div></div>`;
+function openTx(id){
+ const editing=id?state.transactions.find(x=>x.id===id):null;
+ window.editingTxId=editing?id:null;
+ const v=editing||{ticker:"",type:"BUY",qty:"",price:"",commission:"",date:new Date().toISOString().slice(0,10)};
+ $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><b>${editing?"Edit transaction":"Add transaction"}</b><button class="btn" onclick="closeModal()">×</button></div>
+ <div class="form"><label>Ticker<input id="tt" placeholder="AVGO" value="${v.ticker||""}"></label><label>Type<select id="typ"><option ${v.type==="BUY"?"selected":""}>BUY</option><option ${v.type==="SELL"?"selected":""}>SELL</option><option ${v.type==="DIVIDEND"?"selected":""}>DIVIDEND</option><option ${v.type==="DEPOSIT"?"selected":""}>DEPOSIT</option><option ${v.type==="WITHDRAWAL"?"selected":""}>WITHDRAWAL</option></select></label><label>Quantity<input id="qq" type="number" step="0.000001" value="${v.qty||""}"></label><label>Price<input id="pp" type="number" step="0.01" value="${v.price||""}"></label><label>Commission <span class="muted">(optional)</span><input id="cc" type="number" step="0.01" placeholder="0.00" value="${v.commission||""}"></label><label>Date<input id="dd" type="date" value="${v.date}"></label></div>
+ <div style="display:flex;justify-content:space-between;gap:8px;margin-top:15px">${editing?`<button class="btn" onclick="deleteTx('${editing.id}')" style="color:var(--red)">Delete</button>`:"<span></span>"}<div style="display:flex;gap:8px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveTx()">${editing?"Save changes":"Save transaction"}</button></div></div></div>`;
  $("#modal").classList.add("open");
 }
 function saveTx(){
- let x={ticker:$("#tt").value.trim().toUpperCase(),type:$("#typ").value,qty:+$("#qq").value||0,price:+$("#pp").value||0,date:$("#dd").value};
+ let x={ticker:$("#tt").value.trim().toUpperCase(),type:$("#typ").value,qty:+$("#qq").value||0,price:+$("#pp").value||0,commission:+$("#cc").value||0,date:$("#dd").value};
  if(!x.ticker||!x.date)return toast("Ticker and date required");
  if(["BUY","SELL"].includes(x.type)&&(!x.qty||x.qty<=0))return toast("Enter a quantity greater than 0");
  if(["BUY","SELL"].includes(x.type)&&(!x.price||x.price<=0))return toast("Enter a price greater than 0");
- state.transactions.push(x);
- applyTransaction(x);
- x.applied=true;
+ const editingId=window.editingTxId;
+ if(editingId){
+  const i=state.transactions.findIndex(t=>t.id===editingId);
+  if(i>-1)state.transactions[i]={...state.transactions[i],...x};
+ }else{
+  x.id=nextTxId();
+  state.transactions.push(x);
+ }
+ window.editingTxId=null;
+ recomputePositions();
  save();
  closeModal();
  render();
- toast(x.type==="BUY"?x.ticker+" added to portfolio":x.type==="SELL"?x.ticker+" position updated":"Transaction saved");
+ toast(editingId?"Transaction updated":(x.type==="BUY"?x.ticker+" added to portfolio":x.type==="SELL"?x.ticker+" position updated":"Transaction saved"));
+}
+function deleteTx(id){
+ if(!confirm("Delete this transaction? This can't be undone."))return;
+ state.transactions=state.transactions.filter(x=>x.id!==id);
+ recomputePositions();
+ save();
+ closeModal();
+ render();
+ toast("Transaction deleted");
 }
 function closeModal(){$("#modal").classList.remove("open")}
 function toast(s){let x=$("#toast");x.textContent=s;x.style.display="block";setTimeout(()=>x.style.display="none",1800)}
@@ -467,14 +497,26 @@ function showMore(){alert("More features coming: live quotes, broker sync, perfo
 function importBroker(){
  const input=document.createElement("input"); input.type="file"; input.accept=".csv,text/csv";
  input.onchange=()=>{const f=input.files?.[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{try{
-  const rows=parseCSV(String(r.result||"")); const by={};
-  for(const row of rows){const ticker=(row.Symbol||row.symbol||"").trim(); const type=(row["Transaction Type"]||row.transaction_type||"").trim().toUpperCase(); const qty=Number(row.Quantity||row.quantity||0); const px=Number(row["Purchase Price"]||row.purchase_price||0); const cur=Number(row["Current Price"]||row.current_price||0); if(!ticker||ticker==="$$CASH_TX"||type!=="BUY"||!qty)continue; if(!by[ticker])by[ticker]={ticker,shares:0,cost:0,price:cur||px}; by[ticker].shares+=qty; by[ticker].cost+=qty*px; if(cur)by[ticker].price=cur;}
-  const positions=Object.values(by).map(x=>{const value=x.shares*x.price; const pl=value-x.cost; return {...x,value,pl,ret:x.cost?pl/x.cost*100:0}});
-  state.positions=positions; save(); render(); toast(`Imported ${positions.length} positions locally.`);
+  const rows=parseCSV(String(r.result||"")); const imported=[];
+  for(const row of rows){
+   const ticker=(row.Symbol||row.symbol||"").trim();
+   const type=(row["Transaction Type"]||row.transaction_type||"").trim().toUpperCase();
+   const qty=Number(row.Quantity||row.quantity||0);
+   const px=Number(row["Purchase Price"]||row.purchase_price||0);
+   const commission=Number(row.Commission||row.commission||0);
+   const rawDate=row.Date||row.date||row["Open Date"]||row["Date Opened"]||"";
+   const parsedDate=rawDate&&!isNaN(Date.parse(rawDate))?new Date(rawDate).toISOString().slice(0,10):new Date().toISOString().slice(0,10);
+   if(!ticker||ticker==="$$CASH_TX"||!["BUY","SELL"].includes(type)||!qty||!px)continue;
+   imported.push({id:nextTxId(),ticker,type,qty,price:px,commission,date:parsedDate});
+  }
+  if(!imported.length)return toast("No BUY/SELL rows found in that CSV.");
+  state.transactions.push(...imported);
+  recomputePositions(); save(); render();
+  toast(`Imported ${imported.length} transaction${imported.length===1?"":"s"} locally.`);
  }catch(e){toast("Could not read that CSV.")}}; r.readAsText(f)}; input.click();
 }
 function parseCSV(text){const lines=text.split(/\r?\n/).filter(Boolean); if(!lines.length)return[]; const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}; const h=parseLine(lines[0]); return lines.slice(1).map(l=>{const v=parseLine(l); return Object.fromEntries(h.map((k,i)=>[k,v[i]??""]))})}
-window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;window.setProfileMetric=setProfileMetric;window.setProfileRange=setProfileRange;window.showChartTip=showChartTip;window.hideChartTip=hideChartTip;window.toggleProfileSection=toggleProfileSection;window.toggleTheme=toggleTheme;
+window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;window.setProfileMetric=setProfileMetric;window.setProfileRange=setProfileRange;window.showChartTip=showChartTip;window.hideChartTip=hideChartTip;window.toggleProfileSection=toggleProfileSection;window.toggleTheme=toggleTheme;window.deleteTx=deleteTx;
 save();render();
 if(current==="home")loadPrices();
 if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}
