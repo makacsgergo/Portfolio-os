@@ -9,7 +9,7 @@ OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-24-sec-historical-normalization-v4"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v5-hona"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -47,7 +47,7 @@ SEC_EPS_RESTATED_FALLBACKS = {
 
 # Issuer-reported annual revenue overrides for documented XBRL context/tag-selection
 # errors. Values are in billions of USD and apply only to affected fiscal periods.
-SEC_REVENUE_REPORTED_OVERRIDES = {
+# HONA was spun out of Honeywell in June 2026. Its standalone historical\n# financial statements for FY2023-FY2025 are included in the SEC-filed\n# Form 10-12B/A / supplemental historical information. Because HONA did not\n# have legacy standalone 10-K companyfacts for those periods, use these\n# issuer-reported standalone figures rather than reconstructing them from\n# Honeywell consolidated XBRL. Values are USD billions except EPS.\nHONA_HISTORICAL_FINANCIALS = {\n    "2023": {"revenue": 13.790, "gross_profit": 5.283, "operating_income": 3.564, "net_income": 2.886, "eps": 9.11},\n    "2024": {"revenue": 15.445, "gross_profit": 5.502, "operating_income": 3.509, "net_income": 2.817, "eps": 8.89},\n    "2025": {"revenue": 17.404, "gross_profit": 6.063, "operating_income": 3.257, "net_income": 1.780, "eps": 5.62},\n}\n\nSEC_REVENUE_REPORTED_OVERRIDES = {
     "AMT": {"2019": 7.5803},
     "CFG": {"2019": 6.491},
     "COF": {"2018": 28.076},
@@ -390,7 +390,7 @@ def build_company(ticker, cik):
         },
         "metrics": []
     }
-    # Apply documented issuer-reported revenue corrections after SEC fact selection.
+    # HONA standalone historical normalization: override only the historical\n    # income-statement fields explicitly reported for the spun-out business.\n    # Leave current SEC XBRL balance-sheet/latest-quarter data intact.\n    if ticker == "HONA":\n        years = [y for y in years if y in HONA_HISTORICAL_FINANCIALS]\n        for metric in ("revenue", "gross_profit", "operating_income", "net_income", "eps"):\n            for fy, vals in HONA_HISTORICAL_FINANCIALS.items():\n                if fy in years:\n                    yearly.setdefault(metric, {})[fy] = {\n                        "val": vals[metric] * (1e9 if metric != "eps" else 1.0),\n                        "end": fy + "-12-31", "filed": "2026-06-08",\n                        "form": "10-12B/A",\n                        "_unit": "USD" if metric != "eps" else "USD/shares",\n                        "_taxonomy": "special_sec_supplemental",\n                        "_tag": "HONA_STANDALONE_HISTORICAL"\n                    }\n    # Apply documented issuer-reported revenue corrections after SEC fact selection.
     for fy, value in SEC_REVENUE_REPORTED_OVERRIDES.get(ticker, {}).items():
         if fy in yearly.get("revenue", {}):
             yearly["revenue"][fy]["val"] = float(value) * 1e9
