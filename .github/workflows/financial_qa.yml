@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "scripts/financial_qa.py"
+      - "scripts/secondary_financial_qa.py"
       - "financials.json"
       - ".github/workflows/financial_qa.yml"
   workflow_run:
@@ -32,7 +33,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests beautifulsoup4
       - name: Audit universe in increments
         env:
           SEC_USER_AGENT: "Portfolio OS research app contact@example.com"
@@ -59,6 +60,13 @@ jobs:
           print(json.dumps({"universe_count":len(results),"counts":counts,"mismatches":len(mismatches),"errors":len(errors)},indent=2))
           if errors: raise SystemExit(2)
           PY
+      - name: Independent secondary-source cross-check in increments
+        run: |
+          rm -f secondary_qa_batch_*.json
+          for START in 0 50 100 150 200 250 300 350 400 450 500; do
+            echo "=== Secondary-source cross-check START=$START COUNT=50 ==="
+            python scripts/secondary_financial_qa.py --start ${START} --count 50 --output secondary_qa_batch_${START}.json
+          done
       - name: Upload QA report
         uses: actions/upload-artifact@v4
         with:
@@ -66,4 +74,5 @@ jobs:
           path: |
             financial_qa.json
             financial_qa_batch_*.json
+            secondary_qa_batch_*.json
           retention-days: 30
