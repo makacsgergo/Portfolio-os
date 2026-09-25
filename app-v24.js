@@ -90,12 +90,58 @@ function performanceChartHtml(){
  const line=xy.map((p,i)=>(i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
  const area=line+` L${xy[xy.length-1][0].toFixed(1)},${h-pad} L${xy[0][0].toFixed(1)},${h-pad} Z`;
  const first=vals[0],last=vals[vals.length-1],chg=first?((last/first)-1)*100:0,up=last>=first;
- const color=up?"#5ee09a":"#ff7185";
+ const color=up?"var(--green)":"var(--red)";
  return{filled:true,html:`<div class="perf-head"><div><b class="${up?"green":"red"}">${money(last)}</b> <span class="muted small">${pct(chg)}</span></div><span class="muted small">since ${fmtShortDate(pts[0].date)}</span></div>
  <svg class="perf-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${area}" fill="${color}" opacity=".16" stroke="none"></path><path d="${line}" fill="none" stroke="${color}" stroke-width="2"></path></svg>
  <div class="perf-range muted small"><span>${fmtShortDate(pts[0].date)}</span><span>${fmtShortDate(pts[pts.length-1].date)}</span></div>`};
 }
-function financialChart(data){if(!data?.years?.length)return "<div class=\"muted small\">Financial history not available yet.</div>";const metrics=(data.metrics||[]).filter(m=>(m.category||"income_statement")!=="balance_sheet");return metrics.map(m=>{const vals=m.values||[],nums=vals.map(Number).filter(Number.isFinite),max=Math.max(...nums.map(Math.abs),1),first=Number(vals.find(v=>v!=null)||0),last=Number(vals[vals.length-1]||0),growth=first?((last/first)-1)*100:null;return '<div style="margin:16px 0;padding:12px;border:1px solid #303b4d;border-radius:10px;background:#0f1722"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px"><b>'+m.name+'</b><span>'+finFmt(last,m.unit)+(growth===null?"":" · "+(growth>=0?"+":"")+growth.toFixed(0)+"%")+'</span></div><div style="display:flex;align-items:flex-end;gap:8px;height:130px">'+vals.map((v,j)=>'<div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center"><div style="font-size:10px;margin-bottom:4px">'+finFmt(v,m.unit)+'</div><div style="width:70%;height:'+Math.max(8,(Math.abs(Number(v)||0)/max)*100)+'px;background:#5b9cff;border-radius:5px 5px 0 0"></div><div style="font-size:10px;opacity:.6;margin-top:5px">'+data.years[j]+'</div></div>').join("")+'</div></div>'}).join("")}
+function chartableMetrics(fd){return (fd?.metrics||[]).filter(m=>(m.category||"income_statement")!=="balance_sheet"&&(m.values||[]).some(v=>v!=null))}
+function interactiveChartHtml(fd,t){
+ const opts=chartableMetrics(fd);
+ if(!fd?.years?.length||!opts.length)return '<div class="muted small">Financial history not available yet.</div>';
+ const chosen=opts.find(m=>m.name===window.profileMetric)||opts.find(m=>m.name==="Revenue")||opts[0];
+ window.profileMetric=chosen.name;
+ const maxYears=fd.years.length;
+ const rangeOpts=[...new Set([5,10,maxYears].filter(n=>n>0&&n<=maxYears))].sort((a,b)=>a-b);
+ let range=window.profileRange; if(!rangeOpts.includes(range))range=rangeOpts.includes(10)?10:maxYears;
+ window.profileRange=range;
+ const n=Math.min(range,maxYears);
+ const years=fd.years.slice(-n), vals=chosen.values.slice(-n);
+ const nums=vals.map(Number).filter(Number.isFinite);
+ const first=vals.find(v=>v!=null), last=vals[vals.length-1];
+ const growth=first?((Number(last)/Number(first))-1)*100:null;
+ const w=640,h=200,padL=54,padR=14,padT=16,padB=28;
+ const minV=Math.min(0,...nums), maxV=Math.max(...nums,1), spanV=(maxV-minV)||1;
+ const stepX=n>1?(w-padL-padR)/(n-1):0;
+ const xy=vals.map((v,i)=>[padL+i*stepX, h-padB-((Number(v)||0)-minV)/spanV*(h-padT-padB)]);
+ const line=xy.map((p,i)=>(i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+ const gridN=4;
+ const gridLines=Array.from({length:gridN+1},(_,i)=>{
+  const val=minV+spanV*i/gridN, y=h-padB-(val-minV)/spanV*(h-padT-padB);
+  return `<line x1="${padL}" x2="${w-padR}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--line)" stroke-width="1"></line><text x="${padL-8}" y="${(y+4).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--muted)">${finFmt(val,chosen.unit)}</text>`;
+ }).join("");
+ const dots=xy.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4" fill="var(--teal)" stroke="#fff" stroke-width="1.5" style="cursor:pointer" onmouseenter="showChartTip(event,'${years[i]}','${finFmt(vals[i],chosen.unit)}')" onmouseleave="hideChartTip()" ontouchstart="showChartTip(event,'${years[i]}','${finFmt(vals[i],chosen.unit)}')"></circle>`).join("");
+ const xLabels=years.map((y,i)=>`<text x="${xy[i][0].toFixed(1)}" y="${h-8}" text-anchor="middle" font-size="10" fill="var(--muted)">${y}</text>`).join("");
+ return `<div class="chart-controls">
+  <label>Metric <select onchange="setProfileMetric('${t}',this.value)">${opts.map(m=>`<option value="${m.name}" ${m.name===chosen.name?"selected":""}>${m.name}</option>`).join("")}</select></label>
+  <label>Period <select onchange="setProfileRange('${t}',this.value)">${rangeOpts.map(n2=>`<option value="${n2}" ${n2===range?"selected":""}>${n2===maxYears?"Max":n2+"Y"}</option>`).join("")}</select></label>
+ </div>
+ <div style="margin-top:10px"><b style="font-size:22px">${finFmt(last,chosen.unit)}</b> <span class="muted small">${years[years.length-1]}</span>${growth===null?"":` <span class="small ${growth>=0?"green":"red"}">${growth>=0?"+":""}${growth.toFixed(1)}% across ${n===1?"1 year":n+" years"}</span>`}</div>
+ <div class="chart-figure"><svg viewBox="0 0 ${w} ${h}" style="width:100%;height:200px;margin-top:6px" preserveAspectRatio="none">${gridLines}<path d="${line}" fill="none" stroke="var(--teal)" stroke-width="2.5"></path>${dots}${xLabels}</svg><div class="chart-tip" id="charttip"></div></div>
+ <div class="chart-caption">Annual SEC-reported values${chosen.unit==="B"?" · USD B":chosen.unit==="M"?" · USD M":""} · Hover a point for its exact value</div>`;
+}
+function renderProfileChart(t){const el=document.getElementById("pchart-"+t); if(el)el.innerHTML=interactiveChartHtml(companyFinancials(t),t)}
+function setProfileMetric(t,name){window.profileMetric=name; renderProfileChart(t)}
+function setProfileRange(t,years){window.profileRange=Number(years); renderProfileChart(t)}
+function showChartTip(evt,label,value){
+ const tip=document.getElementById("charttip"); if(!tip)return;
+ const fig=tip.parentElement, rect=fig.getBoundingClientRect();
+ const p=evt.touches?evt.touches[0]:evt;
+ tip.innerHTML="<b>"+value+"</b><span>"+label+"</span>";
+ tip.style.left=(p.clientX-rect.left)+"px"; tip.style.top=(p.clientY-rect.top)+"px";
+ tip.style.display="block";
+}
+function hideChartTip(){const t=document.getElementById("charttip"); if(t)t.style.display="none"}
 
 const $=s=>document.querySelector(s);
 const money=x=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(x||0);
@@ -150,15 +196,23 @@ function render(){
 function home(){
  const t=total(),p=totalPL(),cost=t-p, top=[...state.positions].sort((a,b)=>b.value-a.value).slice(0,6);
  const perf=performanceChartHtml();
- return `<div class="cards">
- <div class="card"><div class="label">Portfolio</div><div class="big">${money(t)}</div></div>
- <div class="card"><div class="label">P/L</div><div class="big ${p>=0?"green":"red"}">${money(p)}</div></div>
- <div class="card"><div class="label">Return</div><div class="big ${p>=0?"green":"red"}">${pct(cost?p/cost*100:0)}</div></div>
- <div class="card"><div class="label">Positions</div><div class="big">${state.positions.length}</div></div></div>
- <div class="grid2 section"><div class="card"><div class="section-head"><span class="section-title">Performance</span></div><div class="chart${perf.filled?" filled":""}">${perf.html}</div></div>
- <div class="card"><div class="section-head"><span class="section-title">Top positions</span></div>${top.map(x=>`<div class="alloc-row"><b>${x.ticker}</b><div class="bar"><i style="width:${Math.min(100,x.value/t*300)}%"></i></div><span>${(x.value/t*100).toFixed(1)}%</span></div>`).join("")}</div></div>
- <div class="section"><div class="section-head"><span class="section-title">Portfolio snapshot</span><button class="btn" onclick="nav('allocate')">Where to put new money →</button></div>
- <div class="list">${top.slice(0,4).map(x=>`<div class="list-item" onclick="stock('${x.ticker}')"><div><span class="ticker">${x.ticker}</span><div class="muted small">${money(x.value)} position</div></div><div class="${x.pl>=0?"green":"red"}">${money(x.pl)}<br><span class="small">${pct(x.ret)}</span></div></div>`).join("")}</div></div>`;
+ const hasPositions=state.positions.length>0;
+ const top3=hasPositions?top.slice(0,3).reduce((a,x)=>a+x.value,0)/t*100:0;
+ return `<div class="page-head"><div><div class="eyebrow">Portfolio overview</div><div class="h1">Your portfolio</div><div class="lede">Performance, positions and capital allocation at a glance.</div></div>
+ <div class="actions"><button class="btn" onclick="nav('holdings')">View holdings →</button><button class="btn primary" onclick="openTx()">+ Transaction</button></div></div>
+ <div class="cards">
+ <div class="card hi"><div class="label">Market value</div><div class="big">${money(t)}</div><div class="foot">${state.positions.length} active position${state.positions.length===1?"":"s"}</div></div>
+ <div class="card"><div class="label">Unrealized P/L</div><div class="big ${p>=0?"green":"red"}">${money(p)}</div><div class="foot">Cost basis ${money(cost)}</div></div>
+ <div class="card"><div class="label">Return on cost</div><div class="big ${p>=0?"green":"red"}">${pct(cost?p/cost*100:0)}</div><div class="foot">Across current holdings</div></div>
+ <div class="card"><div class="label">Largest three</div><div class="big">${top3.toFixed(1)}%</div><div class="foot">Portfolio concentration</div></div></div>
+ <div class="grid2 section">
+ <div class="card"><div class="section-head"><span class="section-title">Performance</span></div><div class="chart${perf.filled?" filled":""}">${perf.html}</div></div>
+ <div class="card"><div class="section-head"><div><span class="section-title">Portfolio mix</span><div class="section-sub">Position weights by market value</div></div><button class="link" onclick="nav('allocate')">Allocation →</button></div>${hasPositions?top.map(x=>`<div class="alloc-row"><b>${x.ticker}</b><div class="bar"><i style="width:${Math.min(100,x.value/t*300)}%"></i></div><span>${(x.value/t*100).toFixed(1)}%</span></div>`).join(""):'<div class="muted small">Allocation appears when you add holdings.</div>'}</div>
+ </div>
+ <div class="section"><div class="card"><div class="section-head"><div><span class="section-title">Largest positions</span><div class="section-sub">Market value and portfolio weight</div></div><button class="link" onclick="nav('holdings')">All holdings →</button></div>
+ ${hasPositions?`<div class="list">${top.slice(0,4).map(x=>`<div class="list-item" onclick="stock('${x.ticker}')"><div><span class="ticker">${x.ticker}</span><div class="muted small">${money(x.value)} position</div></div><div class="${x.pl>=0?"green":"red"}">${money(x.pl)}<br><span class="small">${pct(x.ret)}</span></div></div>`).join("")}</div>`:`<div class="empty"><b>Your portfolio starts here</b><p>Add a transaction to see holdings, performance and allocation.</p><button class="btn primary" onclick="openTx()">+ Add your first position</button></div>`}</div></div>
+ <div class="section"><div class="section-head"><div><span class="section-title">Research watchlist</span><div class="section-sub">Continue exploring companies you follow.</div></div></div>
+ <div class="chip-row">${state.watchlist.slice(0,4).map(x=>`<button class="chip" onclick="stock('${x.ticker}')"><b>${x.ticker}</b>${x.name}</button>`).join("")}${state.watchlist.length>4?`<button class="chip" onclick="nav('watchlist')">+${state.watchlist.length-4} more</button>`:""}</div></div>`;
 }
 function holdings(){
  return `<div class="section-head"><div><span class="section-title">Holdings</span><div class="muted small">${state.positions.length} current positions</div></div><input class="search" placeholder="Search ticker" oninput="filterHold(this.value)"></div>
@@ -282,48 +336,91 @@ function msftResearch(){
   ]
  };
 }
-function toggleProfileSection(id){const el=document.getElementById(id);if(el)el.style.display=el.style.display==="none"?"block":"none";}
-function msftHistoryChart(){return financialChart(companyFinancials("MSFT"))}
+function toggleProfileSection(id){
+ const el=document.getElementById(id); if(!el)return;
+ const opening=el.style.display==="none";
+ el.style.display=opening?"block":"none";
+ const chev=el.previousElementSibling?.querySelector?.(".chev");
+ if(chev)chev.textContent=opening?"⌃":"⌄";
+}
 function finFmt(v,u){if(v==null)return "—";if(u==="$")return "$"+Number(v).toFixed(2);if(u==="B")return Number(v).toFixed(2)+"B";if(u==="M")return Number(v).toFixed(1)+"M";if(u==="%")return (Number(v)*100).toFixed(1)+"%";if(u==="x")return Number(v).toFixed(2)+"x";return Number(v).toFixed(2)}
-function financialSections(fd){
- const groups=[
-  ["Income statement","income_statement"],
-  ["Cash flow","cash_flow"],
-  ["Ratios & growth","ratios"]
- ];
- const annual=groups.map(([title,cat])=>{
+function financialSections(fd,t){
+ const sections=[];
+ const groups=[["Income statement","income_statement"],["Cash flow","cash_flow"],["Ratios & growth","ratios"]];
+ groups.forEach(([title,cat])=>{
   const ms=(fd.metrics||[]).filter(m=>(m.category||"income_statement")===cat);
-  if(!ms.length)return "";
-  return '<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">'+title+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th>'+fd.years.map(y=>'<th>'+y+'</th>').join("")+'</tr></thead><tbody>'+ms.map(m=>'<tr><td><b>'+m.name+'</b></td>'+fd.years.map((_,i)=>'<td>'+finFmt(m.values?.[i],m.unit)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div></div>'
- }).join("");
+  if(!ms.length)return;
+  const showYears=fd.years.slice(-5), off=fd.years.length-showYears.length;
+  sections.push({title,count:ms.length+" metrics · "+fd.years.length+" fiscal years",sub:"Latest 5 fiscal years · all values retain their reported units",
+   body:'<div class="table-wrap"><table class="table"><thead><tr><th>Metric</th>'+showYears.map(y=>'<th>'+y+'</th>').join("")+'</tr></thead><tbody>'+ms.map(m=>'<tr><td><b>'+m.name+'</b></td>'+showYears.map((_,i)=>'<td>'+finFmt(m.values?.[off+i],m.unit)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>'});
+ });
+ const capexMetric=(fd.metrics||[]).find(m=>m.name==="Capex spend"&&m.category==="cash_flow");
+ if(capexMetric&&capexMetric.values?.some(v=>v!=null)){
+  sections.push({title:"Capital expenditures",count:fd.years.length+" fiscal years",sub:"Annual Capex spend across the available fiscal-year history",
+   body:'<div class="table-wrap"><table class="table"><thead><tr><th>Fiscal year</th>'+fd.years.map(y=>'<th>'+y+'</th>').join("")+'</tr></thead><tbody><tr><td><b>Capex spend</b></td>'+fd.years.map((_,i)=>'<td>'+finFmt(capexMetric.values?.[i],capexMetric.unit)+'</td>').join("")+'</tr></tbody></table></div>'});
+ }
+ const ttm=fd.latest_reported?.ttm||{};
+ const ttmLabels={revenue:"Revenue",operating_income:"Operating income",net_income:"Net income",cfo:"Operating cash flow",capex:"Capex spend",fcf:"Free cash flow",rnd:"R&D",da:"D&A"};
+ const ttmRows=Object.entries(ttmLabels).filter(([k])=>ttm[k]&&ttm[k].value!=null).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(ttm[k].value,ttm[k].unit)+'</td></tr>').join("");
+ if(ttmRows){
+  sections.push({title:"TTM financials",count:"Trailing twelve months",sub:"Through "+(ttm.period_end||fd.latest_reported.period_end||"—"),
+   body:'<div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>TTM</th></tr></thead><tbody>'+ttmRows+'</tbody></table></div>'});
+ }
  const latest=fd.latest_reported?.metrics||{};
  const labels={cash:"Cash",debt_current:"Current debt",debt_noncurrent:"Long-term debt",assets:"Total assets",equity:"Total equity",shares_outstanding:"Shares outstanding"};
  const latestRows=Object.entries(labels).filter(([k])=>latest[k]).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(latest[k].value,latest[k].unit)+'</td></tr>').join("");
  const latestRatios=fd.latest_reported?.ratios||{};
  const ratioLabels={debt_equity:"Debt / equity",net_debt:"Net debt",net_debt_ebitda:"Net debt / EBITDA",net_debt_ebitda_ttm:"Net debt / TTM EBITDA",roic:"Approx. ROIC",roic_ttm:"Approx. ROIC (TTM)",roe:"ROE",roe_ttm:"ROE (TTM)",fcf_margin_ttm:"FCF margin (TTM)"};
- const ttm=fd.latest_reported?.ttm||{};
- const ttmLabels={revenue:"Revenue",operating_income:"Operating income",net_income:"Net income",cfo:"Operating cash flow",capex:"Capex spend",fcf:"Free cash flow",rnd:"R&D",da:"D&A"};
- const ttmRows=Object.entries(ttmLabels).filter(([k])=>ttm[k]&&ttm[k].value!=null).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(ttm[k].value,ttm[k].unit)+'</td></tr>').join("");
  const latestRatioRows=Object.entries(ratioLabels).filter(([k])=>latestRatios[k]&&latestRatios[k].value!=null).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(latestRatios[k].value,latestRatios[k].unit)+'</td></tr>').join("");
  const ratioMethods=Object.entries(ratioLabels).filter(([k])=>latestRatios[k]&&latestRatios[k].method).map(([k,label])=>'<div>'+label+': '+latestRatios[k].method+'</div>').join("");
- const capexMetric=(fd.metrics||[]).find(m=>m.name==="Capex spend"&&m.category==="cash_flow");
- const capexBlock=capexMetric&&capexMetric.values?.some(v=>v!=null)?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">Capital expenditures · annual history</div><div class="muted small" style="margin-bottom:8px">Annual Capex spend across the available fiscal-year history</div><div class="table-wrap"><table class="table"><thead><tr><th>Fiscal year</th>'+fd.years.map(y=>'<th>'+y+'</th>').join("")+'</tr></thead><tbody><tr><td><b>Capex spend</b></td>'+fd.years.map((_,i)=>'<td>'+finFmt(capexMetric.values?.[i],capexMetric.unit)+'</td>').join("")+'</tr></tbody></table></div></div>':"";
- const ttmBlock=ttmRows?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">TTM financials</div><div class="muted small" style="margin-bottom:8px">Trailing twelve months through '+(ttm.period_end||fd.latest_reported.period_end||"—")+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>TTM</th></tr></thead><tbody>'+ttmRows+'</tbody></table></div></div>':"";
- const latestBlock=latestRows?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">Balance sheet · '+(fd.latest_reported.label||"Latest reported")+'</div><div class="muted small" style="margin-bottom:8px">Point-in-time data · period end: '+(fd.latest_reported.period_end||"—")+' · filed: '+(fd.latest_reported.filed||"—")+' · '+(fd.latest_reported.form||"SEC filing")+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRows+'</tbody></table></div>'+(latestRatioRows?'<div class="section-title" style="margin:14px 0 8px">Latest balance-sheet ratios</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRatioRows+'</tbody></table></div><div class="muted small" style="margin-top:8px">Methodology: '+ratioMethods+'. Net debt / EBITDA and ROIC use the latest fiscal-year income statement denominator until TTM data is added.</div>':"")+'</div>':"";
- return annual+capexBlock+ttmBlock+latestBlock;
+ if(latestRows){
+  sections.push({title:"Balance sheet",count:fd.latest_reported.label||"Latest reported",sub:"Period end: "+(fd.latest_reported.period_end||"—")+" · filed: "+(fd.latest_reported.filed||"—")+" · "+(fd.latest_reported.form||"SEC filing"),
+   body:'<div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRows+'</tbody></table></div>'+(latestRatioRows?'<div class="section-title" style="margin:14px 0 8px;font-size:14px">Latest balance-sheet ratios</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRatioRows+'</tbody></table></div><div class="muted small" style="margin-top:8px">Methodology: '+ratioMethods+'. Net debt / EBITDA and ROIC use the latest fiscal-year income statement denominator until TTM data is added.</div>':"")});
+ }
+ return sections.map((s,i)=>{
+  const id="stmt-"+t+"-"+i;
+  return `<div class="profile-section"><button class="profile-toggle" onclick="toggleProfileSection('${id}')"><div><b>${s.title}</b><div class="muted small" style="margin-top:2px">${s.sub}</div></div><div style="display:flex;align-items:center;gap:10px;white-space:nowrap"><span class="muted small">${s.count}</span><span class="chev">⌄</span></div></button><div id="${id}" class="profile-content" style="display:none">${s.body}</div></div>`;
+ }).join("");
 }
-function stock(t){
+function researchSectionsHtml(r,t){
+ if(!r)return "";
+ const items=[["Business segments","seg-"+t,r.segments.map(a=>`<div class="list-item"><b>${a[0]}</b><span class="muted">${a[1]}</span></div>`).join("")],
+  ["Investment thesis","thesis-"+t,r.thesis.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")],
+  ["Key risks","risk-"+t,r.risks.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")]];
+ return items.map(([title,id,body])=>`<div class="profile-section"><button class="profile-toggle" onclick="toggleProfileSection('${id}')"><b>${title}</b><span class="chev">⌄</span></button><div id="${id}" class="profile-content" style="display:none">${body}</div></div>`).join("");
+}
+function snapshotCards(fd){
+ const fy=fd.years?.[fd.years.length-1]||"";
+ return ["Revenue","Operating income","Free cash flow","Diluted EPS"].map(name=>{
+  const m=(fd.metrics||[]).find(x=>x.name===name);
+  const v=m?.values?.[m.values.length-1];
+  return `<div class="card"><div class="label">${name}</div><div class="big">${finFmt(v,m?.unit)}</div><div class="foot">${fy}</div></div>`;
+ }).join("");
+}
+function stock(t,tab){
+ tab=(tab==="overview"||tab==="financials")?tab:(window.profileTab||"overview");
+ window.profileTab=tab;
  const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t), u=universe.find(p=>p.ticker===t), watched=isWatched(t);
  const r=t==="MSFT"?msftResearch():null, fd=companyFinancials(t);
- const finId="fin-"+t, segId="seg-"+t, thesisId="thesis-"+t, riskId="risk-"+t;
- const years=fd?.years||[], metrics=fd?.metrics||[], latestPrice=fd?.price;
- const historical=fd?financialSections(fd):'<div class="muted small">Financial history not available yet.</div>';
- $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><div><div class="section-title">${t}</div><div class="muted">${u?.name||x?.ticker||w?.name||"Company"}</div></div><div><button class="btn" onclick="toggleWatch(&quot;${t}&quot;)">${watched?"★":"☆"} ${watched?"Watchlisted":"Add to watchlist"}</button> <button class="btn" onclick="closeModal()">×</button></div></div>
- ${latestPrice!=null?`<div class="cards"><div class="card"><div class="label">Market price</div><div class="big">${money(latestPrice)}</div><div class="muted small">Updated ${fd.price_updated_utc?new Date(fd.price_updated_utc).toLocaleString():"recently"}</div></div>${x?`<div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Position value</div><div class="big">${money(x.shares*latestPrice)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div>`:""}</div>`:x?`<div class="cards"><div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Price</div><div class="big">${money(x.price)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div></div>`:""}
- <div class="section"><div class="card"><div class="label">What they do</div><div style="margin-top:6px;line-height:1.5">${businessDescription(t,u)}</div></div></div>
- ${fd?`<div class="section"><div class="section-head"><div><div class="section-title">Company financials</div><div class="muted small">SEC XBRL data · up to 10 fiscal years</div></div></div><div class="profile-section"><button class="profile-toggle" onclick="toggleProfileSection('${finId}')"><b>Financials</b><span>＋</span></button><div id="${finId}" class="profile-content" style="display:none">${historical}<div class="card" style="margin-top:10px"><div class="label">Growth visualization</div>${financialChart(fd)}</div><div class="muted small" style="margin-top:8px">Source: SEC XBRL companyfacts. Price source: Yahoo Finance chart endpoint. Historical diluted EPS is retrospectively adjusted for detected stock splits (forward and reverse) so all years are shown on the current share basis.</div></div></div>
- ${r?`<div class="profile-section"><button class="profile-toggle" onclick="toggleProfileSection('${segId}')"><b>Business segments</b><span>＋</span></button><div id="${segId}" class="profile-content" style="display:none">${r.segments.map(a=>`<div class="list-item"><b>${a[0]}</b><span class="muted">${a[1]}</span></div>`).join("")}</div></div><div class="profile-section"><button class="profile-toggle" onclick="toggleProfileSection('${thesisId}')"><b>Investment thesis</b><span>＋</span></button><div id="${thesisId}" class="profile-content" style="display:none">${r.thesis.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")}</div></div><div class="profile-section"><button class="profile-toggle" onclick="toggleProfileSection('${riskId}')"><b>Key risks</b><span>＋</span></button><div id="${riskId}" class="profile-content" style="display:none">${r.risks.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")}</div></div>`:""}</div>`:""}
- <div class="section list"><div class="list-item"><b>Valuation</b><span class="muted">Coming later</span></div><div class="list-item"><b>Research & catalysts</b><span class="muted">Coming later</span></div></div></div>`;
+ const latestPrice=fd?.price;
+ const overviewHtml=`
+ ${latestPrice!=null?`<div class="cards"><div class="card"><div class="label">Market price</div><div class="big">${money(latestPrice)}</div><div class="foot">Updated ${fd.price_updated_utc?new Date(fd.price_updated_utc).toLocaleString():"recently"}</div></div>${x?`<div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Position value</div><div class="big">${money(x.shares*latestPrice)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div>`:""}</div>`:x?`<div class="cards"><div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Price</div><div class="big">${money(x.price)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div></div>`:""}
+ <div class="section"><div class="card"><div class="label">What they do</div><div style="margin-top:8px;line-height:1.5">${businessDescription(t,u)}</div></div></div>
+ <div class="section">${researchSectionsHtml(r,t)}</div>
+ <div class="section list"><div class="list-item"><b>Valuation</b><span class="muted">Coming later</span></div><div class="list-item"><b>Research & catalysts</b><span class="muted">Coming later</span></div></div>`;
+ const financialsHtml=fd?`
+ <div class="section-head" style="align-items:flex-start;margin-top:14px">
+  <div><div class="eyebrow">Fundamentals</div><div class="section-title" style="font-size:20px;margin-top:2px">Financials</div><div class="section-sub">Reported annual results, trailing figures and balance-sheet data.</div></div>
+  <span class="pill">SEC XBRL</span>
+ </div>
+ <div class="cards" style="margin-top:16px">${snapshotCards(fd)}</div>
+ <div class="card section"><div class="eyebrow">Financial trend</div><div id="pchart-${t}">${interactiveChartHtml(fd,t)}</div></div>
+ <div class="section"><div class="section-title">Detailed statements</div><div class="section-sub">Choose a section to open.</div><div style="margin-top:10px">${financialSections(fd,t)}</div></div>
+ <div class="muted small" style="margin-top:10px">Source: SEC XBRL companyfacts. Price source: Yahoo Finance chart endpoint. Historical diluted EPS is retrospectively adjusted for detected stock splits (forward and reverse) so all years are shown on the current share basis.</div>`
+ :'<div class="muted small" style="padding:24px 0">Financial history not available yet.</div>';
+ $("#modal").innerHTML=`<div class="sheet"><div class="section-head"><div><div class="eyebrow">Company research</div><div class="h1" style="font-size:28px;margin-top:2px">${t}</div><div class="muted">${u?.name||x?.ticker||w?.name||"Company"}</div></div><div style="display:flex;gap:8px"><button class="btn" onclick="toggleWatch('${t}')">${watched?"★ Watchlisted":"☆ Add to watchlist"}</button><button class="btn" onclick="closeModal()">×</button></div></div>
+ <div class="subtabs"><button class="${tab==="overview"?"active":""}" onclick="stock('${t}','overview')">Overview</button><button class="${tab==="financials"?"active":""}" onclick="stock('${t}','financials')">Financials</button></div>
+ ${tab==="overview"?overviewHtml:financialsHtml}</div>`;
  $("#modal").classList.add("open");
 }
 function openTx(){
@@ -359,7 +456,7 @@ function importBroker(){
  }catch(e){toast("Could not read that CSV.")}}; r.readAsText(f)}; input.click();
 }
 function parseCSV(text){const lines=text.split(/\r?\n/).filter(Boolean); if(!lines.length)return[]; const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}; const h=parseLine(lines[0]); return lines.slice(1).map(l=>{const v=parseLine(l); return Object.fromEntries(h.map((k,i)=>[k,v[i]??""]))})}
-window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;
+window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;window.setProfileMetric=setProfileMetric;window.setProfileRange=setProfileRange;window.showChartTip=showChartTip;window.hideChartTip=hideChartTip;window.toggleProfileSection=toggleProfileSection;
 save();render();
 if(current==="home")loadPrices();
 if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}

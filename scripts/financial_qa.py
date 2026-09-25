@@ -27,7 +27,10 @@ TAGS = {
     "revenue": ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet", "Revenue"],
     "gross_profit": ["GrossProfit"],
     "operating_income": ["OperatingIncomeLoss", "OperatingProfitLoss"],
-    "net_income": ["NetIncomeLoss", "ProfitLoss"],
+    # Kept in sync with update_financials.py: prefer income available to common
+    # stockholders so this independent audit doesn't flag the correct value for
+    # companies with preferred stock (banks, insurers, REITs) as a mismatch.
+    "net_income": ["NetIncomeLossAvailableToCommonStockholdersBasic", "NetIncomeLoss", "ProfitLoss"],
     "eps": ["EarningsPerShareDiluted", "DilutedEarningsLossPerShare", "BasicAndDilutedEarningsLossPerShare", "DilutedEarningsPerShare"],
     "rnd": ["ResearchAndDevelopmentExpense", "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost", "ResearchAndDevelopmentExpenditure"],
     "tax_expense": ["IncomeTaxExpenseBenefit", "IncomeTaxExpenseContinuingOperations"],
