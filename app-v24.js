@@ -33,7 +33,27 @@ let financials={};
 async function loadFinancials(){try{financials=await fetch("financials.json?ts="+Date.now(),{cache:"no-store"}).then(r=>r.json());if(current==="universe")render();}catch(e){console.error("Financial data load failed",e)}}
 loadFinancials();
 function companyFinancials(t){return financials[t]||null}
-function financialChart(data){if(!data?.years?.length)return "<div class=\"muted small\">Financial history not available yet.</div>";const metrics=(data.metrics||[]).filter(m=>(m.category||"income_statement")!=="balance_sheet");return metrics.map(m=>{const vals=m.values||[],nums=vals.map(Number).filter(Number.isFinite),max=Math.max(...nums.map(Math.abs),1),first=Number(vals.find(v=>v!=null)||0),last=Number(vals[vals.length-1]||0),growth=first?((last/first)-1)*100:null;return '<div style="margin:16px 0;padding:12px;border:1px solid #303b4d;border-radius:10px;background:#0f1722"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px"><b>'+m.name+'</b><span>'+finFmt(last,m.unit)+(growth===null?"":" · "+(growth>=0?"+":"")+growth.toFixed(0)+"%")+'</span></div><div style="display:flex;align-items:flex-end;gap:8px;height:130px">'+vals.map((v,j)=>'<div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center"><div style="font-size:10px;margin-bottom:4px">'+finFmt(v,m.unit)+'</div><div style="width:70%;height:'+Math.max(8,(Math.abs(Number(v)||0)/max)*100)+'px;background:#5b9cff;border-radius:5px 5px 0 0"></div><div style="font-size:10px;opacity:.6;margin-top:5px">'+data.years[j]+'</div></div>').join("")+'</div></div>'}).join("")}
+function financialChart(data,selectedName,ticker){
+ const metrics=(data?.metrics||[]).filter(m=>(m.category||"income_statement")!=="balance_sheet"&&(m.values||[]).some(v=>v!=null&&Number.isFinite(Number(v))));
+ if(!data?.years?.length||!metrics.length)return '<div class="financial-empty">Financial history is not available yet.</div>';
+ const preferred=["Revenue","Operating income","Free cash flow","Diluted EPS","Net income"];
+ const selected=metrics.find(m=>m.name===selectedName)||preferred.map(n=>metrics.find(m=>m.name===n)).find(Boolean)||metrics[0];
+ const values=data.years.map((_,i)=>selected.values?.[i]==null?null:Number(selected.values[i]));
+ const valid=values.filter(v=>v!=null&&Number.isFinite(v)),min=Math.min(...valid),max=Math.max(...valid),span=max-min||1;
+ const points=values.map((v,i)=>v==null?null:(48+i*(684/Math.max(1,values.length-1)))+","+(176-((v-min)/span)*136)).filter(Boolean).join(" ");
+ const circles=values.map((v,i)=>v==null?"":'<circle cx="'+(48+i*(684/Math.max(1,values.length-1)))+'" cy="'+(176-((v-min)/span)*136)+'" r="3.5"></circle>').join("");
+ let latestIndex=-1; for(let i=values.length-1;i>=0;i--)if(values[i]!=null){latestIndex=i;break}
+ const latest=latestIndex>=0?finFmt(values[latestIndex],selected.unit):"—";
+ const options=metrics.map(m=>'<option value="'+m.name.replace(/"/g,"&quot;")+'" '+(m.name===selected.name?"selected":"")+'>'+m.name+'</option>').join("");
+ const years=data.years.map((y,i)=>'<span class="'+(i===0||i===data.years.length-1?"":"financial-year-muted")+'">'+y+'</span>').join("");
+ const delta=valid.length>1&&valid[0]!==0?((valid[valid.length-1]/valid[0]-1)*100):null;
+ return '<div class="financial-chart" id="financial-chart-'+ticker+'"><div class="financial-chart-head"><div><div class="financial-chart-eyebrow">FINANCIAL TREND</div><div class="financial-chart-title">'+selected.name+'</div></div><label class="financial-chart-select-label">Metric<select aria-label="Select financial chart metric" onchange="renderFinancialChart(&quot;'+ticker+'&quot;,this.value)">'+options+'</select></label></div><div class="financial-chart-current"><strong>'+latest+'</strong><span>FY '+(data.years[latestIndex]||"—")+'</span>'+(delta===null?"":'<span class="'+(delta>=0?"positive":"negative")+'">'+(delta>=0?"+":"")+delta.toFixed(1)+"% across history</span>")+'</div><div class="financial-chart-plot"><svg viewBox="0 0 780 220" role="img" aria-label="'+selected.name+' trend over '+data.years.length+' fiscal years" preserveAspectRatio="none"><line x1="48" y1="40" x2="732" y2="40"></line><line x1="48" y1="108" x2="732" y2="108"></line><line x1="48" y1="176" x2="732" y2="176"></line><polyline points="'+points+'"></polyline>'+circles+'</svg><div class="financial-chart-years">'+years+'</div></div><div class="financial-chart-caption">Annual SEC-reported values · '+(selected.unit==="B"||selected.unit==="M"?"USD "+selected.unit:"reported unit")+'</div></div>';
+}
+function renderFinancialChart(ticker,name){
+ const host=document.getElementById("financial-chart-"+ticker);
+ if(host)host.outerHTML=financialChart(companyFinancials(ticker),name,ticker);
+}
+
 
 const $=s=>document.querySelector(s);
 const money=x=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(x||0);
@@ -125,7 +145,15 @@ function fmtCap(x){
  return "$"+x.toLocaleString();
 }
 function isWatched(t){return state.watchlist.some(x=>x.ticker===t)}
-function toggleWatch(t){const u=universe.find(x=>x.ticker===t);if(!u)return;if(isWatched(t))state.watchlist=state.watchlist.filter(x=>x.ticker!==t);else state.watchlist.push({ticker:t,name:u.name});save();render();toast(isWatched(t)?t+' added to watchlist':t+' removed from watchlist')}
+function toggleWatch(t,keepStock=false){
+ const u=universe.find(x=>x.ticker===t),wasWatched=isWatched(t);
+ if(wasWatched)state.watchlist=state.watchlist.filter(x=>x.ticker!==t);
+ else if(u)state.watchlist.push({ticker:t,name:u.name});
+ else return;
+ save();
+ if(keepStock)stock(t);else render();
+ toast(wasWatched?t+" removed from watchlist":t+" added to watchlist");
+}
 function universePage(){
  const q=(window.universeQuery||"").toLowerCase();
  const sector=window.universeSector||"ALL";
@@ -234,44 +262,61 @@ function toggleProfileSection(id){const el=document.getElementById(id);if(el)el.
 function msftHistoryChart(){return financialChart(companyFinancials("MSFT"))}
 function finFmt(v,u){if(v==null)return "—";if(u==="$")return "$"+Number(v).toFixed(2);if(u==="B")return Number(v).toFixed(2)+"B";if(u==="M")return Number(v).toFixed(1)+"M";if(u==="%")return (Number(v)*100).toFixed(1)+"%";if(u==="x")return Number(v).toFixed(2)+"x";return Number(v).toFixed(2)}
 function financialSections(fd){
- const groups=[
-  ["Income statement","income_statement"],
-  ["Cash flow","cash_flow"],
-  ["Ratios & growth","ratios"]
- ];
- const annual=groups.map(([title,cat])=>{
-  const ms=(fd.metrics||[]).filter(m=>(m.category||"income_statement")===cat);
-  if(!ms.length)return "";
-  return '<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">'+title+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th>'+fd.years.map(y=>'<th>'+y+'</th>').join("")+'</tr></thead><tbody>'+ms.map(m=>'<tr><td><b>'+m.name+'</b></td>'+fd.years.map((_,i)=>'<td>'+finFmt(m.values?.[i],m.unit)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div></div>'
+ const years=fd.years||[];
+ const groups=[["Income statement","income_statement",true],["Cash flow","cash_flow",false],["Ratios & growth","ratios",false]];
+ const table=(metrics,columns)=>'<div class="financial-table-wrap"><table class="table financial-table"><thead><tr><th>Metric</th>'+columns.map(c=>'<th>'+c.year+'</th>').join("")+'</tr></thead><tbody>'+metrics.map(m=>'<tr><th scope="row">'+m.name+'</th>'+columns.map(c=>'<td>'+finFmt(m.values?.[c.index],m.unit)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';
+ const annual=groups.map(([title,cat,open])=>{
+  const metrics=(fd.metrics||[]).filter(m=>(m.category||"income_statement")===cat);
+  if(!metrics.length)return "";
+  const recent=years.map((year,index)=>({year,index})).slice(-5);
+  const full=years.map((year,index)=>({year,index}));
+  return '<details class="financial-group" '+(open?"open":"")+'><summary><span>'+title+'</span><small>'+metrics.length+' metrics · '+years.length+' fiscal years</small><span class="financial-chevron" aria-hidden="true">⌄</span></summary><div class="financial-group-content"><div class="financial-table-note">Latest 5 fiscal years · all values retain their reported units</div>'+table(metrics,recent)+'<details class="financial-history"><summary>View full history · '+years.length+' years</summary>'+table(metrics,full)+'</details></div></details>';
  }).join("");
- const latest=fd.latest_reported?.metrics||{};
- const labels={cash:"Cash",debt_current:"Current debt",debt_noncurrent:"Long-term debt",assets:"Total assets",equity:"Total equity",shares_outstanding:"Shares outstanding"};
- const latestRows=Object.entries(labels).filter(([k])=>latest[k]).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(latest[k].value,latest[k].unit)+'</td></tr>').join("");
- const latestRatios=fd.latest_reported?.ratios||{};
- const ratioLabels={debt_equity:"Debt / equity",net_debt:"Net debt",net_debt_ebitda:"Net debt / EBITDA",net_debt_ebitda_ttm:"Net debt / TTM EBITDA",roic:"Approx. ROIC",roic_ttm:"Approx. ROIC (TTM)",roe:"ROE",roe_ttm:"ROE (TTM)",fcf_margin_ttm:"FCF margin (TTM)"};
  const ttm=fd.latest_reported?.ttm||{};
- const ttmLabels={revenue:"Revenue",operating_income:"Operating income",net_income:"Net income",cfo:"Operating cash flow",capex:"Capex spend",fcf:"Free cash flow",rnd:"R&D",da:"D&A"};
- const ttmRows=Object.entries(ttmLabels).filter(([k])=>ttm[k]&&ttm[k].value!=null).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(ttm[k].value,ttm[k].unit)+'</td></tr>').join("");
- const latestRatioRows=Object.entries(ratioLabels).filter(([k])=>latestRatios[k]&&latestRatios[k].value!=null).map(([k,label])=>'<tr><td><b>'+label+'</b></td><td>'+finFmt(latestRatios[k].value,latestRatios[k].unit)+'</td></tr>').join("");
- const ratioMethods=Object.entries(ratioLabels).filter(([k])=>latestRatios[k]&&latestRatios[k].method).map(([k,label])=>'<div>'+label+': '+latestRatios[k].method+'</div>').join("");
- const capexMetric=(fd.metrics||[]).find(m=>m.name==="Capex spend"&&m.category==="cash_flow");
- const capexBlock=capexMetric&&capexMetric.values?.some(v=>v!=null)?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">Capital expenditures · annual history</div><div class="muted small" style="margin-bottom:8px">Annual Capex spend across the available fiscal-year history</div><div class="table-wrap"><table class="table"><thead><tr><th>Fiscal year</th>'+fd.years.map(y=>'<th>'+y+'</th>').join("")+'</tr></thead><tbody><tr><td><b>Capex spend</b></td>'+fd.years.map((_,i)=>'<td>'+finFmt(capexMetric.values?.[i],capexMetric.unit)+'</td>').join("")+'</tr></tbody></table></div></div>':"";
- const ttmBlock=ttmRows?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">TTM financials</div><div class="muted small" style="margin-bottom:8px">Trailing twelve months through '+(ttm.period_end||fd.latest_reported.period_end||"—")+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>TTM</th></tr></thead><tbody>'+ttmRows+'</tbody></table></div></div>':"";
- const latestBlock=latestRows?'<div class="section" style="margin-top:12px"><div class="section-title" style="margin-bottom:8px">Balance sheet · '+(fd.latest_reported.label||"Latest reported")+'</div><div class="muted small" style="margin-bottom:8px">Point-in-time data · period end: '+(fd.latest_reported.period_end||"—")+' · filed: '+(fd.latest_reported.filed||"—")+' · '+(fd.latest_reported.form||"SEC filing")+'</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRows+'</tbody></table></div>'+(latestRatioRows?'<div class="section-title" style="margin:14px 0 8px">Latest balance-sheet ratios</div><div class="table-wrap"><table class="table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+latestRatioRows+'</tbody></table></div><div class="muted small" style="margin-top:8px">Methodology: '+ratioMethods+'. Net debt / EBITDA and ROIC use the latest fiscal-year income statement denominator until TTM data is added.</div>':"")+'</div>':"";
- return annual+capexBlock+ttmBlock+latestBlock;
+ const ttmLabels={revenue:"Revenue",operating_income:"Operating income",net_income:"Net income",cfo:"Operating cash flow",capex:"Capital expenditures",fcf:"Free cash flow",rnd:"R&D",da:"D&A"};
+ const ttmRows=Object.entries(ttmLabels).filter(([k])=>ttm[k]&&ttm[k].value!=null).map(([k,label])=>'<tr><th scope="row">'+label+'</th><td>'+finFmt(ttm[k].value,ttm[k].unit)+'</td></tr>').join("");
+ const latest=fd.latest_reported?.metrics||{};
+ const latestLabels={cash:"Cash",debt_current:"Current debt",debt_noncurrent:"Long-term debt",assets:"Total assets",equity:"Total equity",shares_outstanding:"Shares outstanding"};
+ const latestRows=Object.entries(latestLabels).filter(([k])=>latest[k]&&latest[k].value!=null).map(([k,label])=>'<tr><th scope="row">'+label+'</th><td>'+finFmt(latest[k].value,latest[k].unit)+'</td></tr>').join("");
+ const ratios=fd.latest_reported?.ratios||{};
+ const ratioLabels={debt_equity:"Debt / equity",net_debt:"Net debt",net_debt_ebitda:"Net debt / EBITDA",net_debt_ebitda_ttm:"Net debt / TTM EBITDA",roic:"Approx. ROIC",roic_ttm:"Approx. ROIC (TTM)",roe:"ROE",roe_ttm:"ROE (TTM)",fcf_margin_ttm:"FCF margin (TTM)"};
+ const ratioRows=Object.entries(ratioLabels).filter(([k])=>ratios[k]&&ratios[k].value!=null).map(([k,label])=>'<tr><th scope="row">'+label+'</th><td>'+finFmt(ratios[k].value,ratios[k].unit)+'</td></tr>').join("");
+ const methods=Object.entries(ratioLabels).filter(([k])=>ratios[k]&&ratios[k].method).map(([k,label])=>'<li><b>'+label+':</b> '+ratios[k].method+'</li>').join("");
+ const balanceMeta=fd.latest_reported||{};
+ const supporting='<div class="financial-support-grid">'+(ttmRows?'<details class="financial-group"><summary><span>Trailing twelve months</span><small>Through '+(ttm.period_end||balanceMeta.period_end||"—")+'</small><span class="financial-chevron" aria-hidden="true">⌄</span></summary><div class="financial-group-content"><div class="financial-table-wrap"><table class="table financial-table"><thead><tr><th>Metric</th><th>TTM</th></tr></thead><tbody>'+ttmRows+'</tbody></table></div></div></details>':"")+(latestRows||ratioRows?'<details class="financial-group"><summary><span>Balance sheet & ratios</span><small>'+(balanceMeta.label||balanceMeta.period_end||"Latest reported")+'</small><span class="financial-chevron" aria-hidden="true">⌄</span></summary><div class="financial-group-content"><div class="financial-table-note">Point-in-time balance-sheet data · period end '+(balanceMeta.period_end||"—")+' · filed '+(balanceMeta.filed||"—")+'</div>'+(latestRows?'<div class="financial-table-wrap"><table class="table financial-table"><thead><tr><th>Balance-sheet metric</th><th>Latest</th></tr></thead><tbody>'+latestRows+'</tbody></table></div>':"")+(ratioRows?'<div class="financial-subheading">Latest ratios</div><div class="financial-table-wrap"><table class="table financial-table"><thead><tr><th>Metric</th><th>Latest</th></tr></thead><tbody>'+ratioRows+'</tbody></table></div>':"")+(methods?'<details class="financial-methods"><summary>Calculation notes</summary><ul>'+methods+'</ul><p>Net debt / EBITDA and ROIC use the latest fiscal-year income-statement denominator until TTM data is added.</p></details>':"")+'</div></details>':"")+'</div>';
+ const source='<details class="financial-source"><summary>Sources & methodology</summary><p>Financial statements: SEC XBRL companyfacts. Historical diluted EPS is retrospectively adjusted for detected stock splits so every year is shown on the current share basis.</p><p>Price source: Yahoo Finance chart endpoint.</p></details>';
+ return '<div class="financial-history-list">'+annual+supporting+source+'</div>';
+}
+function financialHighlights(fd){
+ const metrics=fd.metrics||[];
+ const picks=[["revenue","Revenue"],["operating income","Operating income"],["free cash flow","Free cash flow"],["diluted eps","Diluted EPS"]];
+ const cards=picks.map(([needle,label])=>{
+  const m=metrics.find(x=>(x.name||"").toLowerCase().includes(needle));
+  if(!m)return "";
+  let index=-1;for(let i=(m.values||[]).length-1;i>=0;i--)if(m.values[i]!=null){index=i;break}
+  if(index<0)return "";
+  return '<div class="financial-highlight"><span>'+label+'</span><b>'+finFmt(m.values[index],m.unit)+'</b><small>FY '+(fd.years[index]||"—")+'</small></div>';
+ }).filter(Boolean).join("");
+ return cards?'<div class="financial-highlights">'+cards+'</div>':"";
+}
+function scrollStockSection(id,button){
+ const target=document.getElementById(id);
+ if(!target)return;
+ target.scrollIntoView({behavior:"smooth",block:"start"});
+ const nav=button?.parentElement;
+ if(nav)nav.querySelectorAll("button").forEach(b=>b.classList.remove("active"));
+ if(button)button.classList.add("active");
 }
 function stock(t){
- const x=state.positions.find(p=>p.ticker===t), w=state.watchlist.find(p=>p.ticker===t), u=universe.find(p=>p.ticker===t), watched=isWatched(t);
- const r=t==="MSFT"?msftResearch():null, fd=companyFinancials(t);
- const finId="fin-"+t, segId="seg-"+t, thesisId="thesis-"+t, riskId="risk-"+t;
- const years=fd?.years||[], metrics=fd?.metrics||[], latestPrice=fd?.price;
- const historical=fd?financialSections(fd):'<div class="muted small">Financial history not available yet.</div>';
- $("#modal").innerHTML=`<div class="sheet stock-sheet" role="dialog" aria-modal="true" aria-label="${t} company details"><div class="section-head stock-heading"><div><div class="stock-overline">COMPANY RESEARCH</div><div class="section-title">${t}</div><div class="muted">${u?.name||x?.ticker||w?.name||"Company"}</div></div><div><button class="btn" onclick="toggleWatch(&quot;${t}&quot;)">${watched?"★":"☆"} ${watched?"Watchlisted":"Add to watchlist"}</button> <button class="btn" onclick="closeModal()">×</button></div></div>
- ${latestPrice!=null?`<div class="cards"><div class="card"><div class="label">Market price</div><div class="big">${money(latestPrice)}</div><div class="muted small">Updated ${fd.price_updated_utc?new Date(fd.price_updated_utc).toLocaleString():"recently"}</div></div>${x?`<div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Position value</div><div class="big">${money(x.shares*latestPrice)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div>`:""}</div>`:x?`<div class="cards"><div class="card"><div class="label">Shares</div><div class="big">${x.shares.toFixed(4)}</div></div><div class="card"><div class="label">Price</div><div class="big">${money(x.price)}</div></div><div class="card"><div class="label">P/L</div><div class="big ${x.pl>=0?"green":"red"}">${money(x.pl)}</div></div></div>`:""}
- <div class="section"><div class="card"><div class="label">What they do</div><div style="margin-top:6px;line-height:1.5">${businessDescription(t,u)}</div></div></div>
- ${fd?`<div class="section"><div class="section-head"><div><div class="section-title">Company financials</div><div class="muted small">SEC XBRL data · up to 10 fiscal years</div></div></div><div class="profile-section"><button class="profile-toggle" onclick="toggleProfileSection('${finId}')"><b>Financials</b><span>＋</span></button><div id="${finId}" class="profile-content" style="display:none">${historical}<div class="card" style="margin-top:10px"><div class="label">Growth visualization</div>${financialChart(fd)}</div><div class="muted small" style="margin-top:8px">Source: SEC XBRL companyfacts. Price source: Yahoo Finance chart endpoint. Historical diluted EPS is retrospectively adjusted for detected stock splits (forward and reverse) so all years are shown on the current share basis.</div></div></div>
- ${r?`<div class="profile-section"><button class="profile-toggle" onclick="toggleProfileSection('${segId}')"><b>Business segments</b><span>＋</span></button><div id="${segId}" class="profile-content" style="display:none">${r.segments.map(a=>`<div class="list-item"><b>${a[0]}</b><span class="muted">${a[1]}</span></div>`).join("")}</div></div><div class="profile-section"><button class="profile-toggle" onclick="toggleProfileSection('${thesisId}')"><b>Investment thesis</b><span>＋</span></button><div id="${thesisId}" class="profile-content" style="display:none">${r.thesis.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")}</div></div><div class="profile-section"><button class="profile-toggle" onclick="toggleProfileSection('${riskId}')"><b>Key risks</b><span>＋</span></button><div id="${riskId}" class="profile-content" style="display:none">${r.risks.map(a=>`<div class="list-item"><span>${a}</span></div>`).join("")}</div></div>`:""}</div>`:""}
- <div class="section list"><div class="list-item"><b>Valuation</b><span class="muted">Coming later</span></div><div class="list-item"><b>Research & catalysts</b><span class="muted">Coming later</span></div></div></div>`;
+ const x=state.positions.find(p=>p.ticker===t),w=state.watchlist.find(p=>p.ticker===t),u=universe.find(p=>p.ticker===t),watched=isWatched(t);
+ const research=t==="MSFT"?msftResearch():null,fd=companyFinancials(t),latestPrice=fd?.price;
+ const financialId="financials-"+t,researchId="research-"+t;
+ const companyName=u?.name||w?.name||t;
+ const priceCards=latestPrice!=null?'<div class="stock-market-grid"><div class="stock-market-card stock-market-primary"><span>Market price</span><b>'+money(latestPrice)+'</b><small>Updated '+(fd.price_updated_utc?new Date(fd.price_updated_utc).toLocaleString():"recently")+'</small></div>'+(x?'<div class="stock-market-card"><span>Shares held</span><b>'+Number(x.shares||0).toFixed(4)+'</b></div><div class="stock-market-card"><span>Position value</span><b>'+money((x.shares||0)*latestPrice)+'</b></div><div class="stock-market-card"><span>Unrealized P/L</span><b class="'+(x.pl>=0?"positive":"negative")+'">'+money(x.pl)+'</b><small>'+pct(x.ret)+'</small></div>':"")+'</div>':(x?'<div class="stock-market-grid"><div class="stock-market-card"><span>Shares held</span><b>'+Number(x.shares||0).toFixed(4)+'</b></div><div class="stock-market-card"><span>Last saved price</span><b>'+money(x.price)+'</b></div><div class="stock-market-card"><span>Unrealized P/L</span><b class="'+(x.pl>=0?"positive":"negative")+'">'+money(x.pl)+'</b><small>'+pct(x.ret)+'</small></div></div>':"");
+ const financialContent=fd?'<section class="stock-section" id="'+financialId+'"><div class="stock-section-heading"><div><div class="stock-section-kicker">FUNDAMENTALS</div><h2>Financials</h2><p>Reported annual results, trailing figures and balance-sheet data.</p></div><span class="data-source-badge">SEC XBRL</span></div>'+financialHighlights(fd)+financialChart(fd,null,t)+'<div class="financial-detail-heading"><div><h3>Detailed statements</h3><p>Choose a section to open. Tables start with the latest five years.</p></div></div>'+financialSections(fd)+'</section>':'<section class="stock-section" id="'+financialId+'"><div class="stock-section-heading"><div><div class="stock-section-kicker">FUNDAMENTALS</div><h2>Financials</h2></div></div><div class="financial-empty">Financial history is not available for this company yet.</div></section>';
+ const researchContent=research?'<section class="stock-section" id="'+researchId+'"><div class="stock-section-heading"><div><div class="stock-section-kicker">COMPANY NOTES</div><h2>Business & investment notes</h2><p>Company-specific context for further review.</p></div></div><details class="research-group"><summary>Business segments <small>'+research.segments.length+' segments</small></summary><div class="research-segments">'+research.segments.map(a=>'<article><b>'+a[0]+'</b><span>'+a[1]+'</span></article>').join("")+'</div></details><details class="research-group"><summary>Investment thesis <small>'+research.thesis.length+' points</small></summary><ul>'+research.thesis.map(a=>'<li>'+a+'</li>').join("")+'</ul></details><details class="research-group"><summary>Key risks <small>'+research.risks.length+' items</small></summary><ul>'+research.risks.map(a=>'<li>'+a+'</li>').join("")+'</ul></details></section>':"";
+ const nav='<nav class="stock-detail-nav" aria-label="Company sections"><button class="active" onclick="scrollStockSection(&quot;overview-'+t+'&quot;,this)">Overview</button>'+(fd?'<button onclick="scrollStockSection(&quot;'+financialId+'&quot;,this)">Financials</button>':"")+(research?'<button onclick="scrollStockSection(&quot;'+researchId+'&quot;,this)">Business & notes</button>':"")+'</nav>';
+ $("#modal").innerHTML='<div class="sheet stock-sheet" role="dialog" aria-modal="true" aria-label="'+t+' company details"><div class="section-head stock-heading"><div><div class="stock-overline">COMPANY RESEARCH</div><h1>'+t+'</h1><div class="muted">'+companyName+(u?.sector?' <span class="stock-sector-separator">·</span> '+u.sector:"")+'</div></div><div class="stock-heading-actions"><button class="btn" onclick="toggleWatch(&quot;'+t+'&quot;,true)">'+(watched?"★ Watchlisted":"☆ Add to watchlist")+'</button><button class="btn stock-close" aria-label="Close company details" onclick="closeModal()">×</button></div></div>'+nav+'<section class="stock-section stock-overview" id="overview-'+t+'">'+priceCards+'<article class="company-description"><div class="stock-section-kicker">WHAT THE COMPANY DOES</div><p>'+businessDescription(t,u)+'</p></article></section>'+financialContent+researchContent+'</div>';
  $("#modal").classList.add("open");
 }
 function openTx(){
@@ -307,6 +352,6 @@ function importBroker(){
  }catch(e){toast("Could not read that CSV.")}}; r.readAsText(f)}; input.click();
 }
 function parseCSV(text){const lines=text.split(/\r?\n/).filter(Boolean); if(!lines.length)return[]; const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}; const h=parseLine(lines[0]); return lines.slice(1).map(l=>{const v=parseLine(l); return Object.fromEntries(h.map((k,i)=>[k,v[i]??""]))})}
-window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;
+window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;window.renderFinancialChart=renderFinancialChart;window.scrollStockSection=scrollStockSection;
 save();render();
 if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}
