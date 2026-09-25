@@ -51,24 +51,44 @@ def parse_page(ticker):
         out[metric_name]=parsed
     return {"ticker":ticker,"url":url,"metrics":out}
 
+def _compare_at_offset(g,ext,offset):
+    mismatches=[]; compared=0
+    for gm in g.get("metrics",[]):
+        name=gm.get("name"); label=METRIC_ROWS.get(name)
+        if not label or name not in ext["metrics"]: continue
+        ev=ext["metrics"][name]
+        for fy,actual in zip(g.get("years",[]),gm.get("values",[])):
+            if actual is None: continue
+            shifted="FY"+str(int(fy[2:])+offset)
+            if shifted not in ev or ev[shifted] is None: continue
+            expected=ev[shifted]; app=actual*1000 if name!="Diluted EPS" else actual
+            compared+=1
+            tol=max(abs(expected)*0.005,0.01 if name=="Diluted EPS" else 1.0)
+            if abs(app-expected)>tol:
+                mismatches.append({"metric":name,"fy":fy,"app":app,"external":expected,"diff_pct":(app/expected-1)*100 if expected else None})
+    return mismatches,compared
+
 def compare(ticker,generated):
     try:
-        ext=parse_page(ticker); g=generated[ticker]; mismatches=[]; compared=0
-        for gm in g.get("metrics",[]):
-            name=gm.get("name"); label=METRIC_ROWS.get(name)
-            if not label or name not in ext["metrics"]: continue
-            ev=ext["metrics"][name]
-            for fy,actual in zip(g.get("years",[]),gm.get("values",[])):
-                if fy not in ev or actual is None or ev[fy] is None: continue
-                expected=ev[fy]; app=actual*1000 if name!="Diluted EPS" else actual
-                compared+=1
-                tol=max(abs(expected)*0.005,0.01 if name=="Diluted EPS" else 1.0)
-                if abs(app-expected)>tol:
-                    mismatches.append({"metric":name,"fy":fy,"app":app,"external":expected,"diff_pct":(app/expected-1)*100 if expected else None})
-        status = "unavailable" if compared == 0 else ("flag" if mismatches else "match")
-        result = {"ticker":ticker,"status":status,"compared":compared,"mismatches":mismatches,"source":ext["url"]}
-        if compared == 0:
-            result["error"] = "no overlapping financial values to compare"
+        ext=parse_page(ticker); g=generated[ticker]
+        # Companies with a non-calendar fiscal year (e.g. retailers ending in
+        # January/February) can be labeled "FY2025" in SEC filings for the same
+        # period stockanalysis.com labels "FY2026", depending on the issuer's own
+        # convention. Rather than assume a direction, try the same year and a
+        # +/-1 year shift and keep whichever alignment the data itself supports.
+        candidates=[]
+        for offset in (0,1,-1):
+            mismatches,compared=_compare_at_offset(g,ext["metrics"],offset)
+            if compared==0: continue
+            candidates.append((len(mismatches),-compared,offset,mismatches,compared))
+        if not candidates:
+            return {"ticker":ticker,"status":"unavailable","error":"no overlapping financial values to compare"}
+        candidates.sort()
+        _,_,offset,mismatches,compared=candidates[0]
+        status="flag" if mismatches else "match"
+        result={"ticker":ticker,"status":status,"compared":compared,"mismatches":mismatches,"source":ext["url"]}
+        if offset!=0:
+            result["fiscal_year_offset_applied"]=offset
         return result
     except Exception as e:
         return {"ticker":ticker,"status":"unavailable","error":repr(e)}

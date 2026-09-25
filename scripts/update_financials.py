@@ -13,7 +13,7 @@ OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v11-shared-revenue-corrections"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v12-net-income-available-to-common"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -26,7 +26,13 @@ TAGS = {
     "revenue": ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet", "Revenue"],
     "gross_profit": ["GrossProfit"],
     "operating_income": ["OperatingIncomeLoss", "OperatingProfitLoss"],
-    "net_income": ["NetIncomeLoss", "ProfitLoss"],
+    # Prefer income available to common stockholders: companies with preferred
+    # stock (many banks, insurers, REITs) report a "Net income" line elsewhere
+    # (e.g. stockanalysis.com) that already excludes preferred dividends, while
+    # NetIncomeLoss alone does not. Where the "available to common" tag isn't
+    # filed (most companies have no preferred stock), this falls back to the
+    # plain net income tags unchanged.
+    "net_income": ["NetIncomeLossAvailableToCommonStockholdersBasic", "NetIncomeLoss", "ProfitLoss"],
     "eps": ["EarningsPerShareDiluted", "DilutedEarningsLossPerShare", "BasicAndDilutedEarningsLossPerShare", "DilutedEarningsPerShare"],
     "cfo": ["NetCashProvidedByUsedInOperatingActivities", "NetCashFlowsFromUsedInOperatingActivities"],
     "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets", "PaymentsToAcquirePropertyPlantAndEquipmentAndOtherPropertyPlantAndEquipment", "PurchaseOfPropertyPlantAndEquipment"],
