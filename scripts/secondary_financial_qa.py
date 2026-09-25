@@ -62,7 +62,11 @@ def compare(ticker,generated):
                 tol=max(abs(expected)*0.005,0.01 if name=="Diluted EPS" else 1.0)
                 if abs(app-expected)>tol:
                     mismatches.append({"metric":name,"fy":fy,"app":app,"external":expected,"diff_pct":(app/expected-1)*100 if expected else None})
-        return {"ticker":ticker,"status":"flag" if mismatches else "match","compared":compared,"mismatches":mismatches,"source":ext["url"]}
+        status = "unavailable" if compared == 0 else ("flag" if mismatches else "match")
+        result = {"ticker":ticker,"status":status,"compared":compared,"mismatches":mismatches,"source":ext["url"]}
+        if compared == 0:
+            result["error"] = "no overlapping financial values to compare"
+        return result
     except Exception as e:
         return {"ticker":ticker,"status":"unavailable","error":repr(e)}
 

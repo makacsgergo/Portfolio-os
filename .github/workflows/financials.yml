@@ -6,6 +6,7 @@ on:
       - "scripts/financial_eps_overrides.py"
       - "scripts/update_financials.py"
       - "scripts/financial_tag_selection.py"
+      - "scripts/financial_revenue_overrides.py"
       - ".github/workflows/financials.yml"
   workflow_dispatch:
   schedule:

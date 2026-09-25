@@ -4,6 +4,7 @@ from pathlib import Path
 import requests
 
 from financial_eps_overrides import SEC_EPS_RESTATED_FALLBACKS
+from financial_revenue_overrides import SEC_REVENUE_REPORTED_OVERRIDES
 from financial_tag_selection import prefer_total_revenue_annual_facts, prefer_total_revenue_period_facts
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,7 +13,7 @@ OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v10-revenue-tag-origin"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v11-shared-revenue-corrections"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -40,36 +41,6 @@ TAGS = {
     "debt_current": ["ShortTermBorrowings", "LongTermDebtCurrent", "ShortTermDebt", "BorrowingsCurrent"],
     "debt_noncurrent": ["LongTermDebtNoncurrent", "LongTermDebt", "BorrowingsNoncurrent"],
     "shares_outstanding": ["EntityCommonStockSharesOutstanding", "CommonStockSharesOutstanding"],
-}
-
-# Issuer-reported annual revenue overrides for documented XBRL context/tag-selection
-# errors. Values are in billions of USD and apply only to affected fiscal periods.
-# HONA was spun out of Honeywell in June 2026. Its standalone historical
-# financial statements for FY2023-FY2025 are included in the SEC-filed
-# Form 10-12B/A / supplemental historical information. Because HONA did not
-# have legacy standalone 10-K companyfacts for those periods, use these
-# issuer-reported standalone figures rather than reconstructing them from
-# Honeywell consolidated XBRL. Values are USD billions except EPS.
-HONA_HISTORICAL_FINANCIALS = {
-    "2023": {"revenue": 13.790, "gross_profit": 5.283, "operating_income": 3.564, "net_income": 2.886, "eps": 9.11},
-    "2024": {"revenue": 15.445, "gross_profit": 5.502, "operating_income": 3.509, "net_income": 2.817, "eps": 8.89},
-    "2025": {"revenue": 17.404, "gross_profit": 6.063, "operating_income": 3.257, "net_income": 1.780, "eps": 5.62},
-}
-
-SEC_REVENUE_REPORTED_OVERRIDES = {
-    "AMT": {"2019": 7.5803},
-    "CFG": {"2019": 6.491},
-    "COF": {"2018": 28.076},
-    "DOC": {"2016": 0.241034, "2017": 0.343584, "2018": 0.422551},
-    "ECHO": {"2021": 2.720916},
-    "GPN": {"2017": 3.975163},
-    "HIG": {"2017": 17.162},
-    "KEY": {"2022": 7.272},
-    "MET": {"2018": 67.941},
-    "MTB": {"2022": 7.662},
-    "SBAC": {"2017": 1.727674},
-    "URI": {"2019": 9.351},
-    "NBIS": {"2022": 0.0135},
 }
 
 def get_json(url):

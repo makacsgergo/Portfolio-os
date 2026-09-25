@@ -5,6 +5,7 @@ from pathlib import Path
 import requests
 
 from financial_eps_overrides import SEC_EPS_RESTATED_FALLBACKS
+from financial_revenue_overrides import SEC_REVENUE_REPORTED_OVERRIDES
 from financial_tag_selection import prefer_total_revenue_annual_facts
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,14 +46,6 @@ TAGS = {
 FLOW_METRICS = ["revenue","gross_profit","operating_income","net_income","eps","rnd","da","capex","cfo"]
 INSTANT_METRICS = ["cash","assets","equity","debt_current","debt_noncurrent","shares_outstanding"]
 TOL = {"eps": 0.015, "default": 0.001}
-
-SEC_REVENUE_REPORTED_OVERRIDES = {
-    "AMT": {"2019": 7.5803}, "CFG": {"2019": 6.491}, "COF": {"2018": 28.076},
-    "DOC": {"2016": 0.241034, "2017": 0.343584, "2018": 0.422551},
-    "ECHO": {"2021": 2.720916}, "GPN": {"2017": 3.975163}, "HIG": {"2017": 17.162},
-    "KEY": {"2022": 7.272}, "MET": {"2018": 67.941}, "MTB": {"2022": 7.662},
-    "SBAC": {"2017": 1.727674}, "URI": {"2019": 9.351}, "NBIS": {"2022": 0.0135},
-}
 
 SEC_SPLIT_FALLBACKS = {
     "SHOP": [("2022-06-28", 10.0)],  # SEC: 10-for-1 split, effective June 28, 2022
