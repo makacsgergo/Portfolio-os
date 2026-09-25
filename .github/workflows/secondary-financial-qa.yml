@@ -1,0 +1,37 @@
+name: Secondary financial QA
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "financials.json"
+      - "scripts/secondary_financial_qa.py"
+      - ".github/workflows/secondary-financial-qa.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: secondary-financial-qa
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        start: [0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests beautifulsoup4
+      - name: Run StockAnalysis cross-check
+        run: python scripts/secondary_financial_qa.py --start ${{ matrix.start }} --count 50 --output secondary_qa_${{ matrix.start }}.json
+      - name: Publish secondary QA report
+        uses: actions/upload-artifact@v4
+        with:
+          name: secondary-qa-${{ matrix.start }}
+          path: secondary_qa_${{ matrix.start }}.json
