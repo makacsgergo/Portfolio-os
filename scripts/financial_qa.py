@@ -62,7 +62,13 @@ SEC_SPLIT_FALLBACKS = {
 # HONA is a special case: it became independently traded on June 29, 2026.
 # Its historical FY2024/FY2025 financials were released by Honeywell Aerospace
 # in SEC-filed supplemental historical information rather than legacy HONA 10-Ks.
-HONA_HISTORICAL_FINANCIALS = {\n    "2023": {"revenue": 13.790, "gross_profit": 5.283, "operating_income": 3.564, "net_income": 2.886, "eps": 9.11},\n    "2024": {"revenue": 15.445, "gross_profit": 5.502, "operating_income": 3.509, "net_income": 2.817, "eps": 8.89},\n    "2025": {"revenue": 17.404, "gross_profit": 6.063, "operating_income": 3.257, "net_income": 1.780, "eps": 5.62},\n}\n\nSPECIAL_SEC_COVERAGE = {
+HONA_HISTORICAL_FINANCIALS = {
+    "2023": {"revenue": 13.790, "gross_profit": 5.283, "operating_income": 3.564, "net_income": 2.886, "eps": 9.11},
+    "2024": {"revenue": 15.445, "gross_profit": 5.502, "operating_income": 3.509, "net_income": 2.817, "eps": 8.89},
+    "2025": {"revenue": 17.404, "gross_profit": 6.063, "operating_income": 3.257, "net_income": 1.780, "eps": 5.62},
+}
+
+SPECIAL_SEC_COVERAGE = {
     "HONA": {"cik": "0002089271", "reason": "2026 spin-off; historical FY2024/FY2025 supplemental SEC filing; latest 10-Q available"}
 }
 ANNUAL_FORMS = ("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
@@ -203,7 +209,33 @@ def audit_one(stock, generated, cik_map):
         if special:
             return {"ticker":ticker,"status":"special_source","cik":special["cik"],"reason":special["reason"]}
         return {"ticker":ticker,"status":"missing_cik"}
-    try:\n        if ticker == "HONA":\n            g = generated.get(ticker)\n            if not g:\n                return {"ticker": ticker, "status": "missing_generated_data", "reason": "HONA special-source normalization missing"}\n            labels = {"revenue": "Revenue", "gross_profit": "Gross profit", "operating_income": "Operating income", "net_income": "Net income", "eps": "Diluted EPS"}\n            issues = []\n            years = [y.replace("FY", "") for y in g.get("years", [])]\n            for metric in ("revenue", "gross_profit", "operating_income", "net_income", "eps"):\n                gm = next((m for m in g.get("metrics", []) if m.get("name") == labels[metric]), None)\n                if not gm:\n                    issues.append(metric + "_missing")\n                    continue\n                for fy, expected in HONA_HISTORICAL_FINANCIALS.items():\n                    if fy not in years:\n                        issues.append(metric + "_" + fy + "_missing")\n                        continue\n                    actual = float(gm["values"][years.index(fy)])\n                    target = expected[metric]\n                    tol = 0.015 if metric == "eps" else max(0.001, abs(target) * 0.001)\n                    if not close(actual, target, tol):\n                        issues.append({"metric": metric, "fy": fy, "actual": actual, "expected": target})\n            return {"ticker": ticker, "status": "pass" if not issues else "mismatch", "issues": issues, "special_source": "SEC-filed HONA standalone historical information"}\n\n        facts=get_json(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")\n        g=generated.get(ticker)\nimport argparse, json, math, os, time
+    try:
+        if ticker == "HONA":
+            g = generated.get(ticker)
+            if not g:
+                return {"ticker": ticker, "status": "missing_generated_data", "reason": "HONA special-source normalization missing"}
+            labels = {"revenue": "Revenue", "gross_profit": "Gross profit", "operating_income": "Operating income", "net_income": "Net income", "eps": "Diluted EPS"}
+            issues = []
+            years = [y.replace("FY", "") for y in g.get("years", [])]
+            for metric in ("revenue", "gross_profit", "operating_income", "net_income", "eps"):
+                gm = next((m for m in g.get("metrics", []) if m.get("name") == labels[metric]), None)
+                if not gm:
+                    issues.append(metric + "_missing")
+                    continue
+                for fy, expected in HONA_HISTORICAL_FINANCIALS.items():
+                    if fy not in years:
+                        issues.append(metric + "_" + fy + "_missing")
+                        continue
+                    actual = float(gm["values"][years.index(fy)])
+                    target = expected[metric]
+                    tol = 0.015 if metric == "eps" else max(0.001, abs(target) * 0.001)
+                    if not close(actual, target, tol):
+                        issues.append({"metric": metric, "fy": fy, "actual": actual, "expected": target})
+            return {"ticker": ticker, "status": "pass" if not issues else "mismatch", "issues": issues, "special_source": "SEC-filed HONA standalone historical information"}
+
+        facts=get_json(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")
+        g=generated.get(ticker)
+import argparse, json, math, os, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date
 from pathlib import Path
@@ -267,7 +299,13 @@ SEC_SPLIT_FALLBACKS = {
 # HONA is a special case: it became independently traded on June 29, 2026.
 # Its historical FY2024/FY2025 financials were released by Honeywell Aerospace
 # in SEC-filed supplemental historical information rather than legacy HONA 10-Ks.
-HONA_HISTORICAL_FINANCIALS = {\n    "2023": {"revenue": 13.790, "gross_profit": 5.283, "operating_income": 3.564, "net_income": 2.886, "eps": 9.11},\n    "2024": {"revenue": 15.445, "gross_profit": 5.502, "operating_income": 3.509, "net_income": 2.817, "eps": 8.89},\n    "2025": {"revenue": 17.404, "gross_profit": 6.063, "operating_income": 3.257, "net_income": 1.780, "eps": 5.62},\n}\n\nSPECIAL_SEC_COVERAGE = {
+HONA_HISTORICAL_FINANCIALS = {
+    "2023": {"revenue": 13.790, "gross_profit": 5.283, "operating_income": 3.564, "net_income": 2.886, "eps": 9.11},
+    "2024": {"revenue": 15.445, "gross_profit": 5.502, "operating_income": 3.509, "net_income": 2.817, "eps": 8.89},
+    "2025": {"revenue": 17.404, "gross_profit": 6.063, "operating_income": 3.257, "net_income": 1.780, "eps": 5.62},
+}
+
+SPECIAL_SEC_COVERAGE = {
     "HONA": {"cik": "0002089271", "reason": "2026 spin-off; historical FY2024/FY2025 supplemental SEC filing; latest 10-Q available"}
 }
 ANNUAL_FORMS = ("10-K","10-K/A","20-F","20-F/A","40-F","40-F/A")
