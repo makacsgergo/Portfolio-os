@@ -548,13 +548,19 @@ def main():
         print("MISMATCH", r["ticker"], json.dumps({k:v for k,v in r["checks"].items() if v["mismatches"]}, separators=(",", ":")))
     for r in errors[:10]:
         print("ERROR", r["ticker"], r.get("error"))
-    quality = {"missing_eps_tickers": [], "year_gaps": [], "revenue_jumps": []}
+    quality = {
+        "missing_eps_tickers": [], "year_gaps": [], "revenue_jumps": [],
+        "eps_growth_jumps": [], "fcf_growth_jumps": [], "fiscal_year_order": [],
+        "metric_coverage": {}, "ttm_metric_coverage": {}, "latest_balance_sheet_coverage": {},
+    }
     for ticker, g in generated.items():
         years = g.get("years", [])
         eps_metric = next((m for m in g.get("metrics", []) if m.get("name") == "Diluted EPS"), None)
         if not eps_metric or not any(v is not None for v in eps_metric.get("values", [])):
             quality["missing_eps_tickers"].append(ticker)
         nums = [int(y.replace("FY","")) for y in years if str(y).startswith("FY") and str(y)[2:].isdigit()]
+        if nums != sorted(set(nums)):
+            quality["fiscal_year_order"].append({"ticker":ticker,"years":years})
         for a,b in zip(nums, nums[1:]):
             if b-a > 1:
                 quality["year_gaps"].append({"ticker":ticker,"from":f"FY{a}","to":f"FY{b}","gap":b-a})
@@ -568,6 +574,66 @@ def main():
                 ratio=b/a
                 if ratio < 0.30 or ratio > 3.50:
                     quality["revenue_jumps"].append({"ticker":ticker,"from":years[i-1],"to":years[i],"from_value":a,"to_value":b,"ratio":ratio})
+        for metric_name, diagnostic_name in (("Diluted EPS", "eps_growth_jumps"), ("Free cash flow", "fcf_growth_jumps")):
+            metric = next((m for m in g.get("metrics", []) if m.get("name") == metric_name), None)
+            if not metric:
+                continue
+            vals = metric.get("values", [])
+            for i in range(1, min(len(vals), len(years))):
+                a,b=vals[i-1],vals[i]
+                if a is None or b is None or a <= 0 or b <= 0 or a < 0.1:
+                    continue
+                ratio=b/a
+                if ratio < 0.30 or ratio > 3.50:
+                    quality[diagnostic_name].append({"ticker":ticker,"from":years[i-1],"to":years[i],"from_value":a,"to_value":b,"ratio":ratio})
+    metric_names = ["Revenue", "Operating income", "Net income", "Diluted EPS", "Free cash flow", "EBITDA", "ROE", "ROIC"]
+    all_year_slots = sum(len(g.get("years", [])) for g in generated.values())
+    for name in metric_names:
+        available_values = 0
+        stocks_with_values = 0
+        latest_year_available = 0
+        missing_tickers = []
+        for ticker, g in generated.items():
+            row = next((m for m in g.get("metrics", []) if m.get("name") == name), None)
+            vals = row.get("values", []) if row else []
+            count = sum(v is not None for v in vals)
+            available_values += count
+            if count:
+                stocks_with_values += 1
+            else:
+                missing_tickers.append(ticker)
+            if vals and vals[-1] is not None:
+                latest_year_available += 1
+        quality["metric_coverage"][name] = {
+            "stocks_with_values": stocks_with_values,
+            "stocks_missing": len(missing_tickers),
+            "missing_tickers": missing_tickers,
+            "available_year_values": available_values,
+            "expected_year_slots": all_year_slots,
+            "missing_year_values": all_year_slots - available_values,
+            "latest_year_available_stocks": latest_year_available,
+        }
+
+    ttm_names = ["revenue", "operating_income", "net_income", "cfo", "capex", "fcf", "tax_expense", "pretax_income"]
+    for name in ttm_names:
+        available = [ticker for ticker, g in generated.items()
+                     if g.get("latest_reported", {}).get("ttm", {}).get(name, {}).get("value") is not None]
+        quality["ttm_metric_coverage"][name] = {
+            "stocks_with_values": len(available),
+            "stocks_missing": len(generated) - len(available),
+            "missing_tickers": sorted(set(generated) - set(available)),
+        }
+
+    bs_names = ["cash", "assets", "equity", "debt_current", "debt_noncurrent", "shares_outstanding"]
+    for name in bs_names:
+        available = [ticker for ticker, g in generated.items()
+                     if g.get("latest_reported", {}).get("metrics", {}).get(name, {}).get("value") is not None]
+        quality["latest_balance_sheet_coverage"][name] = {
+            "stocks_with_values": len(available),
+            "stocks_missing": len(generated) - len(available),
+            "missing_tickers": sorted(set(generated) - set(available)),
+        }
+
     report={"generated_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"universe_count":len(stocks),"counts":counts,"mismatch_tickers":[r["ticker"] for r in mismatch],"error_tickers":[r["ticker"] for r in errors],"quality_diagnostics":quality,"results":results}
     output_path = Path(args.output)
     output_path.write_text(json.dumps(report,indent=2))

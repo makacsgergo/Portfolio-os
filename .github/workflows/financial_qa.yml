@@ -57,9 +57,18 @@ jobs:
           mismatches=[r["ticker"] for r in results if r["status"]=="mismatch"]
           errors=[r["ticker"] for r in results if r["status"]=="error"]
           derived_formula_mismatches=[{"ticker":r["ticker"],"checks":{name:check for name,check in r.get("derived_checks",{}).items() if check.get("mismatches")}} for r in results if any(check.get("mismatches") for check in r.get("derived_checks",{}).values())]
-          out={"generated_utc":max((r["generated_utc"] for r in reports),default=None),"universe_count":len(results),"counts":counts,"mismatch_tickers":mismatches,"error_tickers":errors,"derived_formula_mismatches":derived_formula_mismatches,"results":results}
+          formula_coverage={}
+          for r in results:
+            for name,check in r.get("derived_checks",{}).items():
+              item=formula_coverage.setdefault(name,{"stocks_checked":0,"values_checked":0,"mismatches":0})
+              item["stocks_checked"]+=int(check.get("checked",0)>0)
+              item["values_checked"]+=check.get("checked",0)
+              item["mismatches"]+=len(check.get("mismatches",[]))
+          quality=reports[0].get("quality_diagnostics",{}) if reports else {}
+          quality["derived_formula_check_coverage"]=formula_coverage
+          out={"generated_utc":max((r["generated_utc"] for r in reports),default=None),"universe_count":len(results),"counts":counts,"mismatch_tickers":mismatches,"error_tickers":errors,"derived_formula_mismatches":derived_formula_mismatches,"quality_diagnostics":quality,"results":results}
           json.dump(out,open("financial_qa.json","w"),indent=2)
-          print(json.dumps({"universe_count":len(results),"counts":counts,"mismatches":len(mismatches),"derived_formula_mismatches":len(derived_formula_mismatches),"errors":len(errors)},indent=2))
+          print(json.dumps({"universe_count":len(results),"counts":counts,"mismatches":len(mismatches),"derived_formula_mismatches":len(derived_formula_mismatches),"errors":len(errors),"quality_diagnostics":quality},indent=2))
           if errors: raise SystemExit(2)
           PY
       - name: Independent secondary-source cross-check in increments
