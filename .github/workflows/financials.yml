@@ -7,6 +7,7 @@ on:
       - "scripts/update_financials.py"
       - "scripts/financial_tag_selection.py"
       - "scripts/financial_revenue_overrides.py"
+      - "scripts/financial_net_income_overrides.py"
       - ".github/workflows/financials.yml"
   workflow_dispatch:
   schedule:

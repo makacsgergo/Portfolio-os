@@ -7,6 +7,7 @@ on:
       - "scripts/financial_qa.py"
       - "scripts/financial_tag_selection.py"
       - "scripts/financial_revenue_overrides.py"
+      - "scripts/financial_net_income_overrides.py"
       - "scripts/secondary_financial_qa.py"
       - "financials.json"
       - ".github/workflows/financial_qa.yml"
