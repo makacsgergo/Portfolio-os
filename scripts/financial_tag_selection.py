@@ -67,3 +67,32 @@ def prefer_total_revenue_period_facts(rows):
     return _prefer_revenue_facts(
         rows, lambda row: (row.get("start"), row.get("end")), quarterly=True
     )
+
+
+def sanity_filter_net_income_facts(rows):
+    """Drop NetIncomeLossAvailableToCommonStockholdersBasic facts that are
+    wildly out of scale versus the same period's NetIncomeLoss/ProfitLoss.
+
+    Some issuers mis-tag this concept in early filings (e.g. Corteva's
+    FY2019/FY2020 10-Ks report it as a per-share-scale number like -1.28
+    instead of -1,280,000,000, while later filings use the correct scale).
+    A real preferred-dividend adjustment is never large enough to shrink net
+    income by more than ~20x, so treat anything past that as a filer error
+    and fall back to the plain net income tag for that period only.
+    """
+    by_end_tag = {}
+    for row in rows:
+        by_end_tag.setdefault(row.get("end"), {}).setdefault(row.get("_tag"), []).append(row)
+    drop = set()
+    for by_tag in by_end_tag.values():
+        common = by_tag.get("NetIncomeLossAvailableToCommonStockholdersBasic")
+        base = by_tag.get("NetIncomeLoss") or by_tag.get("ProfitLoss")
+        if not common or not base:
+            continue
+        base_val = max((abs(float(row["val"])) for row in base), default=0)
+        if base_val == 0:
+            continue
+        for row in common:
+            if abs(float(row["val"])) < base_val * 0.05:
+                drop.add(id(row))
+    return [row for row in rows if id(row) not in drop]

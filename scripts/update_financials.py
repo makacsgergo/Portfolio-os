@@ -5,7 +5,7 @@ import requests
 
 from financial_eps_overrides import SEC_EPS_RESTATED_FALLBACKS
 from financial_revenue_overrides import SEC_REVENUE_REPORTED_OVERRIDES
-from financial_tag_selection import prefer_total_revenue_annual_facts, prefer_total_revenue_period_facts
+from financial_tag_selection import prefer_total_revenue_annual_facts, prefer_total_revenue_period_facts, sanity_filter_net_income_facts
 
 ROOT = Path(__file__).resolve().parents[1]
 UNIVERSE = ROOT / "universe.json"
@@ -13,7 +13,7 @@ OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-25-sec-historical-normalization-v12-net-income-available-to-common"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-26-sec-historical-normalization-v13-net-income-scale-sanity-check"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -95,6 +95,8 @@ def annual_facts(companyfacts):
         if rows: by_metric[metric]=rows
     if "revenue" in by_metric:
         by_metric["revenue"] = prefer_total_revenue_annual_facts(by_metric["revenue"])
+    if "net_income" in by_metric:
+        by_metric["net_income"] = sanity_filter_net_income_facts(by_metric["net_income"])
     return by_metric
 
 def select_instant(rows, allowed_forms=INSTANT_FORMS):

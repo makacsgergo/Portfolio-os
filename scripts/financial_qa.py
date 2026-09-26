@@ -6,7 +6,7 @@ import requests
 
 from financial_eps_overrides import SEC_EPS_RESTATED_FALLBACKS
 from financial_revenue_overrides import SEC_REVENUE_REPORTED_OVERRIDES
-from financial_tag_selection import prefer_total_revenue_annual_facts
+from financial_tag_selection import prefer_total_revenue_annual_facts, sanity_filter_net_income_facts
 
 ROOT = Path(__file__).resolve().parents[1]
 UNIVERSE = ROOT / "universe.json"
@@ -115,6 +115,8 @@ def annual_rows(facts, metric):
                     rows.append(y)
     if metric == "revenue":
         rows = prefer_total_revenue_annual_facts(rows)
+    if metric == "net_income":
+        rows = sanity_filter_net_income_facts(rows)
     return rows
 
 def instant_rows(facts, metric):
