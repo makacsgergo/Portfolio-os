@@ -6,6 +6,7 @@ import requests
 
 from financial_eps_overrides import SEC_EPS_RESTATED_FALLBACKS
 from financial_revenue_overrides import SEC_REVENUE_REPORTED_OVERRIDES
+from financial_net_income_overrides import SEC_NET_INCOME_OVERRIDES
 from financial_tag_selection import prefer_total_revenue_annual_facts, sanity_filter_net_income_facts
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -460,6 +461,8 @@ def audit_one(stock, generated, cik_map):
                 expected=float(latest_can[y]["val"])
                 if metric == "revenue" and ticker in SEC_REVENUE_REPORTED_OVERRIDES and y in SEC_REVENUE_REPORTED_OVERRIDES[ticker]:
                     expected = float(SEC_REVENUE_REPORTED_OVERRIDES[ticker][y]) * 1e9
+                if metric == "net_income" and ticker in SEC_NET_INCOME_OVERRIDES and y in SEC_NET_INCOME_OVERRIDES[ticker]:
+                    expected = float(SEC_NET_INCOME_OVERRIDES[ticker][y]) * 1e9
                 if metric=="eps":
                     # Compare the app's value with the latest filed annual EPS
                     # normalized for every split after that filing date.

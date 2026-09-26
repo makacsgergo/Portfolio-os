@@ -5,6 +5,7 @@ import requests
 
 from financial_eps_overrides import SEC_EPS_RESTATED_FALLBACKS
 from financial_revenue_overrides import SEC_REVENUE_REPORTED_OVERRIDES
+from financial_net_income_overrides import SEC_NET_INCOME_OVERRIDES
 from financial_tag_selection import prefer_total_revenue_annual_facts, prefer_total_revenue_period_facts, sanity_filter_net_income_facts
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,7 +14,7 @@ OUTPUT = ROOT / "financials.json"
 # Regeneration marker: historical EPS is normalized from SEC annual filings and
 # only post-filing stock splits are applied. Bump this when the normalization
 # logic changes so the full universe is regenerated from SEC source data.
-FINANCIAL_DATA_LOGIC_VERSION = "2026-09-26-sec-historical-normalization-v13-net-income-scale-sanity-check"
+FINANCIAL_DATA_LOGIC_VERSION = "2026-09-26-sec-historical-normalization-v14-alb-abnb-fy-label-overrides"
 UA = os.environ.get("SEC_USER_AGENT", "Portfolio OS research app contact@example.com")
 HEADERS = {"User-Agent": UA, "Accept-Encoding": "gzip, deflate"}
 
@@ -397,6 +398,10 @@ def build_company(ticker, cik):
     for fy, value in SEC_REVENUE_REPORTED_OVERRIDES.get(ticker, {}).items():
         if fy in yearly.get("revenue", {}):
             yearly["revenue"][fy]["val"] = float(value) * 1e9
+    # Apply documented issuer-reported net income corrections after SEC fact selection.
+    for fy, value in SEC_NET_INCOME_OVERRIDES.get(ticker, {}).items():
+        if fy in yearly.get("net_income", {}):
+            yearly["net_income"][fy]["val"] = float(value) * 1e9
     for metric, row in latest_quarter.items():
         result["latest_reported"]["metrics"][metric] = {
             "value": round(float(row["val"]) / (1e6 if metric == "shares_outstanding" else 1e9), 6),
