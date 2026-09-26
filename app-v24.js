@@ -1,8 +1,23 @@
 const S=window.PORTFOLIO_SEED;
 const KEY="portfolio_os_v2";
 const THEME_KEY="portfolio_os_theme";
+const CURRENCY_KEY="portfolio_os_currency";
+const CURRENCIES=["USD","EUR","GBP","HUF","CHF","JPY","CAD","AUD"];
 let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(S);
 let current="home";
+function currency(){const c=localStorage.getItem(CURRENCY_KEY);return CURRENCIES.includes(c)?c:"USD"}
+function setCurrency(c){localStorage.setItem(CURRENCY_KEY,c);render()}
+let fxRates={USD:1},fxLoaded=false;
+async function loadFx(){
+ if(fxLoaded)return;
+ fxLoaded=true;
+ try{
+  const d=await fetch("https://api.frankfurter.dev/v1/latest?from=USD").then(r=>r.json());
+  fxRates={USD:1,...(d.rates||{})};
+  if(currency()!=="USD")render();
+ }catch(e){console.error("Exchange rate load failed",e)}
+}
+loadFx();
 function isDark(){
  const saved=localStorage.getItem(THEME_KEY);
  return saved?saved==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -160,7 +175,7 @@ function showChartTip(evt,label,value){
 function hideChartTip(){const t=document.getElementById("charttip"); if(t)t.style.display="none"}
 
 const $=s=>document.querySelector(s);
-const money=x=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(x||0);
+const money=x=>{const c=currency(),rate=c==="USD"?1:(fxRates[c]||1);return new Intl.NumberFormat(undefined,{style:"currency",currency:c}).format((x||0)*rate)};
 const pct=x=>(x>=0?"+":"")+Number(x||0).toFixed(2)+"%";
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function nextTxId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
@@ -210,7 +225,7 @@ function nav(tab){current=tab; if(tab==="home")loadPrices(); render()}
 function render(){
  document.body.innerHTML=`<div class="app">
   <header class="top"><div><div class="brand">Portfolio OS</div><div class="sub">Personal high-growth portfolio tracker</div></div>
-  <div class="top-actions"><button class="btn icon-btn" onclick="toggleTheme()" title="Toggle theme">${isDark()?"☀":"☾"}</button><button class="btn primary" onclick="openTx()">＋ Transaction</button><button class="btn" onclick="importBroker()">Import</button></div></header>
+  <div class="top-actions"><select class="btn currency-select" onchange="setCurrency(this.value)" title="Display currency">${CURRENCIES.map(c=>`<option value="${c}" ${c===currency()?"selected":""}>${c}</option>`).join("")}</select><button class="btn icon-btn" onclick="toggleTheme()" title="Toggle theme">${isDark()?"☀":"☾"}</button><button class="btn primary" onclick="openTx()">＋ Transaction</button><button class="btn" onclick="importBroker()">Import</button></div></header>
   <nav class="nav">${["home","holdings","watchlist","allocate","universe"].map((x,i)=>`<button class="${current===x?"active":""}" onclick="nav('${x}')">${["Dashboard","Holdings","Watchlist","Allocation","Universe"][i]}</button>`).join("")}</nav>
   <main>${current==="home"?home():current==="holdings"?holdings():current==="watchlist"?watchlist():current==="allocate"?allocation():universePage()}</main>
  </div>
@@ -516,7 +531,7 @@ function importBroker(){
  }catch(e){toast("Could not read that CSV.")}}; r.readAsText(f)}; input.click();
 }
 function parseCSV(text){const lines=text.split(/\r?\n/).filter(Boolean); if(!lines.length)return[]; const parseLine=line=>{const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q}else if(c===','&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}; const h=parseLine(lines[0]); return lines.slice(1).map(l=>{const v=parseLine(l); return Object.fromEntries(h.map((k,i)=>[k,v[i]??""]))})}
-window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;window.setProfileMetric=setProfileMetric;window.setProfileRange=setProfileRange;window.showChartTip=showChartTip;window.hideChartTip=hideChartTip;window.toggleProfileSection=toggleProfileSection;window.toggleTheme=toggleTheme;window.deleteTx=deleteTx;
+window.stock=stock;window.openStockFromButton=(e,t)=>{e.preventDefault();e.stopPropagation();stock(t)};window.openTx=openTx;window.closeModal=closeModal;window.saveTx=saveTx;window.nav=nav;window.filterHold=filterHold;window.allocationAmount=allocationAmount;window.showMore=showMore;window.importBroker=importBroker;window.filterUniverse=filterUniverse;window.filterUniverseSector=filterUniverseSector;window.filterUniverseIndex=filterUniverseIndex;window.toggleWatch=toggleWatch;window.setProfileMetric=setProfileMetric;window.setProfileRange=setProfileRange;window.showChartTip=showChartTip;window.hideChartTip=hideChartTip;window.toggleProfileSection=toggleProfileSection;window.toggleTheme=toggleTheme;window.deleteTx=deleteTx;window.setCurrency=setCurrency;
 save();render();
 if(current==="home")loadPrices();
 if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}

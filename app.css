@@ -8,6 +8,7 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}.brand{font-size:26px;font-weight:850;letter-spacing:-.01em}.sub{color:var(--muted);font-size:13px;margin-top:3px}.top-actions{display:flex;gap:8px}
 .btn{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 16px;font-weight:700;color:var(--text)}.primary{background:var(--teal);color:var(--onTeal);border-color:var(--teal)}
 .icon-btn{width:44px;padding:11px;display:inline-flex;align-items:center;justify-content:center;font-size:16px}
+.currency-select{width:auto;padding:11px 10px;font-weight:800;letter-spacing:.02em}
 .link{color:var(--teal);font-weight:700;font-size:13px;white-space:nowrap}
 
 .nav{display:flex;gap:4px;overflow:auto;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--line)}.nav button{white-space:nowrap;color:var(--muted);padding:10px 16px;border-radius:10px;font-weight:700}.nav .active{background:var(--tealSoft);color:var(--teal)}
@@ -62,5 +63,5 @@ button{border:0;color:inherit;background:none;cursor:pointer}.app{max-width:1100
 .profile-content{padding:0 14px 14px}
 .chev{color:var(--muted);font-size:13px}
 
-@media(max-width:700px){.app{padding:16px 14px 24px}.top{display:block}.top-actions{margin-top:12px}.top-actions .btn{flex:1}.top-actions .icon-btn{flex:0 0 auto}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.watch-grid{grid-template-columns:1fr 1fr}.search{width:145px}.table{min-width:680px}.page-head{flex-direction:column;align-items:flex-start}}
+@media(max-width:700px){.app{padding:16px 14px 24px}.top{display:block}.top-actions{margin-top:12px;flex-wrap:wrap}.top-actions .btn{flex:1}.top-actions .icon-btn,.top-actions .currency-select{flex:0 0 auto}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.watch-grid{grid-template-columns:1fr 1fr}.search{width:145px}.table{min-width:680px}.page-head{flex-direction:column;align-items:flex-start}}
 @media(max-width:430px){.brand{font-size:21px}.h1{font-size:26px}.big{font-size:19px}.watch-grid{grid-template-columns:1fr}.card{padding:14px}.nav button{padding:8px 10px}}
